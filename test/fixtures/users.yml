@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id_number: 
+  name: MyString
+  mail: MyString
+  faculty: MyString
+  department: MyString
+  grade: 1
+  role: 1
+  admin: false
+  password: MyString
+
+two:
+  id_number: 
+  name: MyString
+  mail: MyString
+  faculty: MyString
+  department: MyString
+  grade: 1
+  role: 1
+  admin: false
+  password: MyString

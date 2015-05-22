@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  class_id: 1
+  content: MyString
+  start_time: 2015-05-22 12:44:44
+  end_time: 2015-05-22 12:44:44
+  input_description: MyString
+  output_description: MyString
+  run_time_limit: 1
+  memory_usage_limit: 1
+
+two:
+  title: MyString
+  class_id: 1
+  content: MyString
+  start_time: 2015-05-22 12:44:44
+  end_time: 2015-05-22 12:44:44
+  input_description: MyString
+  output_description: MyString
+  run_time_limit: 1
+  memory_usage_limit: 1
