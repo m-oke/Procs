@@ -44,3 +44,13 @@ group :development, :test do
 end
 
 gem 'rb-readline'
+gem 'devise'
+gem 'cancan'
+gem 'rails_admin'
+
+group :development, :test do
+  gem 'pry'
+  gem 'pry-rails'
+  gem 'hirb'
+  gem 'hirb-unicode'
+end
