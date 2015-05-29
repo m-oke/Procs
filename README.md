@@ -7,5 +7,3 @@ Ruby 2.2.2
 Ruby on Rails 4.2.1
 
 Nginx 1.4.6
-
-テスト
