@@ -1,9 +1,8 @@
 class Question < ActiveRecord::Base
-  has_many :answers
-  has_many :users, through: :answers
-
-  belongs_to :lessons
+  belongs_to :lesson
 
   has_many :samples
   has_many :test_data
+  has_many :answers
+  has_many :users, :through => :answers
 end
