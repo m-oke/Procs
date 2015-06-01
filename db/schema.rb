@@ -14,40 +14,45 @@
 ActiveRecord::Schema.define(version: 20150527055613) do
 
   create_table "answers", force: :cascade do |t|
-    t.string   "student_id_number",     limit: 255
-    t.integer  "question_id",           limit: 4
-    t.string   "file_name",             limit: 255
-    t.integer  "result",                limit: 4
+    t.string   "student_id_number",     limit: 255,                null: false
+    t.integer  "question_id",           limit: 4,                  null: false
+    t.string   "file_name",             limit: 255,                null: false
+    t.integer  "result",                limit: 4,                  null: false
     t.decimal  "run_time",                          precision: 10
     t.integer  "memory_usage",          limit: 4
+    t.integer  "cpu_usage",             limit: 4
     t.float    "plagiarism_percentage", limit: 24
     t.datetime "created_at",                                       null: false
     t.datetime "updated_at",                                       null: false
   end
 
   create_table "lessons", force: :cascade do |t|
-    t.string   "name",        limit: 255
+    t.string   "name",        limit: 255, null: false
     t.string   "description", limit: 255
+    t.string   "term",        limit: 255
+    t.string   "date",        limit: 255
+    t.string   "period",      limit: 255
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
 
   create_table "questions", force: :cascade do |t|
-    t.string   "title",              limit: 255
-    t.integer  "class_id",           limit: 4
+    t.string   "title",              limit: 255, null: false
+    t.integer  "class_id",           limit: 4,   null: false
     t.string   "content",            limit: 255
-    t.datetime "start_time"
+    t.datetime "start_time",                     null: false
     t.datetime "end_time"
     t.string   "input_description",  limit: 255
     t.string   "output_description", limit: 255
     t.integer  "run_time_limit",     limit: 4
     t.integer  "memory_usage_limit", limit: 4
+    t.integer  "cpu_usage_limit",    limit: 4
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
   end
 
   create_table "samples", force: :cascade do |t|
-    t.integer  "question_id", limit: 4
+    t.integer  "question_id", limit: 4,   null: false
     t.string   "input",       limit: 255
     t.string   "output",      limit: 255
     t.datetime "created_at",              null: false
@@ -55,7 +60,7 @@ ActiveRecord::Schema.define(version: 20150527055613) do
   end
 
   create_table "test_data", force: :cascade do |t|
-    t.integer  "question_id", limit: 4
+    t.integer  "question_id", limit: 4,   null: false
     t.string   "input",       limit: 255
     t.string   "output",      limit: 255
     t.datetime "created_at",              null: false
@@ -63,19 +68,20 @@ ActiveRecord::Schema.define(version: 20150527055613) do
   end
 
   create_table "user_lessons", force: :cascade do |t|
-    t.string   "id_number",  limit: 255
-    t.integer  "class_id",   limit: 4
+    t.string   "id_number",  limit: 255, null: false
+    t.integer  "class_id",   limit: 4,   null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
-  create_table "users", primary_key: "id_number", force: :cascade do |t|
+  create_table "users", id: false, force: :cascade do |t|
+    t.string   "id_number",              limit: 255,              null: false
     t.string   "name",                   limit: 255
     t.string   "faculty",                limit: 255
     t.string   "department",             limit: 255
     t.integer  "grade",                  limit: 4
-    t.integer  "role",                   limit: 4
-    t.boolean  "admin",                  limit: 1
+    t.integer  "role",                   limit: 4,                null: false
+    t.boolean  "admin",                  limit: 1,                null: false
     t.string   "email",                  limit: 255, default: "", null: false
     t.string   "encrypted_password",     limit: 255, default: "", null: false
     t.string   "reset_password_token",   limit: 255
@@ -91,6 +97,7 @@ ActiveRecord::Schema.define(version: 20150527055613) do
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["id_number"], name: "index_users_on_id_number", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end
