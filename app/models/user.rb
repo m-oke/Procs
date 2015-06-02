@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   self.primary_key = :id_number
 
-  has_many :user_lessons
+  has_many :user_lessons, :foreign_key => :id_number
   has_many :lessons, :through => :user_lessons
 
   has_many :answers

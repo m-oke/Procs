@@ -17,7 +17,12 @@ end
 
 # 学生
 20.times do |i|
-  User.create(:id_number => "20152000#{i + 1}", :name => "学生#{i + 1}", :faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4), :role => 1, :admin => false, :email => "student#{i + 1}@user.com", :password => "testtest")
+  if i < 9
+    User.create(:id_number => "20152000#{i + 1}", :name => "学生#{i + 1}", :faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4), :role => 1, :admin => false, :email => "student#{i + 1}@user.com", :password => "testtest")
+  else
+    User.create(:id_number => "2015200#{i + 1}", :name => "学生#{i + 1}", :faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4), :role => 1, :admin => false, :email => "student#{i + 1}@user.com", :password => "testtest")
+  end
+
 end
 
 # クラス
@@ -33,7 +38,11 @@ end
 
 # 学生
 15.times do |i|
-  UserLesson.create(:id_number => "20152000#{i + 1}", :lesson_id => ((i) % 2 + 1))
+  if i < 9
+    UserLesson.create(:id_number => "20152000#{i + 1}", :lesson_id => ((i) % 2 + 1))
+  else
+    UserLesson.create(:id_number => "2015200#{i + 1}", :lesson_id => ((i) % 2 + 1))
+  end
 end
 
 # 問題
@@ -84,6 +93,10 @@ Answer.create(:student_id_number => "201520003", :question_id => 2, :file_name =
 # 残りの学生
 (5..15).each do |i|
   if i % 2 == 1
-    Answer.create(:student_id_number => "20152000#{i}", :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :run_time => 3, :memory_usage => 50, :cpu_usage => 10, :plagiarism_percentage => 0.3)
+    if i < 10
+      Answer.create(:student_id_number => "20152000#{i}", :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :run_time => 3, :memory_usage => 50, :cpu_usage => 10, :plagiarism_percentage => 0.3)
+    else
+      Answer.create(:student_id_number => "2015200#{i}", :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :run_time => 3, :memory_usage => 50, :cpu_usage => 10, :plagiarism_percentage => 0.3)
+    end
   end
 end
