@@ -5,7 +5,7 @@ class CreateLessons < ActiveRecord::Migration
       t.string :description
       t.string :term
       t.integer :date
-      t.integer :period
+      t.string :period
 
       t.timestamps null: false
     end
