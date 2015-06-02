@@ -5,7 +5,7 @@ class CreateAnswers < ActiveRecord::Migration
       t.integer :question_id, null: false
       t.string :file_name, null: false
       t.integer :result, null: false
-      t.language :language, null: false
+      t.string :language, null: false
       t.decimal :run_time
       t.integer :memory_usage
       t.integer :cpu_usage
