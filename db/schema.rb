@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20150527055613) do
     t.integer  "question_id",           limit: 4,                  null: false
     t.string   "file_name",             limit: 255,                null: false
     t.integer  "result",                limit: 4,                  null: false
+    t.string   "language",              limit: 255,                null: false
     t.decimal  "run_time",                          precision: 10
     t.integer  "memory_usage",          limit: 4
     t.integer  "cpu_usage",             limit: 4
@@ -27,28 +28,28 @@ ActiveRecord::Schema.define(version: 20150527055613) do
   end
 
   create_table "lessons", force: :cascade do |t|
-    t.string   "name",        limit: 255, null: false
-    t.string   "description", limit: 255
+    t.string   "name",        limit: 255,      null: false
+    t.binary   "description", limit: 16777215
     t.string   "term",        limit: 255
-    t.string   "date",        limit: 255
+    t.integer  "date",        limit: 4
     t.string   "period",      limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   create_table "questions", force: :cascade do |t|
-    t.string   "title",              limit: 255, null: false
-    t.integer  "class_id",           limit: 4,   null: false
-    t.string   "content",            limit: 255
-    t.datetime "start_time",                     null: false
+    t.string   "title",              limit: 255,      null: false
+    t.integer  "lesson_id",          limit: 4,        null: false
+    t.binary   "content",            limit: 16777215
+    t.datetime "start_time",                          null: false
     t.datetime "end_time"
-    t.string   "input_description",  limit: 255
-    t.string   "output_description", limit: 255
+    t.binary   "input_description",  limit: 16777215
+    t.binary   "output_description", limit: 16777215
     t.integer  "run_time_limit",     limit: 4
     t.integer  "memory_usage_limit", limit: 4
     t.integer  "cpu_usage_limit",    limit: 4
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
   end
 
   create_table "samples", force: :cascade do |t|
@@ -69,7 +70,7 @@ ActiveRecord::Schema.define(version: 20150527055613) do
 
   create_table "user_lessons", force: :cascade do |t|
     t.string   "id_number",  limit: 255, null: false
-    t.integer  "class_id",   limit: 4,   null: false
+    t.integer  "lesson_id",  limit: 4,   null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
