@@ -4,8 +4,8 @@ class CreateLessons < ActiveRecord::Migration
       t.string :name, null: false
       t.string :description
       t.string :term
-      t.string :date
-      t.string :period
+      t.integer :date
+      t.integer :period
 
       t.timestamps null: false
     end
