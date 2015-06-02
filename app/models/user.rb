@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_many :user_lessons, :foreign_key => :id_number
   has_many :lessons, :through => :user_lessons
 
-  has_many :answers
+  has_many :answers, :foreign_key => :student_id_number
   has_many :questions, :through => :answers
 
 end
