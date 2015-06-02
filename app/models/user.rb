@@ -4,11 +4,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-#  has_and_belongs_to_many :lessons
-  has_many :user_lessons
+  self.primary_key = :id_number
+
+  has_many :user_lessons, :foreign_key => :id_number
   has_many :lessons, :through => :user_lessons
 
-  has_many :answers
+  has_many :answers, :foreign_key => :student_id_number
   has_many :questions, :through => :answers
 
 end

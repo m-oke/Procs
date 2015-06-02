@@ -1,7 +1,7 @@
 class CreateSamples < ActiveRecord::Migration
   def change
     create_table :samples do |t|
-      t.integer :question_id
+      t.integer :question_id, null: false
       t.string :input
       t.string :output
 
