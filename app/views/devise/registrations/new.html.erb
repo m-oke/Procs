@@ -4,9 +4,29 @@
   <%= devise_error_messages! %>
 
   <div class="field">
+    <%= f.label :name, "名前" %><br />
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="field">
     <%= f.label :email, "メールアドレス" %><br />
     <%= f.email_field :email, autofocus: true %>
   </div>
+
+  <!-- <div class="field"> -->
+  <!--   <%= f.label :faculty, "学部・学群" %><br /> -->
+  <!--   <%= f.text_field :faculty %> -->
+  <!-- </div> -->
+
+  <!-- <div class="field"> -->
+  <!--   <%= f.label :department, "学科・学類" %><br /> -->
+  <!--   <%= f.text_field :department %> -->
+  <!-- </div> -->
+
+  <!-- <div class="field"> -->
+  <!--   <%= f.label :grade, "学年" %><br /> -->
+  <!--   <%= f.select :grade, [["1", 1], ["2", 2], ["3", 3], ["4", 4]] %> -->
+  <!-- </div> -->
 
   <div class="field">
     <%= f.label :password, "パスワード" %>
