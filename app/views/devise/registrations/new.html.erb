@@ -4,8 +4,18 @@
   <%= devise_error_messages! %>
 
   <div class="field">
+    <%= f.label :id_number, "学籍番号" %><br />
+    <%= f.text_field :id_number %>
+  </div>
+
+  <div class="field">
     <%= f.label :name, "名前" %><br />
     <%= f.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :nickname, "ニックネーム" %><br />
+    <%= f.text_field :nickname %>
   </div>
 
   <div class="field">
