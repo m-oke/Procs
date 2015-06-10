@@ -1,1 +1,6 @@
 レッスンホーム
+<% if can? :faculty, current_user %>
+あなたは教員です
+<% elsif can? :student, current_user %>
+あなたは学生です
+<% end %>

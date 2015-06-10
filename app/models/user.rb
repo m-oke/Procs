@@ -12,4 +12,6 @@ class User < ActiveRecord::Base
   has_many :answers, :foreign_key => :student_id_number
   has_many :questions, :through => :answers
 
+  enum role: {faculty: 0, student: 1}
+
 end

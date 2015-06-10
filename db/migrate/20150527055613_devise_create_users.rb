@@ -6,7 +6,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.string :faculty
       t.string :department
       t.integer :grade
-      t.integer :role, null: false, default: 0
+      t.integer :role, null: false, default: -1
       t.boolean :admin, null: false, default: false
 
       ## Database authenticatable

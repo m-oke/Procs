@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 20150605053401) do
     t.string   "faculty",                limit: 255
     t.string   "department",             limit: 255
     t.integer  "grade",                  limit: 4
-    t.integer  "role",                   limit: 4,   default: 0,     null: false
+    t.integer  "role",                   limit: 4,   default: -1,    null: false
     t.boolean  "admin",                  limit: 1,   default: false, null: false
     t.string   "email",                  limit: 255, default: "",    null: false
     t.string   "encrypted_password",     limit: 255, default: "",    null: false
