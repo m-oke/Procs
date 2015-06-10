@@ -1,0 +1,2 @@
+module Teacher::TopHelper
+end

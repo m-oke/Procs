@@ -28,28 +28,28 @@ ActiveRecord::Schema.define(version: 20150527055613) do
   end
 
   create_table "lessons", force: :cascade do |t|
-    t.string   "name",        limit: 255,      null: false
-    t.binary   "description", limit: 16777215
+    t.string   "name",        limit: 255,   null: false
+    t.text     "description", limit: 65535
     t.string   "term",        limit: 255
     t.integer  "date",        limit: 4
     t.string   "period",      limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "questions", force: :cascade do |t|
-    t.string   "title",              limit: 255,      null: false
-    t.integer  "lesson_id",          limit: 4,        null: false
-    t.binary   "content",            limit: 16777215
-    t.datetime "start_time",                          null: false
+    t.string   "title",              limit: 255,   null: false
+    t.integer  "lesson_id",          limit: 4,     null: false
+    t.text     "content",            limit: 65535
+    t.datetime "start_time",                       null: false
     t.datetime "end_time"
-    t.binary   "input_description",  limit: 16777215
-    t.binary   "output_description", limit: 16777215
+    t.text     "input_description",  limit: 65535
+    t.text     "output_description", limit: 65535
     t.integer  "run_time_limit",     limit: 4
     t.integer  "memory_usage_limit", limit: 4
     t.integer  "cpu_usage_limit",    limit: 4
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   create_table "samples", force: :cascade do |t|
