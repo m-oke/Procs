@@ -53,6 +53,7 @@ gem 'cancan'
 gem 'rails_admin'
 
 group :development, :test do
+  gem 'rails-footnotes'
   gem 'pry'
   gem 'pry-rails'
   gem 'hirb'

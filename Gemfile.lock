@@ -137,6 +137,8 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
+    rails-footnotes (4.1.7)
+      rails (>= 3.2)
     rails-html-sanitizer (1.0.2)
       loofah (~> 2.0)
     rails_admin (0.6.7)
@@ -223,6 +225,7 @@ DEPENDENCIES
   pry
   pry-rails
   rails (= 4.2.1)
+  rails-footnotes
   rails_admin
   rb-readline
   sass-rails (~> 5.0)
