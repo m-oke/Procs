@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Users::RegistrationsController < Devise::RegistrationsController
   before_filter :configure_sign_up_params, only: [:create]
   #before_filter :configure_account_update_params, only: [:update]
@@ -7,9 +8,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
+  # 教師用新規登録
+  def new_teacher
+    build_resource({})
+    set_minimum_password_length
+    yield resource if block_given?
+    respond_with self.resource
+  end
+
   # POST /resource
   def create
     build_resource(sign_up_params)
+
+    resource.role = params[:role]
 
     resource.save
     yield resource if block_given?
@@ -58,7 +69,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.for(:sign_up).push(:id_number, :name, :nickname)
+    devise_parameter_sanitizer.for(:sign_up).push(:id_number, :name, :nickname, :role)
   end
 
   # If you have extra params to permit, append them to the sanitizer.

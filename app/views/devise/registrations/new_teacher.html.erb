@@ -1,4 +1,4 @@
-<h2>新規登録</h2>
+<h2>教員新規登録</h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= devise_error_messages! %>
@@ -24,7 +24,7 @@
   </div>
 
   <div class="field">
-    <%= hidden_field_tag :role, 1 %>
+    <%= hidden_field_tag :role, 0 %>
   </div>
 
   <!-- <div class="field"> -->

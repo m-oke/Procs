@@ -7,6 +7,10 @@ Rails.application.routes.draw do
     :passwords => 'users/passwords'
   }
 
+  devise_scope :user do
+    get 'users/teacher/new', :to => 'users/registrations#new_teacher'
+  end
+
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
