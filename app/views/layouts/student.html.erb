@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Procs</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= stylesheet_link_tag    'student', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+
+  <%= javascript_include_tag 'https://js.stripe.com/v2/' %>
+
+  <%= csrf_meta_tags %>
+  <%= render 'layouts/shim' %>
+</head>
+<body role = "document">
+  <%= render 'layouts/header' %>
+
+  <div class="container " role="main">
+    <div>
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#tab1" data-toggle="tab">ホーム</a></li>
+        <li role="presentation"><a href="#tab2" data-toggle="tab">問題</a></li>
+      </ul>
+    </div>
+    <div class="tab-content">
+      <div class="tab-pane fade in active" id="tab1">
+
+      </div>
+      <div class="tab-pane fade" id="tab2">
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+

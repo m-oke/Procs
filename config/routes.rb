@@ -55,4 +55,11 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+  namespace :teacher do
+    root 'top#index'
+  end
+
+  namespace :student do
+    root 'top#index'
+  end
 end
