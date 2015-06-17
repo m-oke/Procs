@@ -31,6 +31,8 @@ ActiveRecord::Schema.define(version: 20150616090840) do
   create_table "lesson_questions", force: :cascade do |t|
     t.integer  "lesson_id",   limit: 4, null: false
     t.integer  "question_id", limit: 4, null: false
+    t.datetime "start_time",            null: false
+    t.datetime "end_time"
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
   end
@@ -47,10 +49,7 @@ ActiveRecord::Schema.define(version: 20150616090840) do
 
   create_table "questions", force: :cascade do |t|
     t.string   "title",              limit: 255,   null: false
-    t.integer  "lesson_id",          limit: 4,     null: false
     t.text     "content",            limit: 65535
-    t.datetime "start_time",                       null: false
-    t.datetime "end_time"
     t.text     "input_description",  limit: 65535
     t.text     "output_description", limit: 65535
     t.integer  "run_time_limit",     limit: 4

@@ -4,14 +4,19 @@ class Ability
   def initialize(user)
     user ||= User.new
 
-    if user && user.admin?
+    if user && user.is_root
+      can :access, :rails_admin
+      can :dashboard
       can :manage, :all
-    end
-
-    if user && user.faculty?
-      can :faculty, :all
-    elsif user && user.student?
-      can :student, :all
+    elsif user && user.is_admin
+      can :access, :rails_admin
+      can :dashboard
+      can :manage, :all
+      cannot :destroy, User
+    elsif user && user.is_teacher
+      can :manage, :all
+    elsif user
+      can :read, :all
     end
 
     # Define abilities for the passed in user here. For example:

@@ -4,8 +4,8 @@
   <%= devise_error_messages! %>
 
   <div class="field">
-    <%= f.label :id_number, "学籍番号" %><br />
-    <%= f.text_field :id_number %>
+    <%= f.label :student_number, "学籍番号" %><br />
+    <%= f.text_field :student_number %>
   </div>
 
   <div class="field">
@@ -27,20 +27,6 @@
     <%= hidden_field_tag :role, 1 %>
   </div>
 
-  <!-- <div class="field"> -->
-  <!--   <%= f.label :faculty, "学部・学群" %><br /> -->
-  <!--   <%= f.text_field :faculty %> -->
-  <!-- </div> -->
-
-  <!-- <div class="field"> -->
-  <!--   <%= f.label :department, "学科・学類" %><br /> -->
-  <!--   <%= f.text_field :department %> -->
-  <!-- </div> -->
-
-  <!-- <div class="field"> -->
-  <!--   <%= f.label :grade, "学年" %><br /> -->
-  <!--   <%= f.select :grade, [["1", 1], ["2", 2], ["3", 3], ["4", 4]] %> -->
-  <!-- </div> -->
 
   <div class="field">
     <%= f.label :password, "パスワード" %>
