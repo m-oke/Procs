@@ -10,18 +10,18 @@ class Ability
     can :dashboard
 
 
-    if user && user.is_root
+    if user && (user.has_role? :root)
       can :access, :rails_admin
       can :dashboard
       can :manage, :all
-    elsif user && user.is_admin
+    elsif user && (user.has_role? :admin)
       can :access, :rails_admin
       can :dashboard
       can :manage, :all
       cannot :destroy, User
-    elsif user && user.is_teacher
+    elsif user && (user.has_role? :teacher)
       can :manage, :all
-    elsif user
+    elsif user && (user.has_role? :student)
       can :read, :all
       can :manage, User, :id => user.id
     end

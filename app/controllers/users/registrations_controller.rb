@@ -20,8 +20,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
 
-    resource.role = params[:role]
-
     resource.save
     yield resource if block_given?
     if resource.persisted?
@@ -65,11 +63,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  protected
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.for(:sign_up).push(:id_number, :name, :nickname, :role)
+    devise_parameter_sanitizer.for(:sign_up).push(:student_number, :name, :nickname, roles: [] )
   end
 
   # If you have extra params to permit, append them to the sanitizer.

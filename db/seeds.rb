@@ -9,31 +9,30 @@
 
 # root
 User.create(:name => "root1", :nickname => "root", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
-            :is_root => true, :is_admin => true, :is_teacher => true, :email => "root@user.com", :password => "testtest")
+            :email => "root@user.com", :password => "testtest", :roles => [:root, :admin, :teacher, :student])
 
 # 管理者
 2.times do |i|
   User.create(:name => "管理者#{i + 1}", :nickname => "admin#{i+1}", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
-              :is_admin => true, :is_teacher => true, :email => "Admin#{i + 1}@user.com", :password => "testtest")
+             :email => "Admin#{i + 1}@user.com", :password => "testtest", :roles => [:admin, :teacher, :student])
 end
 
 
 # 教師
 3.times do |i|
     User.create(:name => "教員#{i + 1}", :nickname => "teacher#{i+1}", # :faculty => "工学域#{i + 1}", :department => "工学域#{i + 1}", :grade => 0,
-                :is_teacher => true, :is_admin => false, :email => "teacher#{i + 1}@user.com", :password => "testtest")
+                :email => "teacher#{i + 1}@user.com", :password => "testtest", :roles => [:teacher, :student])
 end
 
 # 学生
 20.times do |i|
   if i < 9
-    User.create(:student_number => "20152000#{i + 1}", :name => "学生#{i + 1}", :nickname => "student#{i+1}", #:faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4),
-                :email => "student#{i + 1}@user.com", :password => "testtest")
+    x = "0#{i + 1}"
   else
-    User.create(:student_number => "2015200#{i + 1}", :name => "学生#{i + 1}", :nickname => "student#{i+1}", #:faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4),
-                :email => "student#{i + 1}@user.com", :password => "testtest")
+    x = "#{i + 1}"
   end
-
+  User.create(:student_number => "2015200#{x}", :name => "学生#{i + 1}", :nickname => "student#{i+1}", #:faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4),
+              :email => "student#{i + 1}@user.com", :password => "testtest", :roles => [:student])
 end
 
 # クラス
