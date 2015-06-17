@@ -1,8 +1,14 @@
+# -*- coding: utf-8 -*-
 class Ability
   include CanCan::Ability
 
   def initialize(user)
     user ||= User.new
+
+    # アクセス権のデバッグ用
+    can :access, :rails_admin
+    can :dashboard
+
 
     if user && user.is_root
       can :access, :rails_admin
@@ -17,6 +23,7 @@ class Ability
       can :manage, :all
     elsif user
       can :read, :all
+      can :manage, User, :id => user.id
     end
 
     # Define abilities for the passed in user here. For example:

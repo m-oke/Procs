@@ -11,8 +11,13 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Log In</a></li>
-        <li><a href="#">Sign Up</a></li>
+        <% if user_signed_in? %>
+          <li><%= link_to "Logged in as" + current_user.email, "" %></li>
+          <li><%= link_to 'プロフィール変更', edit_user_registration_path %></li>
+          <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
+        <% else %>
+          <li><%= link_to "Log in / Sign up", new_user_session_path %></li>
+        <% end %>
       </ul>
     </div>
   </div>
