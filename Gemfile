@@ -51,6 +51,7 @@ gem 'rb-readline'
 gem 'devise'
 gem 'cancan'
 gem 'rails_admin'
+gem 'dotenv-rails'
 
 group :development, :test do
   gem 'rails-footnotes'
