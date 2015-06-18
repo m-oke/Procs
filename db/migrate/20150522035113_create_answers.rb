@@ -1,7 +1,7 @@
 class CreateAnswers < ActiveRecord::Migration
   def change
     create_table :answers do |t|
-      t.string :student_id_number, null: false
+      t.integer :student_id, null: false
       t.integer :question_id, null: false
       t.string :file_name, null: false
       t.integer :result, null: false

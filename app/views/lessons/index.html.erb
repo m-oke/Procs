@@ -1,0 +1,13 @@
+レッスンホーム
+<br><br>
+<% if current_user.nil? %>
+  ログインまたは新規登録してください
+<% elsif current_user.has_role? :root %>
+  あなたはRootです
+<% elsif current_user.has_role? :admin %>
+  あなたは管理者です
+<% elsif current_user.has_role? :teacher %>
+  あなたは教員です
+<% else %>
+  あなたは学生です
+<% end %>

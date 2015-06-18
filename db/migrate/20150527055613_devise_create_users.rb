@@ -1,13 +1,11 @@
 class DeviseCreateUsers < ActiveRecord::Migration
   def change
-    create_table :users, :id => false do |t|
-      t.string :id_number, null: false
+    create_table :users  do |t|
+      t.string :student_number
       t.string :name
-      t.string :faculty
-      t.string :department
-      t.integer :grade
-      t.integer :role, null: false
-      t.boolean :admin, null: false
+      # t.string :faculty
+      # t.string :department
+      # t.integer :grade
 
       ## Database authenticatable
       t.string :email,              null: false, default: ""
@@ -41,8 +39,6 @@ class DeviseCreateUsers < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-
-    add_index :users, :id_number,            unique: true
 
     add_index :users, :email,                unique: true
     add_index :users, :reset_password_token, unique: true
