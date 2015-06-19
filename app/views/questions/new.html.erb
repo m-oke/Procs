@@ -1,3 +1,13 @@
 <% @title='問題新規作成' %>
 <h1><%= @title %></h1>
-<%= render 'questions/form' %>
+<div id="question_new">
+  <%= form_for @question  do |f| %>
+    <%= render 'questions/form',f: f %>
+
+    <div class="buttons">
+      <%= f.submit '登録' %>
+      <%= link_to 'キャンセル',"/"  %>
+    </div>
+  <% end %>
+</div>
+
