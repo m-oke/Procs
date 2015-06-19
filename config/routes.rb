@@ -7,6 +7,11 @@ Rails.application.routes.draw do
     :passwords => 'users/passwords'
   }
 
+  get '/questions/' => 'questions#index'
+  get '/questions/new' => 'questions#new'
+  post '/questions/' => 'questions#create'
+
+
   devise_scope :user do
     get 'users/teacher/new', :to => 'users/registrations#new_teacher'
   end
