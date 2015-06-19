@@ -1,0 +1,139 @@
+/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20150619-25995-9jxyqg.rb extconf.rb
+checking for ffi.h... no
+checking for ffi.h in /usr/local/include,/usr/include/ffi... no
+checking for rb_thread_blocking_region()... no
+checking for rb_thread_call_with_gvl()... yes
+checking for rb_thread_call_without_gvl()... yes
+checking for ffi_prep_cif_var()... no
+creating extconf.h
+creating Makefile
+
+make "DESTDIR=" clean
+
+make "DESTDIR="
+Configuring libffi
+make -C "/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux"
+make[1]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' に入ります
+make "AR_FLAGS=" "CC_FOR_BUILD=" "CFLAGS=-Wall -fexceptions" "CXXFLAGS=" "CFLAGS_FOR_BUILD=" "CFLAGS_FOR_TARGET=" "INSTALL=/usr/bin/install -c" "INSTALL_DATA=/usr/bin/install -c -m 644" "INSTALL_PROGRAM=/usr/bin/install -c" "INSTALL_SCRIPT=/usr/bin/install -c" "JC1FLAGS=" "LDFLAGS=" "LIBCFLAGS=" "LIBCFLAGS_FOR_TARGET=" "MAKE=make" "MAKEINFO=/bin/bash /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/missing --run makeinfo " "PICFLAG=" "PICFLAG_FOR_TARGET=" "RUNTESTFLAGS=" "SHELL=/bin/bash" "exec_prefix=/usr/local" "infodir=/usr/local/share/info" "libdir=/usr/local/lib" "mandir=/usr/local/share/man" "prefix=/usr/local" "AR=ar" "AS=as" "CC=gcc" "CXX=g++" "LD=/usr/bin/ld -m elf_x86_64" "NM=/usr/bin/nm -B" "RANLIB=ranlib" "DESTDIR=" all-recursive
+make[2]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' に入ります
+Making all in include
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/include' に入ります
+make[3]: `all' に対して行うべき事はありません.
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/include' から出ます
+Making all in testsuite
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/testsuite' に入ります
+make[3]: `all' に対して行うべき事はありません.
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/testsuite' から出ます
+Making all in man
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/man' に入ります
+make[3]: `all' に対して行うべき事はありません.
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/man' から出ます
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' に入ります
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/debug.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/debug.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/debug.c  -fPIC -DPIC -o src/.libs/debug.o
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/prep_cif.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/prep_cif.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/prep_cif.c  -fPIC -DPIC -o src/.libs/prep_cif.o
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/types.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/types.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/types.c  -fPIC -DPIC -o src/.libs/types.o
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/raw_api.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/raw_api.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/raw_api.c  -fPIC -DPIC -o src/.libs/raw_api.o
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/java_raw_api.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/java_raw_api.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/java_raw_api.c  -fPIC -DPIC -o src/.libs/java_raw_api.o
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/closures.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/closures.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/closures.c  -fPIC -DPIC -o src/.libs/closures.o
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/x86/ffi64.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/ffi64.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/ffi64.c  -fPIC -DPIC -o src/x86/.libs/ffi64.o
+/bin/bash ./libtool   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -c -o src/x86/unix64.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/unix64.S
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/unix64.S  -fPIC -DPIC -o src/x86/.libs/unix64.o
+/bin/bash ./libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -g  -Wall -fexceptions -c -o src/x86/ffi.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/ffi.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -g -Wall -fexceptions -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/ffi.c  -fPIC -DPIC -o src/x86/.libs/ffi.o
+/bin/bash ./libtool   --mode=compile gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src  -c -o src/x86/sysv.lo /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/sysv.S
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -I. -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/include -Iinclude -I/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src -c /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/src/x86/sysv.S  -fPIC -DPIC -o src/x86/.libs/sysv.o
+/bin/bash ./libtool --tag=CC   --mode=link gcc -g  -Wall -fexceptions -version-info `grep -v '^#' /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/libtool-version`    -o libffi.la -rpath /usr/local/lib src/debug.lo src/prep_cif.lo src/types.lo src/raw_api.lo src/java_raw_api.lo src/closures.lo                      src/x86/ffi64.lo src/x86/unix64.lo src/x86/ffi.lo src/x86/sysv.lo      
+libtool: link: gcc -shared  -fPIC -DPIC  src/.libs/debug.o src/.libs/prep_cif.o src/.libs/types.o src/.libs/raw_api.o src/.libs/java_raw_api.o src/.libs/closures.o src/x86/.libs/ffi64.o src/x86/.libs/unix64.o src/x86/.libs/ffi.o src/x86/.libs/sysv.o      -Wl,-soname -Wl,libffi.so.5 -o .libs/libffi.so.5.0.10
+libtool: link: (cd ".libs" && rm -f "libffi.so.5" && ln -s "libffi.so.5.0.10" "libffi.so.5")
+libtool: link: (cd ".libs" && rm -f "libffi.so" && ln -s "libffi.so.5.0.10" "libffi.so")
+libtool: link: ( cd ".libs" && rm -f "libffi.la" && ln -s "../libffi.la" "libffi.la" )
+/bin/bash ./libtool --tag=CC   --mode=link gcc -g  -Wall -fexceptions   -o libffi_convenience.la  src/debug.lo src/prep_cif.lo src/types.lo src/raw_api.lo src/java_raw_api.lo src/closures.lo                      src/x86/ffi64.lo src/x86/unix64.lo src/x86/ffi.lo src/x86/sysv.lo      
+libtool: link: rm -fr  .libs/libffi_convenience.a(D)
+libtool: link: ar cru .libs/libffi_convenience.a src/.libs/debug.o src/.libs/prep_cif.o src/.libs/types.o src/.libs/raw_api.o src/.libs/java_raw_api.o src/.libs/closures.o src/x86/.libs/ffi64.o src/x86/.libs/unix64.o src/x86/.libs/ffi.o src/x86/.libs/sysv.o 
+libtool: link: ranlib .libs/libffi_convenience.a
+libtool: link: ( cd ".libs" && rm -f "libffi_convenience.la" && ln -s "../libffi_convenience.la" "libffi_convenience.la" )
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' から出ます
+make[2]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' から出ます
+make[1]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' から出ます
+compiling Pointer.c
+compiling Buffer.c
+compiling LastError.c
+compiling Variadic.c
+compiling ArrayType.c
+compiling ClosurePool.c
+compiling MemoryPointer.c
+compiling Platform.c
+compiling StructByValue.c
+compiling LongDouble.c
+compiling AbstractMemory.c
+compiling Call.c
+compiling Thread.c
+compiling Struct.c
+compiling StructLayout.c
+compiling ffi.c
+compiling StructByReference.c
+compiling MethodHandle.c
+compiling FunctionInfo.c
+compiling Function.c
+compiling Type.c
+compiling DataConverter.c
+compiling Types.c
+compiling MappedType.c
+compiling DynamicLibrary.c
+linking shared-object ffi_c.so
+
+make "DESTDIR=" install
+make -C "/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux"
+make[1]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' に入ります
+make "AR_FLAGS=" "CC_FOR_BUILD=" "CFLAGS=-Wall -fexceptions" "CXXFLAGS=" "CFLAGS_FOR_BUILD=" "CFLAGS_FOR_TARGET=" "INSTALL=/usr/bin/install -c" "INSTALL_DATA=/usr/bin/install -c -m 644" "INSTALL_PROGRAM=/usr/bin/install -c" "INSTALL_SCRIPT=/usr/bin/install -c" "JC1FLAGS=" "LDFLAGS=" "LIBCFLAGS=" "LIBCFLAGS_FOR_TARGET=" "MAKE=make" "MAKEINFO=/bin/bash /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi/missing --run makeinfo " "PICFLAG=" "PICFLAG_FOR_TARGET=" "RUNTESTFLAGS=" "SHELL=/bin/bash" "exec_prefix=/usr/local" "infodir=/usr/local/share/info" "libdir=/usr/local/lib" "mandir=/usr/local/share/man" "prefix=/usr/local" "AR=ar" "AS=as" "CC=gcc" "CXX=g++" "LD=/usr/bin/ld -m elf_x86_64" "NM=/usr/bin/nm -B" "RANLIB=ranlib" "DESTDIR=" all-recursive
+make[2]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' に入ります
+Making all in include
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/include' に入ります
+make[3]: `all' に対して行うべき事はありません.
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/include' から出ます
+Making all in testsuite
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/testsuite' に入ります
+make[3]: `all' に対して行うべき事はありません.
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/testsuite' から出ます
+Making all in man
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/man' に入ります
+make[3]: `all' に対して行うべき事はありません.
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux/man' から出ます
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' に入ります
+make[3]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' から出ます
+make[2]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' から出ます
+make[1]: ディレクトリ `/home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/ffi-1.9.8/ext/ffi_c/libffi-x86_64-linux' から出ます
+compiling Pointer.c
+compiling Buffer.c
+compiling LastError.c
+compiling Variadic.c
+compiling ArrayType.c
+compiling ClosurePool.c
+compiling MemoryPointer.c
+compiling Platform.c
+compiling StructByValue.c
+compiling LongDouble.c
+compiling AbstractMemory.c
+compiling Call.c
+compiling Thread.c
+compiling Struct.c
+compiling StructLayout.c
+compiling ffi.c
+compiling StructByReference.c
+compiling MethodHandle.c
+compiling FunctionInfo.c
+compiling Function.c
+compiling Type.c
+compiling DataConverter.c
+compiling Types.c
+compiling MappedType.c
+compiling DynamicLibrary.c
+linking shared-object ffi_c.so
+/usr/bin/install -c -m 0755 ffi_c.so ./.gem.20150619-25995-92m2q6

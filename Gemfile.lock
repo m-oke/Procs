@@ -36,6 +36,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    ansi (1.5.0)
     arel (6.0.0)
     autoprefixer-rails (5.2.0)
       execjs
@@ -72,6 +73,11 @@ GEM
       dotenv (= 2.0.1)
     erubis (2.7.0)
     execjs (2.5.2)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.5.0)
+      factory_girl (~> 4.5.0)
+      railties (>= 3.0.0)
     font-awesome-rails (4.3.0.0)
       railties (>= 3.2, < 5.0)
     globalid (0.3.5)
@@ -105,12 +111,28 @@ GEM
     mime-types (2.5)
     mini_portile (0.6.2)
     minitest (5.6.1)
+    minitest-ar-assertions (0.1.1)
+    minitest-doc_reporter (0.6.0)
+      ansi
+      minitest (~> 5.0)
+    minitest-filesystem (1.2.0)
+    minitest-power_assert (0.2.0)
+      minitest
+      power_assert
+    minitest-rails (2.1.1)
+      minitest (~> 5.4)
+      railties (~> 4.1)
+    minitest-spec-rails (5.2.2)
+      minitest (~> 5.0)
+      rails (~> 4.1)
+    minitest-stub_any_instance (1.0.1)
     multi_json (1.11.0)
     mysql2 (0.3.18)
     nested_form (0.3.2)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     orm_adapter (0.5.0)
+    power_assert (0.2.3)
     pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -221,10 +243,19 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   devise
   dotenv-rails
+  factory_girl_rails
   hirb
   hirb-unicode
   jbuilder (~> 2.0)
   jquery-rails
+  minitest
+  minitest-ar-assertions
+  minitest-doc_reporter
+  minitest-filesystem
+  minitest-power_assert
+  minitest-rails
+  minitest-spec-rails
+  minitest-stub_any_instance
   mysql2
   pry
   pry-rails

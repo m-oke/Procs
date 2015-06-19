@@ -4,8 +4,16 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+# Root:
+#   name: root
+#   nickname: root_nick
+#   email: root@test.com
+#   password: testtest
+#   roles: [:root, :admin, :teacher, :student]
+
+# Admin1:
+#   name: admin1
+#   nickname: admin1_nick
+#   email: admin@test.com
+#   password: testtest
+#   roles: [:admin, :teacher, :student]
