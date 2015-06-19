@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   root :to => 'lessons#index'
 
+  get '/lessons/join' => 'user_lessons#new'
+  post '/lessons/join' => 'user_lessons#create'
+
   devise_for :users, :controllers => {
     :sessions => 'users/sessions',
     :registrations => 'users/registrations',

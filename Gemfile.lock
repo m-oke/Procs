@@ -67,6 +67,9 @@ GEM
       responders
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
+    dotenv (2.0.1)
+    dotenv-rails (2.0.1)
+      dotenv (= 2.0.1)
     erubis (2.7.0)
     execjs (2.5.2)
     font-awesome-rails (4.3.0.0)
@@ -137,6 +140,8 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
+    rails-footnotes (4.1.7)
+      rails (>= 3.2)
     rails-html-sanitizer (1.0.2)
       loofah (~> 2.0)
     rails_admin (0.6.7)
@@ -215,6 +220,7 @@ DEPENDENCIES
   cancan
   coffee-rails (~> 4.1.0)
   devise
+  dotenv-rails
   hirb
   hirb-unicode
   jbuilder (~> 2.0)
@@ -223,6 +229,7 @@ DEPENDENCIES
   pry
   pry-rails
   rails (= 4.2.1)
+  rails-footnotes
   rails_admin
   rb-readline
   sass-rails (~> 5.0)

@@ -1,0 +1,194 @@
+= Rails Footnotes
+
+{<img src="https://travis-ci.org/josevalim/rails-footnotes.png" />}[https://travis-ci.org/josevalim/rails-footnotes]
+
+Rails footnotes displays footnotes in your application for easy debugging, such as sessions,
+request parameters, cookies, filter chain, routes, queries, etc.
+
+Even more, it contains links to open files directly in your editor including
+your backtrace lines.
+
+== Installation
+
+NOTE: Since this branch aims for Rails 3.2+ support, if you want to use footnotes with Rails 2.3 you should use this branch:
+
+https://github.com/josevalim/rails-footnotes/tree/rails2
+
+Installing Rails Footnotes is very easy.
+
+=== Rails 3.2.x/4.x
+
+    gem 'rails-footnotes', '~> 4.0'
+
+After you install RailsFootnotes and add it to your Gemfile, you need to run the generator:
+
+  rails generate rails_footnotes:install
+
+This will create an initializer with default config and some examples.
+
+=== Hooks
+
+    Footnotes.setup do |config|
+      config.before {|controller, filter| filter.notes = controller.class.name =~ /Message/ && \
+        controller.action_name == 'index' ? [:assigns] : []}
+      config.before {|controller, filter| filter.notes |= [:params] if controller.class.name =~ /Profile/ && \
+        controller.action_name == 'edit' }
+    end
+
+=== Editor links
+
+Textmate, MacVim and Sublime Text 2 are compatible.
+
+*MacVim*
+
+In the rails-footnotes initializer do :
+
+    f.prefix = 'mvim://open?url=file://%s&line=%d&column=%d'
+
+Here you need to choose a prefix compatible with your text editor. The %s is
+replaced by the name of the file, the first %d is replaced by the line number and
+the second %d is replaced by the column number.
+
+Take note that the order in which the file name (%s), line number (%d) and column number (%d) appears is important.
+We assume that they appear in that order. "foo://line=%d&file=%s" (%d precedes %s) would throw out an error.
+
+*Sublime* *Text* *2*
+
+1. Keep the Textmate prefix, <tt>f.prefix = 'txmt://open?url=file://%s&line=%d&column=%d'</tt>
+
+2. Install {subl-handler}[https://github.com/asuth/subl-handler]
+
+3. Open subl-handler. Go to preferences (SublHandler > Preferences), and point "Path to subl" to your installed instance. (EG, /Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl). Note: do not escape the whitespaces, subl-handler accounts for those.
+
+4. Install {RCDefault}[http://www.rubicode.com/Software/RCDefaultApp]. It's OSX 10.2, but it works.
+
+5. Go to RCDefaultApp (OS System Preferences > DefaultApps). Go to URL section, select "tmxt" extension, and set default applicaiton to "SublHandler".
+
+*Use* *with* *Vagrant* (*and* *other* *virtual* *machines*)
+
+If you're running your app in Vagrant, you'll find that the edit links won't work because the paths point to the Vagrant directory not your native directory. To solve this, you can use a lambda for the prefix and modify the pathname accordingly.
+
+For example,
+
+    f.prefix = ->(*args) do
+      filename = args[0].sub '/vagrant', '/Users/jamie/projects/myproject'
+      "subl://open?url=file://#{filename}&line=#{args[1]}&column=#{args[2]}"
+    end
+
+replaces the vm directory /vagrant with OS X directory where the code is being edited.
+
+*Footnotes* *Display* *Options*
+
+By default, footnotes are appended at the end of the page with default stylesheet. If you want
+to change their position, you can define a div with id "footnotes_holder" or define your own stylesheet
+by turning footnotes stylesheet off:
+
+    f.no_style = true
+
+You can also lock the footnotes to the top of the window, hidden by default, and accessible
+via a small button fixed to the top-right of your browser:
+
+    f.lock_top_right = true
+
+To set the font-size for the footnotes:
+
+    f.font_size = '13px'
+
+Another option is to allow multiple notes to be opened at the same time:
+
+    f.multiple_notes = true
+
+Finally, you can control which notes you want to show. The default are:
+
+    f.notes = [:session, :cookies, :params, :filters, :routes, :env, :queries, :log]
+
+Setting <tt>f.notes = []</tt> will show none of the available notes, although the supporting CSS and JavaScript will still be included. To completely disable all rails-footnotes content on a page, include <tt>params[:footnotes] = 'false'</tt> in the request.
+
+== Creating your own notes
+
+Creating your notes to integrate with Footnotes is easy.
+
+1. Create a Footnotes::Notes::YourExampleNote class
+2. Implement the necessary methods (check abstract_note.rb[link:lib/rails-footnotes/abstract_note.rb] file in lib/rails-footnotes)
+3. Append your example note in Footnotes::Filter.notes array (usually at the end of your environment file or in the initializer):
+
+For example, to create a note that shows info about the user logged in your application you just have to do:
+
+  module Footnotes
+    module Notes
+      class CurrentUserNote < AbstractNote
+        # This method always receives a controller
+        #
+        def initialize(controller)
+          @current_user = controller.instance_variable_get("@current_user")
+        end
+
+        # Returns the title that represents this note.
+        #
+        def title
+          "Current user: #{@current_user.name}"
+        end
+
+        # This Note is only valid if we actually found an user
+        # If it's not valid, it won't be displayed
+        #
+        def valid?
+          @current_user
+        end
+
+        # The fieldset content
+        #
+        def content
+          escape(@current_user.inspect)
+        end
+      end
+    end
+  end
+
+Then put in your environment, add in your initializer:
+
+  f.notes += [:current_user]
+
+== Footnote position
+
+By default the notes will be showed at the bottom of your page (appended just before </body>).
+If you'd like the footnote, to be at a different place (perhaps for aesthetical reasons) you can edit one of your views and add:
+  <div id="footnotes_holder"></div>
+at an appropriate place, your notes will now appear inside div#footnotes_holder
+
+== Collaborators
+
+* Leon Li       - http://github.com/scorpio
+* Keenan Brock  - http://github.com/kbrock
+* Ivan Storck   - http://github.com/ivanoats
+* Kris Chamber  - http://github.com/kristopher
+* Roman V. Babenko - http://github.com/romanvbabenko
+* Adrien Siami  - http://github.com/intrepidd
+
+== Bugs and Feedback
+
+If you discover any bugs, please open an issue.
+If you just want to give some positive feedback or drop a line, that's fine too!
+
+=== Version 4.x
+
+Starting from version 4.0, Adren Siami is the maintainer of this plugin.
+
+=== Version 3.x
+
+This plugin was maintained until version 4.0 by Roman V. Babenko
+
+Copyright (c) 2010-2014 Roman V. Babenko (romanvbabenko@gmail.com)
+http://romanvbabenko.com
+
+This plugin was maintained until version 3.6 by José Valim
+
+Copyright (c) 2009 José Valim (jose@plataformatec.com.br)
+http://blog.plataformatec.com.br
+
+=== Version 2.0
+
+This plugin was created and maintained until version 2.0 by Duane Johnson:
+
+Copyright (c) 2006 InquiryLabs, Inc.
+http://blog.inquirylabs.com

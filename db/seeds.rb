@@ -36,8 +36,9 @@ end
 end
 
 # クラス
+# 授業コード 1010101, 1010102
 2.times do |i|
-  Lesson.create(:name => "講義#{i + 1}", :description => "説明#{i + 1}")
+  Lesson.create(:name => "講義#{i + 1}", :description => "説明#{i + 1}", :lesson_code => "101010#{i+1}")
 end
 
 # ユーザ:クラス
