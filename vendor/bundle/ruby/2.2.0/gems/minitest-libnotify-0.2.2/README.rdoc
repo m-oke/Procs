@@ -1,0 +1,60 @@
+= minitest-libnotify
+
+Test notifier for minitest[https://github.com/seattlerb/minitest] via libnotify[https://github.com/splattael/libnotify].
+
+Source[http://github.com/splattael/minitest-libnotify] |
+RDoc[http://rdoc.info/github/splattael/minitest-libnotify/master/file/README.rdoc]
+
+== Usage
+
+  require 'minitest/autorun'
+  require 'minitest/libnotify'
+
+== Installation
+
+  gem install minitest-libnotify
+
+== Config
+
+=== Tweaking
+
+  require 'minitest/autorun'
+  require 'minitest/libnotify'
+
+  reporter = MiniTest::Unit.output
+  reporter.config[:global][:description]  = "TESTS"
+  reporter.config[:pass][:description]    = proc { |desc| "#{desc} :)" }
+  reporter.config[:fail][:description]    = proc { |desc| "#{desc} :(" }
+  reporter.config[:fail][:icon_path]      = "face-crying.*"
+
+=== Default config
+
+  reporter.default_config = {
+    :global => {
+      :timeout      => 2.5,
+      :append       => false,
+      :description  => proc { [ defined?(RUBY_ENGINE) ? RUBY_ENGINE : "ruby", RUBY_VERSION, RUBY_PLATFORM ].join(" ") },
+    },
+    :pass => {
+      :description  => proc { |description| ":-) #{description}" },
+      :urgency      => :critical,
+      :icon_path    => "face-laugh.*"
+    },
+    :fail => {
+      :description  => proc { |description| ":-( #{description}" },
+      :urgency    => :critical,
+      :icon_path  => "face-angry.*"
+    }
+  }
+
+== Authors
+
+* Peter Suschlik (http://github.com/splattael)
+
+== License
+
+MIT License[http://www.opensource.org/licenses/mit-license.php]
+
+== TODO
+
+* Write tests
