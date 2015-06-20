@@ -7,6 +7,7 @@ class QuestionsController < ApplicationController
 
   end
 
+
   def create
     @question = Question.new(params[:question])
     @sample = Sample.new(params[:sample])
@@ -19,4 +20,21 @@ class QuestionsController < ApplicationController
       redirect_to :controller => 'lessons', action:'index'
     end
   end
+
+  private
+  def question_params
+    params.require(:question).permit(
+      :title,
+      :content,
+      :input_description,
+      :output_description,
+      :run_time_limit,
+      :memory_usage_limit,
+      :cpu_usage_limit,
+      samples_attributes: [input,output],
+      test_data_attributes: [input,output]
+    )
+
+  end
+
 end

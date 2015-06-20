@@ -18,26 +18,27 @@
         <%= f.label :output_description , '出力説明', class: 'col-md-2 control-label'%>
         <%= f.text_field :output_description, class: 'col-md-8 form-control'%>
       </div>
-      <%= fields_for (@sample) do |g|%>
-          <div class="form-group row">
-            <%= g.label :input , '入力サンプル', class: 'col-md-2 control-label'%>
-            <%= g.text_field :input, class: 'col-md-8 form-control'%>
-          </div>
-          <div class="form-group row">
-            <%= g.label :output , '出力サンプル', class: 'col-md-2 control-label'%>
-            <%= g.text_field :output, class: 'col-md-8 form-control'%>
-          </div>
-      <% end %>
-      <%= fields_for (@test_data) do |h|%>
-          <div class="form-group row">
-            <%= h.label :input , '解答用入力例', class: 'col-md-2 control-label'%>
-            <%= h.text_field :input, class: 'col-md-8 form-control'%>
-          </div>
-          <div class="form-group row">
-            <%= h.label :output , '解答用出力例', class: 'col-md-2 control-label'%>
-            <%= h.text_field :output, class: 'col-md-8 form-control'%>
-          </div>
-      <% end %>
+
+      <div class="form-group row">
+        <%= f.label :samples,"テストサンプル" %>
+        <%= f.fields_for :samples do |samples_form| %>
+          <%= samples_form.label :input,"入力サンプル" %>
+          <%= samples_form.text_field :input %>
+          <%= samples_form.label :output ,"出力サンプル" %>
+          <%= samples_form.text_field :output %>
+        <% end %>
+      </div>
+
+      <div class="form-group row">
+        <%= f.label :test_data,"解答サンプル" %>
+        <%= f.fields_for :test_data do |test_data_form| %>
+            <%= test_data_form.label :input ,"解答用入力例" %>
+            <%= test_data_form.text_field :input %>
+            <%= test_data_form.label :output ,"解答用出力用" %>
+            <%= test_data_form.text_field :output %>
+        <% end %>
+      </div>
+
       <div class="form-group row">
         <%= f.label :run_time_limit , '時間制限', class: 'col-md-2 control-label'%>
         <%= f.text_field :run_time_limit, class: 'col-md-8 form-control'%>
