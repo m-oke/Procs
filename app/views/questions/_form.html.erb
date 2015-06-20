@@ -16,6 +16,14 @@
   <%= f.text_field :output_description, class: 'col-md-8 form-control'%>
 </div>
 <div class="form-group row">
+  <%= g.label :input , '入力サンプル', class: 'col-md-2 control-label'%>
+  <%= g.text_field :input, class: 'col-md-8 form-control'%>
+</div>
+<div class="form-group row">
+  <%= g.label :output , '出力サンプル', class: 'col-md-2 control-label'%>
+  <%= g.text_field :output, class: 'col-md-8 form-control'%>
+</div>
+<div class="form-group row">
   <%= f.label :run_time_limit , '時間制限', class: 'col-md-2 control-label'%>
   <%= f.text_field :run_time_limit, class: 'col-md-8 form-control'%>
 </div>
