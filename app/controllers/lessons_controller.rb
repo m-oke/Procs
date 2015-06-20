@@ -3,6 +3,7 @@ class LessonsController < ApplicationController
   before_filter :authenticate_user!
   def index
     @question = Question.new
+    @sample = Sample.new
   end
   def show
     @teachers = get_teachers
