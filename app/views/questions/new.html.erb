@@ -20,24 +20,21 @@
       </div>
 
       <div class="form-group row">
-        <%= f.label :samples,"テストサンプル" %>
-        <%= f.fields_for :samples do |samples_form| %>
-          <%= samples_form.label :input,"入力サンプル" %>
-          <%= samples_form.text_field :input %>
-          <%= samples_form.label :output ,"出力サンプル" %>
-          <%= samples_form.text_field :output %>
+        <%= f.label :samples,"テスト用サンプル" %>
+        <%= f.fields_for :samples do |builder| %>
+          <%= render "questions/sample_fields", f: builder %>
         <% end %>
+        <%= link_to_add_fields1 "追加", f, :samples  %>
       </div>
 
       <div class="form-group row">
         <%= f.label :test_data,"解答サンプル" %>
-        <%= f.fields_for :test_data do |test_data_form| %>
-            <%= test_data_form.label :input ,"解答用入力例" %>
-            <%= test_data_form.text_field :input %>
-            <%= test_data_form.label :output ,"解答用出力用" %>
-            <%= test_data_form.text_field :output %>
+        <%= f.fields_for :test_data do |builder| %>
+            <%= render "questions/testdata_fields", f: builder %>
         <% end %>
+        <%= link_to_add_fields2 "追加", f, :test_data %>
       </div>
+
 
       <div class="form-group row">
         <%= f.label :run_time_limit , '時間制限', class: 'col-md-2 control-label'%>
