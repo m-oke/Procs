@@ -44,7 +44,7 @@ end
 # ユーザ:クラス
 # 教師
 2.times do |i|
-  UserLesson.create(:user_id => i + 3, :lesson_id => i + 1, :is_teacher => true)
+  UserLesson.create(:user_id => i + 4, :lesson_id => i + 1, :is_teacher => true)
 end
 
 # 学生(user_id: 7~26)

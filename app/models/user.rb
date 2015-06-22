@@ -26,4 +26,13 @@ class User < ActiveRecord::Base
   def has_role?(role)
     roles.include?(role)
   end
+
+  def has_roles?(role)
+    role.each do |r|
+      if !roles.include?(r)
+        return false
+      end
+    end
+    return true
+  end
 end

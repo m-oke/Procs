@@ -3,8 +3,8 @@
     <ul class="nav nav-tabs">
       <li role="presentation" class="active"><a href="#tab1" data-toggle="tab">ホーム</a></li>
       <li role="presentation"><a href="#tab2" data-toggle="tab">問題</a></li>
-      <% if current_user.has_role? :teacher || current_user.has_role? :root ||  current_user.has_role? :admin %>
-      <li role="presentation"><a href="#tab3" data-toggle="tab">回答結果</a></li>
+      <% if current_user.has_roles?([:teacher, :root, :admin]) %>
+        <li role="presentation"><a href="#tab3" data-toggle="tab">回答結果</a></li>
       <% end %>
     </ul>
   </div>
@@ -16,9 +16,8 @@
     <div class="tab-pane fade " id="tab2">
 
     </div>
-    <% if current_user.has_role? :teacher || current_user.has_role? :root ||  current_user.has_role? :admin %>
-        <div class="tab-pane fade " id="tab3">
-
+    <% if current_user.has_roles?([:teacher, :root, :admin]) %>
+      <div class="tab-pane fade " id="tab3">
         </div>
     <% end %>
   </div>
