@@ -1,31 +1,39 @@
 
-<% if current_user.has_role? :student%>
+<% if (current_user.has_role? :teacher) || (current_user.has_role? :root ) ||  (current_user.has_role? :admin) %>
+    <% current_user_lesson = UserLesson.where(:user_id => current_user.id).where(:is_teacher => true ) %>
+    <% unless current_user_lesson.empty? %>
+        <% current_user_lesson.each do |lesson_select_user| %>
+            <% select_lesson = Lesson.find(lesson_select_user.lesson_id) %>
+            <div class="hero-unit">
+              <h1>Welcome to <%= select_lesson.name %></h1>
+              <p><%= select_lesson.description %></p>
+              <p>
+                <%= link_to 'start', 'teacher/new' ,class: 'btn btn-primary'%>
+              </p>
+            </div>
+        <% end %>
+    <% end %>
+    <%= link_to 'lesson create', '#' ,class: 'btn btn-primary'%>
+<% else %>
     <div class="hero-unit">
       <h1>Welcome</h1>
       <p>All problem can be see </p>
       <p>
-        <%= link_to '参加', class: 'btn btn-primary btn-large' %>
+        <%= link_to 'start', '#', class: 'btn btn-primary'  %>
       </p>
     </div>
-    <% @lesson_list.each do |m| %>
-        <div class="hero-unit">
-          <h1>Welcome to <%= m.name %></h1>
-          <p><%= m.description %></p>
-          <p>
-            <%= link_to '参加', '#' %>
-          </p>
-        </div>
+    <% current_user_lesson = UserLesson.where(:user_id => current_user.id) %>
+    <% unless current_user_lesson.empty? %>
+        <% current_user_lesson.each do |lesson_select_user| %>
+            <% select_lesson = Lesson.find(lesson_select_user.lesson_id) %>
+            <div class="hero-unit">
+              <h1>Welcome to <%= select_lesson.name %></h1>
+              <p><%= select_lesson.description %></p>
+              <p>
+                <%= link_to 'start', '#', class: 'btn btn-primary'  %>
+              </p>
+            </div>
+        <% end %>
     <% end %>
-<% else %>
-    <%= link_to 'lesson create', '#' %>
-    <% @lesson_list.each do |m| %>
-        <div class="hero-unit">
-          <h1>Welcome to <%= m.name %></h1>
-          <p><%= m.description %></p>
-          <p>
-            <%= link_to '参加', '#' %>
-          </p>
-        </div>
-    <% end %>
-
 <% end %>
+

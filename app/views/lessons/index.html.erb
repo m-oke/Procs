@@ -1,7 +1,5 @@
 <% if current_user.nil? %>
     ログインまたは新規登録してください
 <% else %>
-  <%= render 'layouts/header' %>
-  <%= render 'layouts/navigation' %>
   <%= render 'class_form' %>
 <% end %>
