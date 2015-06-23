@@ -1,5 +1,6 @@
 class LessonsController < ApplicationController
   before_action :set_lesson, only: [:show, :questions, :students]
+  before_filter :authenticate_user!
 
   def show
     @teachers = get_teachers
