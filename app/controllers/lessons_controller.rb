@@ -1,17 +1,24 @@
 class LessonsController < ApplicationController
-  before_action :set_lesson, only: [:show, :questions]
+  before_action :set_lesson, only: [:show, :questions, :students]
 
   def show
-    @teachers = User.where(:id => @lesson.user_lessons.find_by(:is_teacher => true).user_id)
+    @teachers = get_teachers
   end
 
-  def questions
-    @questions = @lesson.question
-    render 'questions'
+  def students
+    @students = get_students
   end
 
   private
   def set_lesson
-    @lesson = Lesson.find(params[:id])
+    @lesson = Lesson.find(params[:lesson_id])
+  end
+
+  def get_students
+    return User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
+  end
+
+  def get_teachers
+    return User.where(:id => @lesson.user_lessons.find_by(:is_teacher => true).pluck(:user_id))
   end
 end
