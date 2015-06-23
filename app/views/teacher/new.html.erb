@@ -1,0 +1,16 @@
+<h1>クラス作成</h1>
+<%= form_for :article, url: articles_path do |f| %>
+    <p>
+      <%= f.label :クラス名 %><br>
+      <%= f.text_field :クラス名 %>
+    </p>
+
+    <p>
+      <%= f.label :説明 %><br>
+      <%= f.text_area :説明 %>
+    <p>
+
+    <p>
+      <%= f.submit %>
+    </p>
+<% end %>

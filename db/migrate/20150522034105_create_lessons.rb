@@ -6,6 +6,7 @@ class CreateLessons < ActiveRecord::Migration
       t.string :term
       t.integer :date
       t.string :period
+      t.integer :lesson_code
 
       t.timestamps null: false
     end
