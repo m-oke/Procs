@@ -35,17 +35,15 @@ class QuestionsController < ApplicationController
   private
   def question_params
     params.require(:question).permit(
-        :title,
-        :content,
-        :input_description,
-        :output_description,
-        :run_time_limit,
-        :memory_usage_limit,
-        :cpu_usage_limit,
-        samples_attributes: [input,output],
-        test_data_attributes: [input,output]
+      :title,
+      :content,
+      :input_description,
+      :output_description,
+      :run_time_limit,
+      :memory_usage_limit,
+      :cpu_usage_limit,
+      samples_attributes: [:input,:output,:_destroy],
+      test_data_attributes: [:input,:output,:_destroy]
     )
-
   end
-
 end

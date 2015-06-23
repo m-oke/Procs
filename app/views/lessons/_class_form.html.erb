@@ -1,0 +1,31 @@
+
+<% if current_user.has_role? :student%>
+    <div class="hero-unit">
+      <h1>Welcome</h1>
+      <p>All problem can be see </p>
+      <p>
+        <%= link_to '参加', class: 'btn btn-primary btn-large' %>
+      </p>
+    </div>
+    <% @lesson_list.each do |m| %>
+        <div class="hero-unit">
+          <h1>Welcome to <%= m.name %></h1>
+          <p><%= m.description %></p>
+          <p>
+            <%= link_to '参加', '#' %>
+          </p>
+        </div>
+    <% end %>
+<% else %>
+    <%= link_to 'lesson create', '#' %>
+    <% @lesson_list.each do |m| %>
+        <div class="hero-unit">
+          <h1>Welcome to <%= m.name %></h1>
+          <p><%= m.description %></p>
+          <p>
+            <%= link_to '参加', '#' %>
+          </p>
+        </div>
+    <% end %>
+
+<% end %>
