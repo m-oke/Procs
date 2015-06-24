@@ -1,19 +1,19 @@
 
 <% if (current_user.has_role? :teacher) || (current_user.has_role? :root ) ||  (current_user.has_role? :admin) %>
-    <% current_user_lesson = UserLesson.where(:user_id => current_user.id).where(:is_teacher => true ) %>
-    <% unless current_user_lesson.empty? %>
-        <% current_user_lesson.each do |lesson_select_user| %>
+    <% user_lesson = UserLesson.where(:user_id => current_user.id).where(:is_teacher => true ) %>
+    <% unless user_lesson.empty? %>
+        <% user_lesson.each do |lesson_select_user| %>
             <% select_lesson = Lesson.find(lesson_select_user.lesson_id) %>
             <div class="hero-unit">
               <h1>Welcome to <%= select_lesson.name %></h1>
               <p><%= select_lesson.description %></p>
               <p>
-                <%= link_to 'start', '#' ,class: 'btn btn-primary'%>
+                <%= link_to 'start', :controller =>lessons, :id =>select_lesson.lesson_id ,class: 'btn btn-primary'%>
               </p>
             </div>
         <% end %>
     <% end %>
-    <%= link_to 'lesson create', '#' ,class: 'btn btn-primary'%>
+    <%= link_to 'lesson create', :controller =>lessons, :action =>new ,class: 'btn btn-primary'%>
 <% else %>
     <div class="hero-unit">
       <h1>Welcome</h1>
@@ -22,16 +22,15 @@
         <%= link_to 'start', '#', class: 'btn btn-primary'  %>
       </p>
     </div>
-    <% current_user_lesson = UserLesson.where(:user_id => current_user.id) %>
-    <% unless current_user_lesson.empty? %>
-        <% current_user_lesson.each do |lesson_select_user| %>
+    <% user_lesson = UserLesson.where(:user_id => current_user.id) %>
+    <% unless user_lesson.empty? %>
+        <% user_lesson.each do |lesson_select_user| %>
             <% select_lesson = Lesson.find(lesson_select_user.lesson_id) %>
             <div class="hero-unit">
-              <h1>Welcome to <%= select_lesson.name %></h1>
+              <h1><%= link_to select_lesson.name,:controller => lessons, :id =>select_lesson.lesson_id %></h1>
+              <% user_name = User.find(select_lesson.user_lessons.find_by_is_teacher(true).user_id) %>
+              <p><%= user_name.name  %></p>
               <p><%= select_lesson.description %></p>
-              <p>
-                <%= link_to 'start', '#', class: 'btn btn-primary'  %>
-              </p>
             </div>
         <% end %>
     <% end %>
