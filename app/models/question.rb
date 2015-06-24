@@ -1,5 +1,6 @@
 class Question < ActiveRecord::Base
-  belongs_to :lesson
+  has_many :lesson_questions, :foreign_key => :question_id
+  has_many :lessons, :through => :lesson_questions
 
   has_many :samples, :foreign_key => :question_id
   has_many :test_data, :foreign_key => :question_id

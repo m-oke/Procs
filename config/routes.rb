@@ -1,6 +1,16 @@
 Rails.application.routes.draw do
   root :to => 'lessons#index'
 
+  resources :lessons do
+    collection do
+      get '/join' => 'user_lessons#new'
+      post '/join' => 'user_lessons#create'
+      get ':lesson_id/questions' => 'questions#index', as: 'questions'
+    end
+  end
+
+  resources :questions, only: [:index, :show, :new]
+
   devise_for :users, :controllers => {
     :sessions => 'users/sessions',
     :registrations => 'users/registrations',

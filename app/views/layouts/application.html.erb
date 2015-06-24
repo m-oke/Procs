@@ -14,9 +14,18 @@
 <body role = "document">
   <%= render 'layouts/header' %>
 
-  <div class="container " role="main">
-    <%= yield %>
-  </div>
+  <% if notice %>
+    <p class="alert alert-success"><%= notice %></p>
+  <% end %>
+  <% if alert %>
+    <p class="alert alert-warning"><%= alert %></p>
+  <% end %>
+
+<div class="content">
+
+<%= yield %>
+</div>
+
 
 </body>
 </html>

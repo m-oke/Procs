@@ -53,10 +53,24 @@ gem 'rb-readline'
 gem 'devise'
 gem 'cancan'
 gem 'rails_admin'
+gem 'dotenv-rails'
 
 group :development, :test do
+  gem 'rails-footnotes'
   gem 'pry'
   gem 'pry-rails'
   gem 'hirb'
   gem 'hirb-unicode'
+end
+
+group :test do
+  gem 'minitest'
+  gem 'minitest-rails'
+  gem 'minitest-doc_reporter'
+  gem 'minitest-spec-rails'
+  gem 'factory_girl_rails'
+  gem "minitest-stub_any_instance"
+  gem 'minitest-filesystem'
+  gem 'minitest-power_assert'
+  gem 'minitest-ar-assertions'
 end
