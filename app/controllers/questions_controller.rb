@@ -9,15 +9,13 @@ class QuestionsController < ApplicationController
 
 
   def create
-    @question = Question.new(params[:question])
-    @sample = Sample.new(params[:sample])
-    @test_data = TestDatum.new(params[:test_data])
+    @question = Question.new(question_params)
 
     if @question.save
       flash.notice='問題登録しました'
-      redirect_to :controller => 'lessons', action:'index'
+      redirect_to controller: 'lessons', action:'show' , lesson_id: @lesson.id , id: @question.id
     else
-      redirect_to :controller => 'lessons', action:'index'
+      redirect_to controller: 'lessons', action:'new'
     end
   end
 
@@ -31,8 +29,8 @@ class QuestionsController < ApplicationController
       :run_time_limit,
       :memory_usage_limit,
       :cpu_usage_limit,
-      samples_attributes: [input,output],
-      test_data_attributes: [input,output]
+      samples_attributes: [:input,:output],
+      test_data_attributes: [:input,:output]
     )
 
   end
