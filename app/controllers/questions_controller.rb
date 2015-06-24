@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
+  before_filter :authenticate_user!
   def index
     @lesson = nil
     if params[:lesson_id]
