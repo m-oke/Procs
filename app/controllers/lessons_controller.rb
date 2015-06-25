@@ -2,9 +2,7 @@ class LessonsController < ApplicationController
   before_action :set_lesson, only: [:show, :questions, :students]
   before_filter :authenticate_user!
   def index
-    @question = Question.new
-    @question.samples.build
-    @question.test_data.build
+
   end
 
   def show

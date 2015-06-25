@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
-<<<<<<< HEAD
-
-=======
   before_filter :authenticate_user!
->>>>>>> feature/lesson/index
   def index
     @lesson = nil
     if params[:lesson_id]
@@ -19,7 +15,9 @@ class QuestionsController < ApplicationController
   end
 
   def new
-
+    @question = Question.new
+    @question.samples.build
+    @question.test_data.build
   end
 
 
