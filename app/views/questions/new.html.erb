@@ -1,4 +1,4 @@
-<%= link_to '戻る',"/" %>
+<%= link_to '戻る',"/"  %>
 <% @title='問題新規作成' %>
 <h1><%= @title %></h1>
 <div id="question_new">
@@ -20,9 +20,7 @@
         <%= f.text_area :output_description, :rows => 2 , :cols => 80  %>
       </div>
 
-
       <%= render "questions/form" , f:f%>
-
 
       <div>
         <%= f.label :test_data,"解答サンプル" %><br/>
@@ -31,7 +29,6 @@
         <% end %>
         <%= link_to_add_fields2 "追加", f, :test_data %>
       </div>
-
 
       <div>
         <%= f.label :run_time_limit , '時間制限'%><br/>
@@ -44,7 +41,7 @@
       <div>
         <%= f.label :cpu_usage_limit , 'CPU制限' %><br/>
         <%= f.text_field :cpu_usage_limit , size: 20 %>
-      </div>
+=      </div>
 
       <div class="buttons">
         <%= f.submit '登録' %>

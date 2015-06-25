@@ -1,5 +1,6 @@
 <h2>問題一覧</h2>
-<table border="5">
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
   <tr>
     <th>問題ID</th>
     <th>問題名</th>
@@ -25,3 +26,7 @@
     </tr>
   <% end %>
 </table>
+</div>
+<div>
+  <%= link_to "問題作成", :controller => "questions", :action => "new" %>
+</div>

@@ -1,0 +1,25 @@
+
+<% if current_user.has_role? [:teacher, :root ,:admin] %>
+    <%= link_to 'lesson create', :controller =>lessons, :action =>new ,class: 'btn btn-primary'%>
+<% end %>
+<div class="hero-unit">
+  <h1>Welcome</h1>
+  <p>All problem can be see </p>
+  <p>
+    <%= link_to 'start', '#', class: 'btn btn-primary'  %>
+  </p>
+</div>
+<% user_lesson = UserLesson.where(:user_id => current_user.id) %>
+<% unless user_lesson.empty? %>
+    <% user_lesson.each do |lesson_select_user| %>
+        <% select_lesson = Lesson.find(lesson_select_user.lesson_id) %>
+        <div class="hero-unit">
+          <h1><%= link_to select_lesson.name,'#' %></h1>
+          <% user_name = User.find(select_lesson.user_lessons.find_by_is_teacher(true).user_id) %>
+          <p><%= user_name.name  %></p>
+          <p><%= select_lesson.description %></p>
+        </div>
+    <% end %>
+<% end %>
+
+
