@@ -8,7 +8,7 @@ class LessonsController < ApplicationController
     @question.samples.build
     @question.test_data.build
   end
-<<<<<<< HEAD
+
   def show
     @teachers = get_teachers
   end

@@ -251,6 +251,7 @@ DEPENDENCIES
   hirb-unicode
   jbuilder (~> 2.0)
   jquery-rails
+  jquery-turbolinks
   minitest
   minitest-ar-assertions
   minitest-doc_reporter
@@ -259,7 +260,6 @@ DEPENDENCIES
   minitest-rails
   minitest-spec-rails
   minitest-stub_any_instance
-  jquery-turbolinks
   mysql2
   pry
   pry-rails
