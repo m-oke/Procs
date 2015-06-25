@@ -49,7 +49,9 @@ end
 
 # 学生(user_id: 7~26)
 15.times do |i|
-  if i / 8
+  puts i
+  puts i+8
+  if i / 8 == 0
     UserLesson.create(:user_id => i + 8, :lesson_id => 1) # id:7~14
   else
     UserLesson.create(:user_id => i + 8, :lesson_id => 2) # id:15~21
