@@ -55,7 +55,7 @@ body {
 .remove_sample_fields{
     font-weight: bold;
 }
-.field{
+.field_question{
     border: 1px solid #000;
     padding: 10px;
 }
