@@ -52,6 +52,7 @@ gem 'devise'
 gem 'cancan'
 gem 'rails_admin'
 gem 'dotenv-rails'
+gem 'luhn-ruby'
 
 group :development, :test do
   gem 'rails-footnotes'

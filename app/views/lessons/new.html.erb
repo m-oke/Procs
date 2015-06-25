@@ -1,18 +1,15 @@
 <h1>クラス作成</h1>
 <%= form_for @lesson do |f| %>
     <p>
-      <%= f.label :name %><br>
-      <%= f.text_field :name %>
+      <%= f.label :name , 'クラス名'%><br>
+      <%= f.text_field :name , :col => 80%>
     </p>
 
-    <p>
-      <%= f.label :lesson_code %><br>
-      <%= f.text_field :lesson_code %>
-    </p>
+
 
     <p>
-      <%= f.label :description %><br>
-      <%= f.text_area :description %>
+      <%= f.label :description , '説明'%><br>
+      <%= f.text_area :description , :rows => 10 , :cols => 80%>
     <p>
 
     <p>

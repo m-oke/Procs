@@ -105,6 +105,7 @@ GEM
     libv8 (3.16.14.7)
     loofah (2.0.2)
       nokogiri (>= 1.5.9)
+    luhn-ruby (1.0.0)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
@@ -248,6 +249,7 @@ DEPENDENCIES
   hirb-unicode
   jbuilder (~> 2.0)
   jquery-rails
+  luhn-ruby
   minitest
   minitest-ar-assertions
   minitest-doc_reporter
