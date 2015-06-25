@@ -24,7 +24,7 @@ class QuestionsController < ApplicationController
 
     if @question.save
       flash.notice='問題登録しました'
-      redirect_to controller: 'lessons', action:'show' , lesson_id: @lesson.id , id: @question.id
+      redirect_to controller: 'lessons', action:'index'
     else
       redirect_to controller: 'lessons', action:'new'
     end
@@ -40,8 +40,8 @@ class QuestionsController < ApplicationController
       :run_time_limit,
       :memory_usage_limit,
       :cpu_usage_limit,
-      samples_attributes: [:input,:output],
-      test_data_attributes: [:input,:output]
+      samples_attributes: [:input,:output,:_destroy],
+      test_data_attributes: [:input,:output,:_destroy]
     )
   end
 

@@ -20,13 +20,9 @@
         <%= f.text_area :output_description, :rows => 2 , :cols => 80  %>
       </div>
 
-      <div>
-        <%= f.label :samples,"テスト用サンプル" %><br/>
-        <%= f.fields_for :samples do |builder| %>
-          <%= render "questions/sample_fields", f: builder %>
-        <% end %>
-        <%= link_to_add_fields1 "追加", f, :samples  %>
-      </div>
+
+      <%= render "questions/form" , f:f%>
+
 
       <div>
         <%= f.label :test_data,"解答サンプル" %><br/>
