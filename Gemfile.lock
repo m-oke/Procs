@@ -252,8 +252,8 @@ DEPENDENCIES
   hirb-unicode
   jbuilder (~> 2.0)
   jquery-rails
-  luhn-ruby
   jquery-turbolinks
+  luhn-ruby
   minitest
   minitest-ar-assertions
   minitest-doc_reporter
