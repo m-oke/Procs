@@ -1,0 +1,54 @@
+<%= link_to '戻る', :controller => 'questions', :action => 'index'  %>
+<% @title='問題新規作成' %>
+<h1><%= @title %></h1>
+<div id="question_new">
+  <%= form_for @question   do |f| %>
+      <div>
+        <%= f.label :title , 'タイトル' %><br/>
+        <%= f.text_area :title , :rows => 2 , :cols => 80   %>
+      </div>
+      <div>
+        <%= f.label :content , '内容'%><br/>
+        <%= f.text_area :content , :rows => 10 , :cols => 80 %>
+      </div>
+      <div>
+        <%= f.label :input_description , '入力説明' %><br/>
+        <%= f.text_area :input_description, :rows => 2 , :cols => 80  %>
+      </div>
+      <div>
+        <%= f.label :output_description , '出力説明'%><br/>
+        <%= f.text_area :output_description, :rows => 2 , :cols => 80  %>
+      </div>
+
+      <%= render "questions/form" , f:f%>
+
+      <div>
+        <%= f.label :test_data,"解答サンプル" %><br/>
+        <%= f.fields_for :test_data do |builder| %>
+            <%= render "questions/testdata_fields", f: builder %>
+        <% end %>
+        <%= link_to_add_fields2 "追加", f, :test_data %>
+      </div>
+
+      <div>
+        <%= f.label :run_time_limit , '時間制限'%><br/>
+        <%= f.text_field :run_time_limit,  size: 20 %>
+      </div>
+      <div>
+        <%= f.label :memory_usage_limit , 'メモリ制限'%><br/>
+        <%= f.text_field :memory_usage_limit,  size: 20 %>
+      </div>
+      <div>
+        <%= f.label :cpu_usage_limit , 'CPU制限' %><br/>
+        <%= f.text_field :cpu_usage_limit , size: 20 %>
+=      </div>
+
+      <div class="buttons">
+        <%= f.submit '登録' %>
+      </div>
+
+  <% end %>
+</div>
+
+
+

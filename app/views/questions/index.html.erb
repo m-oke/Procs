@@ -27,3 +27,8 @@
   <% end %>
 </table>
 </div>
+<div>
+  <% if current_user.has_roles?([:teacher, :root, :admin]) %>
+    <%= link_to "問題作成", :controller => "questions", :action => "new" %>
+  <% end %>
+</div>

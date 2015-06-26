@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class LessonsController < ApplicationController
   before_action :set_lesson, only: [:show, :questions, :students]
   before_filter :authenticate_user!
@@ -41,7 +42,6 @@ class LessonsController < ApplicationController
       render action: 'new'
       flash.notice = 'クラス名を入力してください！'
     end
-
   end
 
   def show

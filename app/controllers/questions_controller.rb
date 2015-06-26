@@ -14,4 +14,38 @@ class QuestionsController < ApplicationController
     @lesson ? @questions = @lesson.question : @questions = Question.all
   end
 
+  def new
+    @question = Question.new
+    @question.samples.build
+    @question.test_data.build
+  end
+
+
+  def create
+    @question = Question.new(question_params)
+
+    if @question.save
+      flash.notice='問題登録しました'
+      redirect_to controller: 'lessons', action:'index'
+    else
+      redirect_to controller: 'lessons', action:'new'
+    end
+  end
+
+  private
+  def question_params
+    params.require(:question).permit(
+      :title,
+      :content,
+      :input_description,
+      :output_description,
+      :run_time_limit,
+      :memory_usage_limit,
+      :cpu_usage_limit,
+      samples_attributes: [:input,:output,:_destroy],
+      test_data_attributes: [:input,:output,:_destroy]
+    )
+  end
+
 end
+

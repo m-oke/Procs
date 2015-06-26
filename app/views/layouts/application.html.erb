@@ -13,7 +13,6 @@
 </head>
 <body role = "document">
   <%= render 'layouts/header' %>
-
   <% if notice %>
     <p class="alert alert-success"><%= notice %></p>
   <% end %>
@@ -21,11 +20,8 @@
     <p class="alert alert-warning"><%= alert %></p>
   <% end %>
 
-<div class="content">
-
-<%= yield %>
-</div>
-
-
+  <div class="container " role="main" >
+    <%= yield %>
+  </div>
 </body>
 </html>

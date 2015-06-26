@@ -1,0 +1,7 @@
+<div class="field_question">
+  <%= f.label :samples,"テスト用サンプル" %><br/>
+  <%= f.fields_for :samples do |builder| %>
+      <%= render "questions/sample_fields", f: builder %>
+  <% end %>
+  <%= link_to_add_fields1 "追加", f, :samples  %>
+</div>
