@@ -59,7 +59,10 @@ class LessonsController < ApplicationController
 
   private
   def set_lesson
-    @lesson = Lesson.find(params[:lesson_id])
+    @lesson = Lesson.find_by(:id => params[:id])
+    if @lesson.nil?
+      redirect_to root_path, :alert => "該当する授業が存在しません。"
+    end
   end
 
   def get_students
@@ -67,7 +70,7 @@ class LessonsController < ApplicationController
   end
 
   def get_teachers
-    return User.where(:id => @lesson.user_lessons.find_by(:is_teacher => true).pluck(:user_id))
+    return User.where(:id => @lesson.user_lessons.where(:is_teacher => true).pluck(:user_id))
   end
 
   def params_lesson
