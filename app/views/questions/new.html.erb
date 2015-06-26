@@ -2,14 +2,14 @@
 <% @title='問題新規作成' %>
 <h1><%= @title %></h1>
 <div id="question_new">
-  <%= form_for @question   do |f| %>
+  <%= nested_form_for @question   do |f| %>
       <div>
         <%= f.label :title , 'タイトル' %><br/>
-        <%= f.text_area :title , :rows => 2 , :cols => 80   %>
+        <%= f.text_area :title , :rows => 2 , :cols => 80  ,required: 'required' %>
       </div>
       <div>
         <%= f.label :content , '内容'%><br/>
-        <%= f.text_area :content , :rows => 10 , :cols => 80 %>
+        <%= f.text_area :content , :rows => 10 , :cols => 80,required: 'required' %>
       </div>
       <div>
         <%= f.label :input_description , '入力説明' %><br/>
@@ -20,14 +20,32 @@
         <%= f.text_area :output_description, :rows => 2 , :cols => 80  %>
       </div>
 
-      <%= render "questions/form" , f:f%>
-
-      <div>
-        <%= f.label :test_data,"解答サンプル" %><br/>
-        <%= f.fields_for :test_data do |builder| %>
-            <%= render "questions/testdata_fields", f: builder %>
+      <div class="field_question">
+        <%= f.label :samples,"テスト用サンプル" %><br/>
+        <%= f.fields_for :samples do |builder| %>
+        <fieldset>
+          <%= builder.label :input,"入力" %>
+          <%= builder.text_area :input , :rows => 4 , :cols => 40  %>
+          <%= builder.label :output ,"出力" %>
+          <%= builder.text_area :output  , :rows => 4 , :cols => 40  %>
+          <%= builder.link_to_remove "削除" %>
+        </fieldset>
         <% end %>
-        <%= link_to_add_fields2 "追加", f, :test_data %>
+        <%= f.link_to_add "追加",:samples  %>
+      </div>
+
+      <div class=" field_question">
+        <%= f.label :test_data,"解答用サンプル" %><br/>
+        <%= f.fields_for :test_data do |builder| %>
+        <fieldset>
+          <%= builder.label :input,"入力" %>
+          <%= builder.text_area :input  , :rows => 4 , :cols => 40  %>
+          <%= builder.label :output ,"出力" %>
+          <%= builder.text_area :output  , :rows => 4 , :cols => 40 %>
+          <%= builder.link_to_remove "削除"%>
+        </fieldset>
+        <% end %>
+        <%= f.link_to_add "追加",  :test_data %>
       </div>
 
       <div>
@@ -41,14 +59,16 @@
       <div>
         <%= f.label :cpu_usage_limit , 'CPU制限' %><br/>
         <%= f.text_field :cpu_usage_limit , size: 20 %>
-=      </div>
+      </div>
 
-      <div class="buttons">
+      <div>
         <%= f.submit '登録' %>
       </div>
 
   <% end %>
 </div>
+
+
 
 
 

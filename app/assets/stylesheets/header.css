@@ -40,22 +40,3 @@ body {
     font-weight: bold;
     line-height: 1;
 }
-
-.add_testdata_fields{
-
-}
-.add_sample_fields{
-    font-weight: bold;
-
-}
-.remove_testdata_fields{
-
-}
-
-.remove_sample_fields{
-    font-weight: bold;
-}
-.field_question{
-    border: 1px solid #000;
-    padding: 10px;
-}
