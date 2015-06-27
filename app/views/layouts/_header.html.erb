@@ -7,16 +7,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand logo" href="#">Procs</a>
+      <%= link_to "Procs", root_path,  class: 'navbar-brand logo' %>
     </div>
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="nav navbar-nav navbar-right">
         <% if user_signed_in? %>
-          <li><%= link_to "Logged in as " + current_user.email, "" %></li>
+          <li><%= link_to 'Logged in as ' + current_user.nickname, '' %></li>
           <li><%= link_to '問題', questions_path %></li>
-          <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
+          <li><%= link_to 'ログアウト', destroy_user_session_path, method: :delete %></li>
         <% else %>
-          <li><%= link_to "Log in / Sign up", new_user_session_path %></li>
+          <li><%= link_to 'Log in / Sign up', new_user_session_path %></li>
         <% end %>
       </ul>
     </div>
