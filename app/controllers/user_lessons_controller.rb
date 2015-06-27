@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 class UserLessonsController < ApplicationController
+  # get '/lessons/join'
   # 授業への参加ページ
   def new
   end
 
+  # post '/lessons/join'
   # 授業への参加
   # ログインしているユーザが授業コードに該当する授業に参加する
   # @param [String] :lesson_code 授業コード

@@ -70,7 +70,7 @@ font-size: medium;
 
 <% unless @is_teacher %>
   <h3 id="answer">投稿</h3>
-  <%= form_tag({:controller => 'answers', :action => 'create'}, :multipart => true) do |f| %>
+  <%= form_tag(answers_path, :multipart => true) do |f| %>
     <div class="answer form-group" name="answer">
       <div class="answer form-group" name="language">
         <%= label_tag :language, '使用言語' %>

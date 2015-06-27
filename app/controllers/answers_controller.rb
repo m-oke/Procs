@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 class AnswersController < ApplicationController
+
+  # post '/answers'
+  # @param [Binary] upload_file アップロードファイル
+  # @param [language] language 選択言語
+  # @param [Fixnum] lesson_id
+  # @param [Fixnum] id Questionのid
   def create
     file = params[:upload_file]
     unless file.nil?

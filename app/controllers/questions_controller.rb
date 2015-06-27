@@ -3,6 +3,9 @@ class QuestionsController < ApplicationController
   before_action :exclude_lesson_one
   before_filter :authenticate_user!
 
+  # get '/quesions' || get '/lessons/:lesson_id/questions'
+  # @param [Fixnum] lesson_id
+  # @param [Fixnum] id Quesionのid
   def index
     id = params[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => id)
@@ -23,7 +26,6 @@ class QuestionsController < ApplicationController
     @question.test_data.build
   end
 
-
   def create
     @question = Question.new(question_params)
 
@@ -34,6 +36,10 @@ class QuestionsController < ApplicationController
       redirect_to controller: 'lessons', action:'new'
     end
   end
+
+  # get '/lessons/:id'
+  # @param [Fixnum] lesson_id
+  # @param [Fixnum] id Questionのid
 
   def show
     @question = Question.find_by(:id => params[:id])
@@ -63,6 +69,8 @@ class QuestionsController < ApplicationController
     )
   end
 
+  # lesson_id == 1の場合は表示しない
+  # @param [Fixnum] lesson_id
   def exclude_lesson_one
     if params[:lesson_id] == "1"
       redirect_to root_path, :alert => "該当する授業が存在しません。"
