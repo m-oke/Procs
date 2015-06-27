@@ -19,7 +19,7 @@
           <% next if lesson_select_user.lesson_id == 1 %>
             <% select_lesson = Lesson.find(lesson_select_user.lesson_id) %>
             <div class="hero-unit">
-              <h1><%= link_to select_lesson.name,'#' %></h1>
+              <h1><%= link_to select_lesson.name, lesson_path(:id => select_lesson.id) %></h1>
               <% user_name = User.find(select_lesson.user_lessons.find_by_is_teacher(true).user_id) %>
               <p><%= user_name.name  %></p>
               <p><%= select_lesson.description %></p>
