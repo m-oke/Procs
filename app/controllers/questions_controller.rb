@@ -37,14 +37,14 @@ class QuestionsController < ApplicationController
 
   def show
     @question = Question.find_by(:id => params[:id])
-    if @question.nil?
-      redirect_to lessons_path, :alert => '該当する問題が存在しません。'
+    lesson_id = params[:lesson_id] || 1
+    if @question.nil? || LessonQuestion.find_by(:question_id => params[:id], :lesson_id => lesson_id).nil?
+      redirect_to lessons_path, :alert => '該当する問題が存在しません。' and return
     end
-    id = params[:lesson_id] || 1
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                           :question_id => params[:id],
-                                          :lesson_id => id) || Answer.new
-    @is_teacher = Lesson.find_by(:id => id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).is_teacher
+                                          :lesson_id => lesson_id) || Answer.new
+    @is_teacher = Lesson.find_by(:id => lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
   end
 
 
