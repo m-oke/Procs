@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
+  before_action :exclude_lesson_one
   before_filter :authenticate_user!
 
   def index
@@ -7,11 +8,11 @@ class QuestionsController < ApplicationController
     @lesson = Lesson.find_by(:id => id)
     unless @lesson.nil?
       if UserLesson.find_by(:user_id => current_user.id, :lesson_id => id).nil?
-        redirect_to root_path, :alert => '該当する授業に参加していません．'
+        redirect_to root_path, :alert => '該当する授業に参加していません．' and return
       end
       @questions = @lesson.question
     else
-      redirect_to root_path, :alert => '該当する授業が存在しません。'
+      redirect_to root_path, :alert => '該当する授業が存在しません。' and return
     end
     @is_teacher = Lesson.find_by(:id => id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).is_teacher
   end
@@ -60,6 +61,12 @@ class QuestionsController < ApplicationController
       samples_attributes: [:input,:output,:_destroy],
       test_data_attributes: [:input,:output,:_destroy]
     )
+  end
+
+  def exclude_lesson_one
+    if params[:lesson_id] == "1"
+      redirect_to root_path, :alert => "該当する授業が存在しません。"
+    end
   end
 
 

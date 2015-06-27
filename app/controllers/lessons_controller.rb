@@ -59,8 +59,9 @@ class LessonsController < ApplicationController
 
   private
   def set_lesson
-    @lesson = Lesson.find_by(:id => params[:id])
-    if @lesson.nil?
+    id = params[:lesson_id] || params[:id]
+    @lesson = Lesson.find_by(:id => id)
+    if (id == "1") || @lesson.nil?
       redirect_to root_path, :alert => "該当する授業が存在しません。"
     end
   end

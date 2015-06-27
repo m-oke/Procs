@@ -26,12 +26,14 @@ font-size: medium;
       <td><%= @question.run_time_limit %></td>
       <td><%= @question.memory_usage_limit %></td>
     </tr>
-    <tr>
-      <td>提出物</td>
-      <td><%= Answer::RESULT[@latest_answer.result] %></td>
-      <td><%= @latest_answer.run_time %></td>
-      <td><%= @latest_answer.memory_usage %></td>
-    </tr>
+    <% unless @is_teacher %>
+      <tr>
+        <td>提出物</td>
+        <td><%= Answer::RESULT[@latest_answer.result] %></td>
+        <td><%= @latest_answer.run_time %></td>
+        <td><%= @latest_answer.memory_usage %></td>
+      </tr>
+    <% end %>
   </table>
 </div>
 

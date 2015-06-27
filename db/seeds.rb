@@ -74,8 +74,10 @@ Question.create(:title => "問題2", :content => "問題2の内容", :input_desc
 # 未来の問題
 Question.create(:title => "問題3", :content => "問題3の内容", :input_description => "問題3の入力説明", :output_description => "問題3の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
 
-# 問題とクラスの割当
-3.times do |i|
+# 現在の問題
+Question.create(:title => "問題4", :content => "問題4の内容", :input_description => "問題4の入力説明", :output_description => "問題4の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
+
+4.times do |i|
   LessonQuestion.create(:lesson_id => 1, :question_id => i + 1)
 end
 
@@ -84,12 +86,16 @@ LessonQuestion.create(:lesson_id => 2, :question_id => 1, :start_time => (Date.t
 LessonQuestion.create(:lesson_id => 2, :question_id => 2, :start_time => (Date.today - 3).to_s, :end_time => (Date.today + 4).to_s)
 LessonQuestion.create(:lesson_id => 2, :question_id => 3, :start_time => (Date.today + 7).to_s, :end_time => (Date.today + 10).to_s)
 
+LessonQuestion.create(:lesson_id => 3, :question_id => 4, :start_time => (Date.today - 3).to_s, :end_time => (Date.today + 4).to_s)
+
+
 # 入出力サンプル
 Sample.create(:question_id => 1, :input => "1 2 3", :output => "6")
 Sample.create(:question_id => 1, :input => "2 3 4", :output => "9")
 Sample.create(:question_id => 2, :input => "2", :output => "1")
 Sample.create(:question_id => 2, :input => "5", :output => "1")
 Sample.create(:question_id => 3, :input => "10", :output => "30")
+Sample.create(:question_id => 4, :input => "10", :output => "30")
 
 # テストデータ
 TestDatum.create(:question_id => 1, :input => "1 2 3", :output => "6")
@@ -101,6 +107,7 @@ TestDatum.create(:question_id => 2, :input => "100", :output => "1")
 TestDatum.create(:question_id => 3, :input => "10", :output => "30")
 TestDatum.create(:question_id => 3, :input => "2", :output => "6")
 TestDatum.create(:question_id => 3, :input => "121", :output => "363")
+TestDatum.create(:question_id => 4, :input => "121", :output => "363")
 
 
 # 回答
