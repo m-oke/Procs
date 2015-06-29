@@ -50,6 +50,8 @@ group :development, :test do
   gem 'spring'
 end
 
+gem 'yard'
+
 gem 'rb-readline'
 gem 'devise'
 gem 'cancan'
