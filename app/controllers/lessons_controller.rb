@@ -4,14 +4,17 @@ class LessonsController < ApplicationController
   before_filter :authenticate_user!
   before_action :init
 
+  # get '/'
   def index
   end
 
+  # get '/lessons/new'
   def new
     @lesson = Lesson.new
   end
 
-  #　クラスの作成
+  # post '/lessons'
+  # クラスの作成
   def create
     # @lesson = Lesson.new(params[:lesson])
     @lesson = Lesson.new(params_lesson)
@@ -44,10 +47,12 @@ class LessonsController < ApplicationController
     end
   end
 
+  # get '/lessons/:id'
   def show
     @teachers = get_teachers
   end
 
+  # get '/lessons/:id/students'
   def students
     @students = get_students
   end
@@ -58,17 +63,24 @@ class LessonsController < ApplicationController
   end
 
   private
+
+  # idまたはlesson_idから該当するLessonを検索
+  # @param [Fixnum] lesson_id
+  # @param [Fixnum] id 一部のURLでのlesson_id
   def set_lesson
-    @lesson = Lesson.find_by(:id => params[:id])
-    if @lesson.nil?
+    id = params[:lesson_id] || params[:id]
+    @lesson = Lesson.find_by(:id => id)
+    if (id == "1") || @lesson.nil?
       redirect_to root_path, :alert => "該当する授業が存在しません。"
     end
   end
 
+  # 該当するlessonに所属するstudentを取得
   def get_students
     return User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
   end
 
+  # 該当するlessonに所属するteacherを取得
   def get_teachers
     return User.where(:id => @lesson.user_lessons.where(:is_teacher => true).pluck(:user_id))
   end
