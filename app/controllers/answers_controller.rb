@@ -6,6 +6,11 @@ class AnswersController < ApplicationController
   # @param [language] language 選択言語
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
+  def index
+    @diff = show_diff("uploads/7/2/2/version3.py", "uploads/7/2/2/version4.py")
+
+  end
+
   def create
     file = params[:upload_file]
     unless file.nil?
@@ -46,5 +51,11 @@ class AnswersController < ApplicationController
     redirect_to :controller => 'questions', :action => 'show', :lesson_id => params[:lesson_id], :id => params[:id]
   end
 
+  private
+  def show_diff(original_file, new_file)
+    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./app/assets/diff.txt`
+    diff = File.open('./app/assets/diff.txt', 'r:utf-8')
+    return diff
+  end
 
 end

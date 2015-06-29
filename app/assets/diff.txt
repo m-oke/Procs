@@ -1,0 +1,14 @@
+-print "aaa"
++print "12345"
+ print "bbb"
+ 
+-print "ccc"
++
++print "ddd"
++
++
++
++
++
++
++print "a"
