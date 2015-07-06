@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150618055209) do
+ActiveRecord::Schema.define(version: 20150706143837) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "student_id",            limit: 4,   null: false
@@ -58,6 +58,8 @@ ActiveRecord::Schema.define(version: 20150618055209) do
     t.integer  "cpu_usage_limit",    limit: 4
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.string   "start",              limit: 255
+    t.string   "close",              limit: 255
   end
 
   create_table "samples", force: :cascade do |t|

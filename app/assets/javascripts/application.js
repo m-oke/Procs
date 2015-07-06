@@ -21,3 +21,12 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 
+//= require bootstrap-datetimepicker
+
+var data = {'data-format': 'yyyy-MM-dd hh:mm:ss' };
+$(function(){
+    $('.datepicker1').attr(data);
+    $('.datepicker1').datetimepicker();
+    $('.datepicker2').attr(data);
+    $('.datepicker2').datetimepicker();
+});

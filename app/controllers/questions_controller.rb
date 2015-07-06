@@ -64,6 +64,8 @@ class QuestionsController < ApplicationController
       :run_time_limit,
       :memory_usage_limit,
       :cpu_usage_limit,
+      :start,
+      :close,
       samples_attributes: [:input,:output,:_destroy],
       test_data_attributes: [:input,:output,:_destroy]
     )
