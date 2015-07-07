@@ -44,7 +44,6 @@ GEM
     bcrypt (3.1.10)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bootstrap-datetimepicker-rails (0.0.11)
     bootstrap-sass (3.3.4.1)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
@@ -243,7 +242,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bootstrap-datetimepicker-rails
   bootstrap-sass (~> 3.3.4)
   byebug
   cancan
@@ -256,6 +254,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   jquery-turbolinks
+  jquery-ui-rails
   luhn-ruby
   minitest
   minitest-ar-assertions

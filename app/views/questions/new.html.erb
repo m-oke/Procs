@@ -19,10 +19,10 @@
         <%= f.label :output_description , '出力説明'%><br/>
         <%= f.text_area :output_description, :rows => 2 , :cols => 80  %>
       </div>
-      <div>
-        <%= f.label :start , 'start' %>
-        <%= f.text_field :start , :class=>'datepicker' %>
-        <%= f.label :close , 'close' %>
+      <div class="field_question">
+        <%= f.label :start , '開始時間' %>
+        <%= f.text_field :start , :class=>'datepicker1' %>
+        <%= f.label :close , '終了時間' %>
         <%= f.text_field :close , :class=>'datepicker2' %>
       </div>
 
