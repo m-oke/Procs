@@ -45,7 +45,7 @@
 </table>
 </div>
 <div>
-  <% if current_user.has_roles?([:teacher, :root, :admin]) %>
-    <%= link_to "問題作成", :controller => "questions", :action => "new" %>
+  <% if @lesson.id != 1 %>
+    <%= link_to "問題新規作成",new_lesson_question_path(:lesson_id => @lesson.id) %>
   <% end %>
 </div>

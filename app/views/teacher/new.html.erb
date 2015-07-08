@@ -1,16 +1,13 @@
 <h1>クラス作成</h1>
 <%= form_for :article, url: articles_path do |f| %>
-    <p>
+    <div>
       <%= f.label :クラス名 %><br>
       <%= f.text_field :クラス名 %>
-    </p>
-
-    <p>
+    </div>
+    <div>
       <%= f.label :説明 %><br>
       <%= f.text_area :説明 %>
-    <p>
+    </div>
+    <%= f.submit %>
 
-    <p>
-      <%= f.submit %>
-    </p>
 <% end %>
