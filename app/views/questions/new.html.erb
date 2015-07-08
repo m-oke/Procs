@@ -25,9 +25,13 @@
             <%= builder.hidden_field :lesson_id , :value=>@lesson_id %>
             <%= builder.hidden_field :question_id , :value=>(@question_id +1) %>
             <%= builder.label :start_time, '開始時間' %>
-            <%= builder.text_field :start_time, :placeholder => "yy-mm-dd hh:mm:ss" ,:class=>'datepicker1' %>
+            <%= builder.text_field :start_time, :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker1'  %>
             <%= builder.label :end_time, '終了時間' %>
-            <%= builder.text_field :end_time, :placeholder => "yy-mm-dd hh:mm:ss" , :class=>'datepicker2' %>
+            <%= builder.text_field :end_time, :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker2' %>
+        <% end %>
+        <%= f.fields_for :lesson_questions do |builder| %>
+            <%= builder.hidden_field :lesson_id , :value=>1 %>
+            <%= builder.hidden_field :question_id , :value=>(@question_id +1)%>
         <% end %>
       </div>
 

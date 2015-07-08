@@ -24,8 +24,20 @@
       <% end %>
 
       <% if @lesson.id != 1 %>
-        <td><%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %></td>
-        <td><%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %></td>
+        <td>
+          <% if @lesson.lesson_questions.find_by(:question_id => question.id).start_time.nil? %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time %>
+          <% else %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ")  %>
+          <% end %>
+        </td>
+        <td>
+          <% if @lesson.lesson_questions.find_by(:question_id => question.id).end_time.nil? %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time %>
+          <% else %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %>
+          <% end %>
+        </td>
       <% end %>
 
       <% unless @is_teacher %>
