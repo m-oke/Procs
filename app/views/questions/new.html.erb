@@ -4,11 +4,11 @@
 <div id="question_new">
   <%= nested_form_for @question   do |f| %>
       <div>
-        <%= f.label :title , 'タイトル' %><br/>
+        <%= f.label :title , 'タイトル' %><span>（＊必須）</span></spna><br/>
         <%= f.text_area :title , :rows => 2 , :cols => 80  ,required: 'required' %>
       </div>
       <div>
-        <%= f.label :content , '内容'%><br/>
+        <%= f.label :content , '内容'%><span>（＊必須）</span><br/>
         <%= f.text_area :content , :rows => 10 , :cols => 80,required: 'required' %>
       </div>
       <div>
@@ -25,9 +25,9 @@
             <%= builder.hidden_field :lesson_id , :value=>@lesson_id %>
             <%= builder.hidden_field :question_id , :value=>(@question_id +1) %>
             <%= builder.label :start_time, '開始時間' %>
-            <%= builder.text_field :start_time, :class=>'datepicker1' %>
+            <%= builder.text_field :start_time, :placeholder => "yy-mm-dd hh:mm:ss" ,:class=>'datepicker1' %>
             <%= builder.label :end_time, '終了時間' %>
-            <%= builder.text_field :end_time, :class=>'datepicker2' %>
+            <%= builder.text_field :end_time, :placeholder => "yy-mm-dd hh:mm:ss" , :class=>'datepicker2' %>
         <% end %>
       </div>
 
@@ -62,7 +62,7 @@
       </div>
 
       <div>
-        <%= f.label :run_time_limit , '時間制限'%><br/>
+        <%= f.label :run_time_limit , '時間制限'%>（ms）<br/>
         <%= f.text_field :run_time_limit,  size: 20 %>
       </div>
       <div>
