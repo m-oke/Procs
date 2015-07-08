@@ -4,11 +4,11 @@
 <div id="question_new">
   <%= nested_form_for @question   do |f| %>
       <div>
-        <%= f.label :title , 'タイトル' %><span>（＊必須）</span></spna><br/>
+        <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>
         <%= f.text_area :title , :rows => 2 , :cols => 80  ,required: 'required' %>
       </div>
       <div>
-        <%= f.label :content , '内容'%><span>（＊必須）</span><br/>
+        <%= f.label :content , '内容'%><span>(<span class="inputnote">＊</span>)</span><br/>
         <%= f.text_area :content , :rows => 10 , :cols => 80,required: 'required' %>
       </div>
       <div>
