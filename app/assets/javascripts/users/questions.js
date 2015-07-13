@@ -65,39 +65,5 @@ $(function(){
     $('.datepicker1').datetimepicker(new_event1);
     $('.datepicker2').datetimepicker(new_evnet2);
 
-
-    $('.question_submit').click(function(){
-        var nCount = 0;
-        var nHidden = 0;
-        var nExist = 0;
-
-        var divList= $('#check_area').children('div');
-        $.each(divList ,function(index,elem){
-            nCount = nCount +1 ;
-            if($(elem).is(':hidden')){
-                nHidden = nHidden + 1
-            }
-
-        });
-
-        if( nCount == nHidden && nCount !=0 ){
-            alert("入出力サンプルが必要です！");
-        }
-        else{
-            $.each(divList,function(index,elem){
-                if($(elem).is(':visible')){
-                    if($(elem).find('.check_input').val()!=''|| $(elem).find('.check_output').val()!=''){
-                        nExist = nExist + 1;
-                    }
-                }
-
-            });
-            if(nExist==0){
-                alert("入出力サンプルが必要です！");
-            }
-
-        }
-   });
-
 });
 
