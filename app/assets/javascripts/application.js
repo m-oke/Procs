@@ -13,11 +13,11 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require jquery_ujs
-//= require turbolinks
-//= require_tree .
-
-//= require jquery
-//= require jquery.turbolinks
-//= require jquery_ujs
 //= require jquery_nested_form
+//= require jquery-ui
+//= require lib/jquery.timepicker.js
+//= require lib/jquery-ui-timepicker-addon.js
+//= require_tree .
+//= require_directory ./lib
+//= require_directory ./users
 

@@ -66,16 +66,16 @@ end
 
 # 問題
 # 過去の問題
-Question.create(:title => "問題1", :content => "問題1の内容", :input_description => "問題1の入力説明", :output_description => "問題1の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
+Question.create(:title => "問題1", :content => "問題1の内容", :input_description => "問題1の入力説明", :output_description => "問題1の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
 
 # 現在の問題
-Question.create(:title => "問題2", :content => "問題2の内容", :input_description => "問題2の入力説明", :output_description => "問題2の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
+Question.create(:title => "問題2", :content => "問題2の内容", :input_description => "問題2の入力説明", :output_description => "問題2の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
 
 # 未来の問題
-Question.create(:title => "問題3", :content => "問題3の内容", :input_description => "問題3の入力説明", :output_description => "問題3の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
+Question.create(:title => "問題3", :content => "問題3の内容", :input_description => "問題3の入力説明", :output_description => "問題3の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
 
 # 現在の問題
-Question.create(:title => "問題4", :content => "問題4の内容", :input_description => "問題4の入力説明", :output_description => "問題4の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
+Question.create(:title => "問題4", :content => "問題4の内容", :input_description => "問題4の入力説明", :output_description => "問題4の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
 
 4.times do |i|
   LessonQuestion.create(:lesson_id => 1, :question_id => i + 1)

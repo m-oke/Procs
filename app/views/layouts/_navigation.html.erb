@@ -14,10 +14,11 @@
       <!--<%= render :template => "lessons/new" %>-->
     </div>
     <div class="tab-pane fade " id="tab2">
-      <%= render :template=> "questions/new" %>
+      <!--<%= render :template=> "questions/new" %>-->
     </div>
     <% if current_user.has_roles?([:teacher, :root, :admin]) %>
-      <div class="tab-pane fade " id="tab3">
+        <div class="tab-pane fade " id="tab3">
+
         </div>
     <% end %>
   </div>

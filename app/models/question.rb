@@ -8,4 +8,5 @@ class Question < ActiveRecord::Base
 
   accepts_nested_attributes_for :samples,allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :test_data,allow_destroy:true, reject_if: :all_blank
+  accepts_nested_attributes_for :lesson_questions,allow_destroy:true, reject_if: :all_blank
 end

@@ -22,18 +22,23 @@ class QuestionsController < ApplicationController
 
   def new
     @question = Question.new
+    @question_id = Question.count
     @question.samples.build
     @question.test_data.build
+    @question.lesson_questions.build
+    @lesson_id =params[:lesson_id] .to_i
+    session[:lesson_id] = @lesson_id
   end
 
   def create
     @question = Question.new(question_params)
-
+    @lesson_id = session[:lesson_id]
     if @question.save
       flash.notice='問題登録しました'
-      redirect_to controller: 'lessons', action:'index'
+      redirect_to lesson_questions_path(:lesson_id=>@lesson_id)
+      session[:lesson_id] = nil
     else
-      redirect_to controller: 'lessons', action:'new'
+      redirect_to new_lesson_question_path(:lesson_id=>@lesson_id)
     end
   end
 
@@ -64,8 +69,9 @@ class QuestionsController < ApplicationController
       :run_time_limit,
       :memory_usage_limit,
       :cpu_usage_limit,
-      samples_attributes: [:input,:output,:_destroy],
-      test_data_attributes: [:input,:output,:_destroy]
+      samples_attributes: [:question_id,:input,:output,:_destroy],
+      test_data_attributes: [:question_id,:input,:output,:_destroy],
+      lesson_questions_attributes: [:lesson_id,:question_id,:start_time,:end_time,:_destroy]
     )
   end
 

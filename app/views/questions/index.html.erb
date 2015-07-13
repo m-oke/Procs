@@ -24,8 +24,20 @@
       <% end %>
 
       <% if @lesson.id != 1 %>
-        <td><%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %></td>
-        <td><%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %></td>
+        <td>
+          <% if @lesson.lesson_questions.find_by(:question_id => question.id).start_time.nil? %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time %>
+          <% else %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ")  %>
+          <% end %>
+        </td>
+        <td>
+          <% if @lesson.lesson_questions.find_by(:question_id => question.id).end_time.nil? %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time %>
+          <% else %>
+            <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %>
+          <% end %>
+        </td>
       <% end %>
 
       <% unless @is_teacher %>
@@ -45,7 +57,7 @@
 </table>
 </div>
 <div>
-  <% if current_user.has_roles?([:teacher, :root, :admin]) %>
-    <%= link_to "問題作成", :controller => "questions", :action => "new" %>
+  <% if @lesson.id != 1 %>
+    <%= link_to "問題新規作成",new_lesson_question_path(:lesson_id => @lesson.id) %>
   <% end %>
 </div>
