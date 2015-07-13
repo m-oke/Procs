@@ -36,22 +36,24 @@
       </div>
 
       <div class="field_question">
-        <%= f.label :samples,"テスト用サンプル" %><br/>
-        <%= f.fields_for :samples do |builder| %>
-        <fieldset>
-          <%= builder.hidden_field :question_id , :value=>(@question_id +1) %>
-          <%= builder.label :input,"入力" %>
-          <%= builder.text_area :input , :rows => 4 , :cols => 40  %>
-          <%= builder.label :output ,"出力" %>
-          <%= builder.text_area :output  , :rows => 4 , :cols => 40  %>
-          <%= builder.link_to_remove "削除" %>
-        </fieldset>
-        <% end %>
-        <%= f.link_to_add "追加",:samples  %>
+        <%= f.label :samples,"入出力サンプル" %><span>(<span class="inputnote">＊</span>)</span><br/>
+        <div id="check_area">
+            <%= f.fields_for :samples do |builder| %>
+            <fieldset>
+              <%= builder.hidden_field :question_id , :value=>(@question_id +1) %>
+              <%= builder.label :input,"入力" %>
+              <%= builder.text_area :input ,:class=>"check_input", :rows => 4 , :cols => 40  %>
+              <%= builder.label :output ,"出力" %>
+              <%= builder.text_area :output  ,:class=>"check_output", :rows => 4 , :cols => 40  %>
+              <%= builder.link_to_remove "削除" %>
+            </fieldset>
+            <% end %>
+            <%= f.link_to_add "追加",:samples  %>
+        </div>
       </div>
 
       <div class=" field_question">
-        <%= f.label :test_data,"解答用サンプル" %><br/>
+        <%= f.label :test_data,"解答用データ" %><br/>
         <%= f.fields_for :test_data do |builder| %>
         <fieldset>
           <%= builder.hidden_field :question_id , :value=>(@question_id +1) %>
@@ -67,16 +69,16 @@
 
       <div>
         <%= f.label :run_time_limit , '時間制限'%>（単位：ms）<br/>
-        <%= f.text_field :run_time_limit,  size: 20 %>
+        <%= f.number_field :run_time_limit,  size: 20 %>
       </div>
       <div>
         <%= f.label :memory_usage_limit , 'メモリ制限'%><br/>
-        <%= f.text_field :memory_usage_limit,  size: 20 %>
+        <%= f.number_field :memory_usage_limit,  size: 20 %>
       </div>
 
 
       <div>
-        <%= f.submit '登録' %>
+        <%= f.submit '登録',:class=>"question_submit" %>
       </div>
 
   <% end %>
