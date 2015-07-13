@@ -10,14 +10,14 @@ class QuestionsController < ApplicationController
     id = params[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => id)
     unless @lesson.nil?
-      if UserLesson.find_by(:user_id => current_user.id, :lesson_id => id).nil?
+      if @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).nil?
         redirect_to root_path, :alert => '該当する授業に参加していません．' and return
       end
+      @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
       @questions = @lesson.question
     else
       redirect_to root_path, :alert => '該当する授業が存在しません。' and return
     end
-    @is_teacher = Lesson.find_by(:id => id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).is_teacher
   end
 
   def new
@@ -45,17 +45,19 @@ class QuestionsController < ApplicationController
   # get '/lessons/:id'
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
-
   def show
     @question = Question.find_by(:id => params[:id])
     lesson_id = params[:lesson_id] || 1
-    if @question.nil? || LessonQuestion.find_by(:question_id => params[:id], :lesson_id => lesson_id).nil?
+    @lesson = Lesson.find_by(:id => lesson_id)
+    if @lesson.nil? || @lesson.user_lessons.find_by(:user_id => current_user.id).nil?
+      redirect_to root_path, :alert => '該当する授業に参加していません．' and return
+    elsif @question.nil? || @question.lesson_questions.find_by(:lesson_id => lesson_id).nil?
       redirect_to lessons_path, :alert => '該当する問題が存在しません。' and return
     end
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                           :question_id => params[:id],
                                           :lesson_id => lesson_id) || Answer.new
-    @is_teacher = Lesson.find_by(:id => lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
+    @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
   end
 
 
