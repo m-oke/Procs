@@ -66,7 +66,7 @@ end
 
 # 問題
 # 過去の問題
-Question.create(:title => "問題1", :content => "問題1の内容", :input_description => "問題1の入力説明", :output_description => "問題1の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
+Question.create(:title => "問題1: フィボナッチ数", :content => "与えられた数値の順番のフィボナッチ数を出力する", :input_description => "任意の自然数", :output_description => "入力の順番のフィボナッチ数",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
 
 # 現在の問題
 Question.create(:title => "問題2", :content => "問題2の内容", :input_description => "問題2の入力説明", :output_description => "問題2の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
@@ -90,17 +90,17 @@ LessonQuestion.create(:lesson_id => 3, :question_id => 4, :start_time => (Date.t
 
 
 # 入出力サンプル
-Sample.create(:question_id => 1, :input => "1 2 3", :output => "6")
-Sample.create(:question_id => 1, :input => "2 3 4", :output => "9")
+Sample.create(:question_id => 1, :input => "3", :output => "2")
+Sample.create(:question_id => 1, :input => "5", :output => "5")
 Sample.create(:question_id => 2, :input => "2", :output => "1")
 Sample.create(:question_id => 2, :input => "5", :output => "1")
 Sample.create(:question_id => 3, :input => "10", :output => "30")
 Sample.create(:question_id => 4, :input => "10", :output => "30")
 
 # テストデータ
-TestDatum.create(:question_id => 1, :input => "1 2 3", :output => "6")
-TestDatum.create(:question_id => 1, :input => "2 3 4", :output => "9")
-TestDatum.create(:question_id => 1, :input => "10 50 100", :output => "160")
+TestDatum.create(:question_id => 1, :input => "3", :output => "2")
+TestDatum.create(:question_id => 1, :input => "5", :output => "5")
+TestDatum.create(:question_id => 1, :input => "10", :output => "55")
 TestDatum.create(:question_id => 2, :input => "2", :output => "1")
 TestDatum.create(:question_id => 2, :input => "5", :output => "1")
 TestDatum.create(:question_id => 2, :input => "100", :output => "1")
@@ -112,10 +112,10 @@ TestDatum.create(:question_id => 4, :input => "121", :output => "363")
 
 # 回答
 # 学生1
-Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => -1, :plagiarism_percentage => 0.4)
-Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => -1, :plagiarism_percentage => 0.4)
-Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version3.txt", :language => "c", :result => 1, :run_time => 1, :memory_usage => 10, :cpu_usage => 7, :plagiarism_percentage => 0.4)
-Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version4.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :cpu_usage => 7, :plagiarism_percentage => 0.9)
+Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :plagiarism_percentage => 0.4)
+# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => -1, :plagiarism_percentage => 0.4)
+# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version3.txt", :language => "c", :result => 1, :run_time => 1, :memory_usage => 10, :cpu_usage => 7, :plagiarism_percentage => 0.4)
+# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version4.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :cpu_usage => 7, :plagiarism_percentage => 0.9)
 
 Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 2, :file_name => "version1.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :cpu_usage => 7, :plagiarism_percentage => 0.1)
 
