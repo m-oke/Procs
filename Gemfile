@@ -58,6 +58,7 @@ gem 'cancan'
 gem 'rails_admin'
 gem 'dotenv-rails'
 gem 'luhn-ruby'
+gem 'sidekiq'
 
 group :development, :test do
   gem 'rails-footnotes'

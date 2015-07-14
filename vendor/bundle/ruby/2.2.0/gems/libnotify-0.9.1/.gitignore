@@ -1,8 +1,0 @@
-doc
-coverage
-pkg
-tags
-.yardoc
-.bundle
-Gemfile.lock
-*.rbc
