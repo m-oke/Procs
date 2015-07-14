@@ -8,7 +8,7 @@ class AnswersController < ApplicationController
   # @param [Fixnum] id Questionのid
   def create
     file = params[:upload_file]
-    lesson_id = params[:lesson_id] || 1
+    lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
     question_id = params[:id]
     unless file.nil?
       extention = Answer::EXT[params[:language]]
@@ -50,6 +50,9 @@ class AnswersController < ApplicationController
       end
     else
       flash[:alert] = 'ファイルが選択されていません。'
+    end
+    if lesson_id == "1"
+      redirect_to :controller => 'questions', :action => 'show', :id => question_id and return
     end
     redirect_to :controller => 'questions', :action => 'show', :lesson_id => lesson_id, :id => question_id
   end

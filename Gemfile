@@ -59,6 +59,7 @@ gem 'rails_admin'
 gem 'dotenv-rails'
 gem 'luhn-ruby'
 gem 'sidekiq'
+gem 'sinatra', require: false
 
 group :development, :test do
   gem 'rails-footnotes'
