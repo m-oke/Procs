@@ -112,7 +112,7 @@ TestDatum.create(:question_id => 4, :input => "121", :output => "363")
 
 # 回答
 # 学生1
-Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :plagiarism_percentage => 0.4)
+#Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :plagiarism_percentage => 0.4)
 # Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => -1, :plagiarism_percentage => 0.4)
 # Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version3.txt", :language => "c", :result => 1, :run_time => 1, :memory_usage => 10, :cpu_usage => 7, :plagiarism_percentage => 0.4)
 # Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version4.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :cpu_usage => 7, :plagiarism_percentage => 0.9)
