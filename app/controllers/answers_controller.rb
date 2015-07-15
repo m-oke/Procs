@@ -110,5 +110,19 @@ class AnswersController < ApplicationController
     return diff
   end
 
+  def index
+    # @questions = get_questions
+    @student_id = params[:user_id]
+    @lesson_id = params[:lesson_id]
+    @question_id = params[:question_id]
+    @question_diff_detail= Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id )
+    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  , question_id: @question_id )
+  end
+
+  private
+
+  # def get_questions
+  #   return Answer.where("student_id = ?",current_user.id)
+  # end
 
 end
