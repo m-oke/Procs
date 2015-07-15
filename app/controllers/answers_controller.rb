@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 class AnswersController < ApplicationController
 
+  def index
+
+  end
+
   # post '/answers'
   # @param [Binary] upload_file アップロードファイル
   # @param [language] language 選択言語
@@ -63,5 +67,14 @@ class AnswersController < ApplicationController
     redirect_to :controller => 'questions', :action => 'show', :lesson_id => lesson_id, :id => question_id
   end
 
+  def show
+    @student_id = params[:user_id]
+    @lesson_id = params[:lesson_id]
+    @question_id = params[:question_id]
+    @question_diff_detail= Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id )
+    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  , question_id: @question_id )
+
+    @content =  File.read('./app/assets/file.txt')
+  end
 
 end

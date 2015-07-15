@@ -2,8 +2,16 @@ Rails.application.routes.draw do
   root :to => 'lessons#index'
 
   resources :lessons do
-    resources :questions, only: [:index, :show, :new]
-
+    resources :questions, only: [:index, :show, :new] do
+      resources :users do
+        get 'answers/show' => 'answers#show', as: 'answers'
+      end
+    end
+    resources :users do
+      resources :questions do
+        get 'answers/show' => 'answers#show', as: 'answers'
+      end
+    end
     collection do
       get '/join' => 'user_lessons#new'
       post '/join' => 'user_lessons#create'
@@ -21,6 +29,7 @@ Rails.application.routes.draw do
     :passwords => 'users/passwords'
   }
 
+  get '/answers/show' => 'answers#show'
   get '/questions/' => 'questions#index'
   get '/questions/new' => 'questions#new'
   post '/questions/' => 'questions#create'

@@ -1,0 +1,50 @@
+<div>
+  <h2>学生解答詳細</h2>
+  <div class="questions_list">
+    <div>
+      <h3>問題<%= @question_id %></h3>
+    </div>
+    <table class="table table-striped">
+      <tr>
+        <th>バージョン</th>
+        <th>提出時間</th>
+        <th>結果</th>
+        <th>実行時間</th>
+        <th>消耗メモリ</th>
+        <th>言語</th>
+        <th>開始時間</th>
+        <th>終了時間</th>
+        <th>学生類似度</th>
+        <th>WEB類似度</th>
+      </tr>
+
+      <% @question_diff_detail.each do |m| %>
+          <tr>
+            <td><%= m.file_name %></td>
+            <td><%= m.created_at %></td>
+            <td><%= m.result %></td>
+            <td><%= m.run_time %></td>
+            <td><%= m.memory_usage %></td>
+            <td><%= m.language %></td>
+            <td><%= @dead_date_question.start_time%></td>
+            <td><%= @dead_date_question.end_time%></td>
+            <td><%= m.plagiarism_percentage %></td>
+            <td><%=  %></td>
+          </tr>
+      <% end %>
+    </table>
+
+  </div>
+  <div class="diff_area">
+    <form>
+      <%= collection_select(:id, :file_name, @question_diff_detail, :id, :file_name ,{:prompt => "比べ元を選択してください"},{:class=>'my-custom-class'})%>
+      <%= collection_select(:id, :file_name, @question_diff_detail, :id, :file_name ,{:prompt => "比べ先を選択してください"},{:class=>'my-custom-class'}) %>
+    </form>
+    <div>
+      <% @select_item = "abc"%>
+      <%= text_area :page, :name, :value=> @select_item, :rows=>30 , :class=>"form-control" %>
+    </div>
+
+  </div>
+
+</div>
