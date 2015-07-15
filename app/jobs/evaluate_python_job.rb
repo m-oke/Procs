@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 class EvaluatePythonJob < ActiveJob::Base
-  queue_as :default
+  queue_as :evaluate
 
   def perform(user_id:, lesson_id:, question_id:)
     root_dir = Rails.root.to_s
