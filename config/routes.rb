@@ -4,12 +4,14 @@ Rails.application.routes.draw do
   resources :lessons do
     resources :questions, only: [:index, :show, :new] do
       resources :users do
-        get 'answers/show' => 'answers#show', as: 'answers'
+        get 'answers' => 'answers#index', as: 'answers'
+        post 'answers/select_version' => 'answers#select_version'
       end
     end
     resources :users do
       resources :questions do
-        get 'answers/show' => 'answers#show', as: 'answers'
+        get 'answers' => 'answers#index', as: 'answers'
+        post 'answers/select_version' => 'answers#select_version'
       end
     end
     collection do
@@ -29,7 +31,6 @@ Rails.application.routes.draw do
     :passwords => 'users/passwords'
   }
 
-  get '/answers/show' => 'answers#show'
   get '/questions/' => 'questions#index'
   get '/questions/new' => 'questions#new'
   post '/questions/' => 'questions#create'
