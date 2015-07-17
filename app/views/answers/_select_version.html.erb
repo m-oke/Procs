@@ -1,8 +1,5 @@
-<%= @select_item  %>
-<div>
-  <%= collection_select(:id, :file_name, @question_diff_detail, :id, :file_name ,{:prompt => "比べ元を選択してください"},{:class=>'my-custom-class'})%>
-  <%= collection_select(:id, :file_name, @question_diff_detail, :id, :file_name ,{:prompt => "比べ先を選択してください"},{:class=>'my-custom-class'}) %>
-</div>
+<%= @newpath  %>
+
 
 <div>
   <%= text_area :page, :name, :value=> @select_item, :rows=>30 , :class=>"form-control" %>

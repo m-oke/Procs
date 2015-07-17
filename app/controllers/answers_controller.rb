@@ -8,7 +8,12 @@ class AnswersController < ApplicationController
     @question_diff_detail= Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id )
     @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  , question_id: @question_id )
 
-    @content =  File.read('./app/assets/file.txt')
+    @file_name  = Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id ).last.file_name
+    @path_folder ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
+
+    @path = @path_folder + @file_name
+    @content = File.read(@path)
+
 
   end
 
@@ -76,7 +81,8 @@ class AnswersController < ApplicationController
 
   def select_version
     @select_item = params[:selected_file]
-
+    @select_path = params[:selected_path]
+    @newpath = @select_path.to_s + @select_item
   end
 
 end
