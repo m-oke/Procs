@@ -21,7 +21,7 @@
 
       <% @question_diff_detail.each do |m| %>
           <tr>
-            <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name ,:selected_path =>@selected_path },  :method => "POST", :remote => true%></td>
+            <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name ,:selected_path =>@path_directory },  :method => "POST", :remote => true%></td>
             <td><%= m.created_at %></td>
             <td><%= m.result %></td>
             <td><%= m.run_time %></td>
@@ -37,7 +37,7 @@
 
   </div>
 
-  <div id="diff_area">
+  <div >
     <p><span>比較するバージョン</span><%= collection_select(:id, :file_name, @question_diff_detail, :id, :file_name ,{:prompt => "なし"},{:class=>'my-custom-class'})%></p>
     <div id="diff_area">
         <% File.open(@path, 'r:utf-8') do |f| %>

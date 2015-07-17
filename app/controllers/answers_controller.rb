@@ -9,9 +9,9 @@ class AnswersController < ApplicationController
     @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  , question_id: @question_id )
 
     @file_name  = Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id ).last.file_name
-    @path_folder ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
+    @path_directory ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
 
-    @path = @path_folder + @file_name
+    @path = @path_directory + @file_name
     @content = File.read(@path)
 
 

@@ -1,6 +1,5 @@
-<%= @newpath  %>
-
-
-<div>
-  <%= text_area :page, :name, :value=> @select_item, :rows=>30 , :class=>"form-control" %>
-</div>
+<% File.open(@newpath, 'r:utf-8') do |f| %>
+    <% f.each_line do |line| %>
+        <p><%=line %></p>
+    <% end %>
+<% end %>
