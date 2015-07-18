@@ -38,10 +38,11 @@
   </div>
 
   <div >
-    <p><span>比較するバージョン</span>
+    <p><span>比較バージョン</span>
       <text id="select_file_user"><%= @file_name %></text>
       <text id="diff_select_directory"><%= @path_directory %></text>
       <%= collection_select(:id, :file_name, @question_diff_detail, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
+      <%= link_to "Diff" , { :action => :diff_select, :selected_file => @file_name,:selected_path =>@path_directory }, :method => "POST", :remote=>true %>
     </p>
     <div id="diff_area">
         <% File.open(@path, 'r:utf-8') do |f| %>

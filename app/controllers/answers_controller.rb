@@ -86,11 +86,7 @@ class AnswersController < ApplicationController
   end
 
   def diff_select
-    @select_diff_item = params[:diff_selected_file]
-    @select_diff_directory = params[:diff_selected_directory]
-    @new_diff_path = @select_diff_directory.to_s + @select_diff_item
-    @diff_content = File.read(@new_diff_path)
-    render json: { content: @diff_content }
+
 
   end
 
