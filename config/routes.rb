@@ -6,12 +6,14 @@ Rails.application.routes.draw do
       resources :users do
         get 'answers' => 'answers#index', as: 'answers'
         post 'answers/select_version' => 'answers#select_version'
+        get 'answers/diff_select' => 'answers#diff_select'
       end
     end
     resources :users do
       resources :questions do
         get 'answers' => 'answers#index', as: 'answers'
         post 'answers/select_version' => 'answers#select_version'
+        get'answers/diff_select' => 'answers#diff_select'
       end
     end
     collection do
