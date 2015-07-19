@@ -1,30 +1,22 @@
-///**
-// * Created by lin on 15/07/16.
-// */
-//
-//$(function(){
-//
-//    $("#diff_select").change(function(){
-//        var selected = $("#diff_select option:selected").text()
-//        var path = $("#diff_select_directory").text()
-//        $.ajax({
-//            url: "answers/diff_select",
-//            type: "GET",
-//            data: {diff_selected_file:selected ,
-//                   diff_selected_directory:path
-//            },
-//            dataType: "html",
-//            success: function(data) {
-//                $('#diff_area').html(
-//                    data
-//                );
-//            },
-//            error: function(data) {
-//
-//            }
-//        });
-//    });
-//
-//
-//
-//});
+/**
+ * Created by lin on 15/07/16.
+ */
+
+$(function(){
+
+    $("#diff_select").change(function(){
+        var diff_selected = $("#diff_select option:selected").text()
+        var path = $("#diff_select_directory").text()
+        var ram_selected = $("#select_file_ram").text()
+
+        $.ajax({
+            url: "answers/diff_select",
+            type: "POST",
+            data: {diff_selected_file:diff_selected ,
+                   ram_selected_file:ram_selected,
+                   diff_selected_directory:path
+            }
+        });
+    });
+
+});

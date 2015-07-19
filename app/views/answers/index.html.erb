@@ -19,7 +19,7 @@
       </tr>
 
 
-      <% @question_diff_detail.each do |m| %>
+      <% @question_all_version.each do |m| %>
           <tr>
             <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name ,:selected_path =>@path_directory },  :method => "POST", :remote => true%></td>
             <td><%= m.created_at %></td>
@@ -37,19 +37,32 @@
 
   </div>
 
-  <div >
+  <div class ="diff_area_css">
     <p><span>比較バージョン</span>
-      <text id="select_file_user"><%= @file_name %></text>
+      <text id="select_file_ram"><%= @ram_display_file %></text>
       <text id="diff_select_directory"><%= @path_directory %></text>
-      <%= collection_select(:id, :file_name, @question_diff_detail, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
-      <%= link_to "Diff" , { :action => :diff_select, :selected_file => @file_name,:selected_path =>@path_directory }, :method => "POST", :remote=>true %>
+      <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
     </p>
-    <div id="diff_area">
-        <% File.open(@path, 'r:utf-8') do |f| %>
+    <div id="diff_area" >
+      <table class="gridtable">
+        <tr>
+          <th>行数</th>
+          <th>ソースコード</th>
+        </tr>
+
+
+        <% File.open(@ram_display_path, 'r:utf-8') do |f| %>
+            <%  num_line = 1 %>
             <% f.each_line do |line| %>
-            <p><%=line %></p>
+
+                <tr>
+                  <td> <%=  num_line %></td>
+                  <td style="width:100%"><%=line %></td>
+                </tr>
+                <% num_line = num_line + 1 %>
             <% end %>
         <% end %>
+      </table>
     </div>
   </div>
 

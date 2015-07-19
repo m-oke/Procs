@@ -5,15 +5,18 @@ class AnswersController < ApplicationController
     @student_id = params[:user_id]
     @lesson_id = params[:lesson_id]
     @question_id = params[:question_id]
-    @question_diff_detail= Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id )
-    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  , question_id: @question_id )
+    @question_all_version= Answer.where(:question_id => @question_id,
+                                        :lesson_id=> @lesson_id,
+                                        :student_id=> @student_id )
+    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  ,
+                                                 question_id: @question_id )
 
-    @file_name  = Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id ).last.file_name
+    @ram_display_file  = Answer.where(:question_id => @question_id,
+                               :lesson_id=> @lesson_id,
+                               :student_id=> @student_id ).last.file_name
     @path_directory ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
 
-    @path = @path_directory + @file_name
-    @content = File.read(@path)
-
+    @ram_display_path = @path_directory + @ram_display_file
 
   end
 
@@ -82,11 +85,17 @@ class AnswersController < ApplicationController
   def select_version
     @select_item = params[:selected_file]
     @select_path = params[:selected_path]
-    @newpath = @select_path.to_s + @select_item
+    @new_ram_path = @select_path.to_s + @select_item
   end
 
   def diff_select
 
+    @select_diff_file = params[:diff_selected_file]
+    @select_file_directory = params[:diff_selected_directory]
+    @select_ram_file = params[:ram_selected_file]
+
+    @select_diff_name = @select_file_directory.to_s + @select_diff_file
+    @select_ram_name = @select_file_directory.to_s + @select_ram_file
 
   end
 
