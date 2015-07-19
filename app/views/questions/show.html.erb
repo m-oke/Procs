@@ -17,21 +17,22 @@ font-size: medium;
     <tr>
       <th></th>
       <th>結果</th>
-      <th>実行時間</th>
-      <th>メモリ使用率</th>
+      <th>実行時間(ms)</th>
+      <th>メモリ使用量(MB/KB)</th>
     </tr>
     <tr>
       <td>制限</td>
       <td>-</td>
-      <td><%= @question.run_time_limit %></td>
-      <td><%= @question.memory_usage_limit %></td>
+      <td><%= @question.run_time_limit %> ms</td>
+      <td><%= @question.memory_usage_limit %> MB</td>
     </tr>
     <% unless @is_teacher %>
       <tr>
         <td>提出物</td>
         <td><%= Answer::RESULT[@latest_answer.result] %></td>
-        <td><%= @latest_answer.run_time %></td>
-        <td><%= @latest_answer.memory_usage %></td>
+        <td><%= @latest_answer.run_time.round %> ms</td>
+        <% @latest_answer.memory_usage / 10000 == 0 ? unit = "KB" : unit = "MB" %>
+        <td><%= "#{@latest_answer.memory_usage} #{unit}" %></td>
       </tr>
     <% end %>
   </table>
