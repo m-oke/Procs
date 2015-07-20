@@ -97,6 +97,16 @@ class AnswersController < ApplicationController
     @select_diff_name = @select_file_directory.to_s + @select_diff_file
     @select_ram_name = @select_file_directory.to_s + @select_ram_file
 
+    @diff = show_diff(@select_ram_name, @select_diff_name)
+
   end
+
+  private
+  def show_diff(original_file, new_file)
+    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./app/assets/diff.txt`
+    diff = File.open('./app/assets/diff.txt', 'r:utf-8')
+    return diff
+  end
+
 
 end

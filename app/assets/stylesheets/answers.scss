@@ -38,3 +38,53 @@ table.gridtable td {
 
 }
 
+ table.diff {
+   width: 800px;
+   border-collapse: collapse;
+   border: 2px #808080 solid;
+ }
+.old_line {
+  width: 50px;
+  border: 1px #808080 solid;
+  border-width: 0px 1px;
+  color: #aaaaaa;
+  text-align: right;
+  padding: 0px 10px 0px 0px;
+}
+.new_line {
+  width: 50px;
+  border: 1px #808080 solid;
+  border-width: 0px 1px;
+  color: #aaaaaa;
+  text-align: right;
+  padding: 0px 10px 0px 0px;
+}
+.change {
+  width: 30px;
+  padding: 0px 5px 0px 5px;
+}
+.head {
+  border: 1px #808080 solid;
+  border-width: 2px 1px;
+}
+.red {
+  background-color: #ff8888;
+}
+.green {
+  background-color: #88ff88;
+}
+.normal {
+  background-color: #ffffff;
+}
+pre#code {
+  display: inline;
+  padding: 0px 2px 0px 2px;
+  margin: 0 0 0 0;
+  line-height: 0px;
+  word-break: normal;
+  word-wrap: normal;
+  color: #000000;
+  background-color: transparent;
+  border: 0px solid #ffffff;
+  font-family: "Hiragino Kaku Gothic ProN", sans-self;
+}

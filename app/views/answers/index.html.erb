@@ -49,8 +49,6 @@
           <th>行数</th>
           <th>ソースコード</th>
         </tr>
-
-
         <% File.open(@ram_display_path, 'r:utf-8') do |f| %>
             <%  num_line = 1 %>
             <% f.each_line do |line| %>

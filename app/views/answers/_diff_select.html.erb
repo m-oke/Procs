@@ -1,5 +1,26 @@
-<% File.open(@select_diff_name, 'r:utf-8') do |f| %>
-    <% f.each_line do |line| %>
-        <p><%=line %></p>
-    <% end %>
-<% end %>
+
+<table class="diff">
+  <tr class="head">
+    <th class="old_line"> old </th>
+    <th class="new_line"> new </th>
+    <th class="change"> </th>
+    <th id="code"> source code </th>
+  </tr>
+  <% new_line_number = 0 %>
+  <% @diff.each_with_index do |line, i| %>
+      <% new_line_number += 1 %>
+      <tr class=" <%= th_color(line.chars[0]) %>">
+        <th class="old_line"> <%= i + 1 %> </th>
+        <% if line.chars[0] == "+" %>
+            <th class="new_line"> <%= new_line_number %> </th>
+        <% elsif line.chars[0] == "-" %>
+            <% new_line_number -= 1 %>
+            <th class="new_line"> </th>
+        <% else %>
+            <th class="new_line"> <%= new_line_number %> </th>
+        <% end %>
+        <th class="change"> <%= line.chars[0] %> </th>
+        <th><pre id="code"> <%= remove_head(line).chomp %> </pre></th>
+      </tr>
+  <% end %>
+</table>
