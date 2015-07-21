@@ -29,10 +29,16 @@ font-size: medium;
     <% unless @is_teacher %>
       <tr>
         <td>提出物</td>
-        <td><%= Answer::RESULT[@latest_answer.result] %></td>
-        <td><%= @latest_answer.run_time.round %> ms</td>
-        <% @latest_answer.memory_usage / 10000 == 0 ? unit = "KB" : unit = "MB" %>
-        <td><%= "#{@latest_answer.memory_usage} #{unit}" %></td>
+        <% if @latest_answer.nil? %>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        <% else %>
+          <td><%= Answer::RESULT[@latest_answer.result] %></td>
+          <td><%= @latest_answer.run_time.round %> ms</td>
+          <% @latest_answer.memory_usage / 10000 == 0 ? unit = "KB" : unit = "MB" %>
+          <td><%= "#{@latest_answer.memory_usage} #{unit}" %></td>
+        <% end %>
       </tr>
     <% end %>
   </table>

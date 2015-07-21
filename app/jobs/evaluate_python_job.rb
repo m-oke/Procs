@@ -2,30 +2,39 @@
 class EvaluatePythonJob < ActiveJob::Base
   queue_as :evaluate
 
-  #
+  # pythonプログラムの評価実行
+  # @param [Fixnum] user_id ユーザID
+  # @param [Fixnum] lesson_id 授業ID
+  # @param [Fixnum] question_id 問題ID
   def perform(user_id:, lesson_id:, question_id:)
+    # ファイル名やファイル場所の設定
     root_dir = Rails.root.to_s
-    file_dir = "#{root_dir}/uploads/#{user_id}/#{lesson_id}/#{question_id}"
-    tmp_dir = "#{root_dir}/tmp/answers"
-    tmp_filename = "#{user_id}_#{lesson_id}_#{question_id}"
-    spec_file = "#{tmp_dir}/#{tmp_filename}_spec"
+    work_dir = "#{root_dir}/tmp/answers" # 作業ディレクトリ
+    work_filename = "#{user_id}_#{lesson_id}_#{question_id}" # 作業用ファイル名接頭辞
+    spec_file = "#{work_dir}/#{work_filename}_spec" # 実行時間とメモリ使用量記述ファイル
 
+    question = Question.find_by(:id => question_id)
+    run_time_limit = question.run_time_limit || 5 # 実行時間が未設定ならば5秒
     answer = Answer.where(:student_id => user_id,
                           :lesson_id => lesson_id,
                           :question_id => question_id).last
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
-    FileUtils.mkdir_p(tmp_dir) unless FileTest.exist?(tmp_dir)
+    original_file = "#{root_dir}/uploads/#{user_id}/#{lesson_id}/#{question_id}/#{answer.file_name}" # アップロードされたファイル
+    exe_file = "#{work_dir}/#{work_filename}_exe.py" # 追記後の実行ファイル
 
+    FileUtils.mkdir_p(work_dir) unless FileTest.exist?(work_dir)
+
+    # テストデータをファイル出力
     test_data.each.with_index(1) do |data,i|
-      File.open("#{tmp_dir}/#{tmp_filename}_input#{i}", "w+"){ |f| f.write(data.input) }
+      # 入力用ファイル
+      File.open("#{work_dir}/#{work_filename}_input#{i}", "w+"){ |f| f.write(data.input) }
+      # 出力用ファイル
       # python実行結果と形式を一緒にするために末尾に改行を追加
-      File.open("#{tmp_dir}/#{tmp_filename}_output#{i}", "w+") do |f|
-        f.puts(data.output)
-      end
+      File.open("#{work_dir}/#{work_filename}_output#{i}", "w+"){ |f| f.puts(data.output) }
     end
-    original_file = "#{file_dir}/#{answer.file_name}"
-    exe_file = "#{tmp_dir}/#{tmp_filename}_exe.py"
+
+    # 実行ファイルに実行時間とメモリ使用量の計測用スクリプトの追記
     File.open(exe_file, "w+") do |exe|
       exe.puts('import time')
       exe.puts('start = time.perf_counter()')
@@ -39,19 +48,33 @@ class EvaluatePythonJob < ActiveJob::Base
       exe.puts('f.close()')
     end
 
-    Dir.chdir(tmp_dir)
+    Dir.chdir(work_dir)
     spec = Hash.new { |h,k| h[k] = {} }
-    1.upto(test_count) do |i|
-      `python3 #{exe_file} < #{tmp_dir}/#{tmp_filename}_input#{i} > #{tmp_dir}/#{tmp_filename}_result#{i}`
-      result = `diff #{tmp_filename}_output#{i} #{tmp_filename}_result#{i}`
 
+    # テストデータの数だけ繰り返し
+    1.upto(test_count) do |i|
+      begin
+        Timeout.timeout(run_time_limit) do
+          # 入力用ファイルを入力し，結果をファイル出力
+          `python3 #{exe_file} < #{work_dir}/#{work_filename}_input#{i} > #{work_dir}/#{work_filename}_result#{i}`
+        end
+      rescue Timeout::Error => e
+        p e
+      end
+
+      # 結果と出力用ファイルのdiff
+      result = `diff #{work_filename}_output#{i} #{work_filename}_result#{i}`
+
+      # diff結果が異なればそこでテスト失敗
       unless result.empty?
-        answer.result = -1
-        answer.save
-        `rm #{tmp_dir}/#{tmp_filename}*`
+        cancel_evaluate(answer, "WA", "#{work_dir}/#{work_filename}")
+        # answer.result = -1
+        # answer.save
+        # `rm #{work_dir}/#{work_filename}*`
         return
       end
 
+      # 実行時間とメモリ使用量を記録
       time = 0
       memory = 0
       File.open(spec_file, "r") do |f|
@@ -61,15 +84,25 @@ class EvaluatePythonJob < ActiveJob::Base
       spec[i][:time] = time
       spec[i][:memory] = memory
     end
+
+    # 最大値を求めるためのソート
     times = spec.inject([]){|prev, (key, val)| prev.push val[:time]}
     memories = spec.inject([]){|prev, (key, val)| prev.push val[:memory]}
 
-    answer.result = 1
+    # 実行結果を記録
+    answer.result = "A"
     answer.run_time = times.max
     answer.memory_usage = memories.max
     answer.save
-    logger.info(spec)
-    `rm #{tmp_dir}/#{tmp_filename}*`
+    `rm #{work_dir}/#{work_filename}*`
+    return
+  end
+
+  private
+  def cancel_evaluate(answer, result, filename)
+    answer.result = result
+    answer.save
+    `rm #{filename}*`
     return
   end
 end

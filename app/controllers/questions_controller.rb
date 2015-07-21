@@ -56,7 +56,7 @@ class QuestionsController < ApplicationController
     end
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                           :question_id => params[:id],
-                                          :lesson_id => lesson_id) || Answer.new
+                                          :lesson_id => lesson_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
   end
 

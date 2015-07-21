@@ -37,8 +37,10 @@ class AnswersController < ApplicationController
                             :question_id => question_id,
                             :lesson_id => lesson_id,
                             :file_name => next_name,
-                            :result => 0,
-                            :student_id => current_user.id)
+                            :result => "P",
+                            :student_id => current_user.id,
+                            :run_time => 0,
+                            :memory_usage => 0)
         answer.save
         flash[:notice] = '回答を投稿しました。'
         case params[:language]

@@ -4,12 +4,12 @@ class CreateAnswers < ActiveRecord::Migration
       t.integer :student_id, null: false
       t.integer :question_id, null: false
       t.string :file_name, null: false
-      t.integer :result, null: false
+      t.string :result, null: false
       t.string :language, null: false
-      t.float :run_time
-      t.integer :memory_usage
-      t.integer :cpu_usage
-      t.float :plagiarism_percentage
+      t.float :run_time, default: 0
+      t.integer :memory_usage, default: 0
+      t.integer :cpu_usage, default: 0
+      t.float :plagiarism_percentage, default: 0
 
       t.timestamps null: false
     end
