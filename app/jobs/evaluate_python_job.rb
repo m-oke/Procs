@@ -56,10 +56,18 @@ class EvaluatePythonJob < ActiveJob::Base
       begin
         Timeout.timeout(run_time_limit) do
           # 入力用ファイルを入力し，結果をファイル出力
-          `python3 #{exe_file} < #{work_dir}/#{work_filename}_input#{i} > #{work_dir}/#{work_filename}_result#{i}`
+          @process = IO.popen("python3 #{exe_file} < #{work_dir}/#{work_filename}_input#{i} > #{work_dir}/#{work_filename}_result#{i}")
+
+          # 処理の終了を待つ
+          Process.waitpid2(@process.pid)
         end
+        # 処理中にタイムアウトになった場合
       rescue Timeout::Error => e
-        p e
+        # Rubyのプロセス管理の理由からpid + 1
+        Process.kill(:KILL, @process.pid + 1)
+        puts "kill timeout process #{@process.pid}"
+        cancel_evaluate(answer, "TO", "#{work_dir}/#{work_filename}")
+        return
       end
 
       # 結果と出力用ファイルのdiff
@@ -68,9 +76,6 @@ class EvaluatePythonJob < ActiveJob::Base
       # diff結果が異なればそこでテスト失敗
       unless result.empty?
         cancel_evaluate(answer, "WA", "#{work_dir}/#{work_filename}")
-        # answer.result = -1
-        # answer.save
-        # `rm #{work_dir}/#{work_filename}*`
         return
       end
 
@@ -99,6 +104,10 @@ class EvaluatePythonJob < ActiveJob::Base
   end
 
   private
+  # 失敗時の処理
+  # @param [Answer] answer 保存するAnswerオブジェクト
+  # @param [String] result resultに記録する文字列
+  # @param [String] filename 一時保存のファイル名
   def cancel_evaluate(answer, result, filename)
     answer.result = result
     answer.save
