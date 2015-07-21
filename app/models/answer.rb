@@ -13,7 +13,7 @@ class Answer < ActiveRecord::Base
                            :lesson_id => lesson_id)
     latest_answer = nil
     unless answers.empty?
-      last = answers.where(:result => "A").last
+      last = answers.where(:result => ["A", "P"]).last
       latest_answer = last.nil? ? answers.last : last
     end
     return latest_answer
