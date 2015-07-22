@@ -11,7 +11,7 @@ class AnswersController < ApplicationController
     lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
     question_id = params[:id]
     unless file.nil?
-      extention = Answer::EXT[params[:language]]
+      extention = EXT[params[:language]]
       name = file.original_filename
 
       if !(extention == File.extname(name).downcase)

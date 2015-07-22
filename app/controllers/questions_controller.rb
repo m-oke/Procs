@@ -58,6 +58,7 @@ class QuestionsController < ApplicationController
                                           :question_id => params[:id],
                                           :lesson_id => lesson_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
+    @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
   end
 
 
