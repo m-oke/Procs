@@ -1,7 +1,3 @@
-/**
- * Created by lin on 15/07/12.
- */
-
 $(function(){
     var startDateTextBox = $('.datepicker1');
     var endDateTextBox = $('.datepicker2');

@@ -1,10 +1,3 @@
-/**
- * Created by lin on 15/07/20.
- */
-/**
- * Created by lin on 15/07/16.
- */
-
 $(function(){
 
     $("#diff_select").change(function(){

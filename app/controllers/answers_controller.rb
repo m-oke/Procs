@@ -20,6 +20,7 @@ class AnswersController < ApplicationController
 
     @new_raw_path = @path_directory + @raw_display_file
 
+    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
   end
 
   # post '/answers'

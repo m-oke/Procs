@@ -39,12 +39,14 @@
 
   <div class ="diff_area_css">
     <p><span>選択したバージョン：</span><text id="select_file_raw"><%= @raw_display_file %></text></p>
-    <p><span>比較するバージョン</span>
-      <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
-    </p>
-    <div id="diff_area" >
-      <%= render 'select_version' %>
-    </div>
+        <% if @is_teacher %>
+        <p><span>比較するバージョン</span>
+            <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
+        </p>
+        <% end %>
+            <div id="diff_area" >
+            <%= render 'select_version' %>
+            </div>
   </div>
 
 </div>
