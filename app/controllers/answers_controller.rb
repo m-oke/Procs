@@ -110,19 +110,31 @@ class AnswersController < ApplicationController
     return diff
   end
 
-  def index
-    # @questions = get_questions
-    @student_id = params[:user_id]
-    @lesson_id = params[:lesson_id]
-    @question_id = params[:question_id]
-    @question_diff_detail= Answer.where(:question_id => @question_id,:lesson_id=> @lesson_id,:student_id=> @student_id )
-    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  , question_id: @question_id )
+  def select_version
+    @select_item = params[:selected_file]
+    @select_path = params[:selected_path]
+    @new_ram_path = @select_path.to_s + @select_item
   end
 
-  private
+  def diff_select
 
-  # def get_questions
-  #   return Answer.where("student_id = ?",current_user.id)
-  # end
+    @select_diff_file = params[:diff_selected_file]
+    @select_file_directory = params[:diff_selected_directory]
+    @select_ram_file = params[:ram_selected_file]
+
+    @select_diff_name = session[:directory].to_s + @select_diff_file
+    @select_ram_name = session[:directory].to_s + @select_ram_file
+    @diff = show_diff(@select_ram_name, @select_diff_name)
+
+  end
+
+
+  private
+  def show_diff(original_file, new_file)
+    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./tmp/diff.txt`
+    diff = File.open('./tmp/diff.txt', 'r:utf-8')
+    return diff
+  end
+
 
 end

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       resources :questions do
         get 'answers' => 'answers#index', as: 'answers'
         post 'answers/select_version' => 'answers#select_version'
-        post'answers/diff_select' => 'answers#diff_select'
+        post 'answers/diff_select' => 'answers#diff_select'
       end
     end
     collection do
@@ -28,10 +28,10 @@ Rails.application.routes.draw do
   resources :answers, only: [:create]
 
   devise_for :users, :controllers => {
-    :sessions => 'users/sessions',
-    :registrations => 'users/registrations',
-    :passwords => 'users/passwords'
-  }
+                       :sessions => 'users/sessions',
+                       :registrations => 'users/registrations',
+                       :passwords => 'users/passwords'
+                   }
 
   get '/questions/' => 'questions#index'
   get '/questions/new' => 'questions#new'
