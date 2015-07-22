@@ -4,7 +4,7 @@ class Answer < ActiveRecord::Base
   belongs_to :lesson, :foreign_key => :lesson_id
 
   EXT = {"c" => ".c", "python" => ".py"}
-  RESULT = {-1 => "Reject", 0 => "Pending", 1 => "Accept"}
+  RESULT = {"TO" => "Time Out", "WA" => "Wrong Answer", "P" => "Pending", "A" => "Accept"}
 
 
   def self.latest_answer(student_id: , lesson_id: ,question_id: )
@@ -13,7 +13,7 @@ class Answer < ActiveRecord::Base
                            :lesson_id => lesson_id)
     latest_answer = nil
     unless answers.empty?
-      last = answers.where(:result => 1).last
+      last = answers.where(:result => ["A", "P"]).last
       latest_answer = last.nil? ? answers.last : last
     end
     return latest_answer

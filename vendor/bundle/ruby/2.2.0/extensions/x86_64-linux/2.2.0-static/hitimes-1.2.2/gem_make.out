@@ -1,0 +1,17 @@
+/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20150714-6038-1k4qlg1.rb extconf.rb
+checking for clock_gettime() in -lrt... yes
+creating Makefile
+
+make "DESTDIR=" clean
+
+make "DESTDIR="
+compiling hitimes_instant_osx.c
+compiling hitimes_instant_clock_gettime.c
+compiling hitimes_interval.c
+compiling hitimes.c
+compiling hitimes_instant_windows.c
+compiling hitimes_stats.c
+linking shared-object hitimes/2.2/hitimes.so
+
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 hitimes.so ./.gem.20150714-6038-14qxtgz/hitimes/2.2
