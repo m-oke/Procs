@@ -11,14 +11,14 @@ class AnswersController < ApplicationController
     @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  ,
                                                  question_id: @question_id )
 
-    @ram_display_file  = Answer.where(:question_id => @question_id,
+    @raw_display_file  = Answer.where(:question_id => @question_id,
                                :lesson_id=> @lesson_id,
                                :student_id=> @student_id ).last.file_name
 
     @path_directory ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
-    session[:directory]= @path_directory
+    flash[:directory]= @path_directory
 
-    @ram_display_path = @path_directory + @ram_display_file
+    @new_raw_path = @path_directory + @raw_display_file
 
   end
 
@@ -86,20 +86,20 @@ class AnswersController < ApplicationController
 
   def select_version
     @select_item = params[:selected_file]
-    @select_path = params[:selected_path]
-    @new_ram_path = @select_path.to_s + @select_item
+    @select_path = flash[:directory]
+    @new_raw_path = @select_path.to_s + @select_item
+    flash[:directory] = flash[:directory]
   end
 
   def diff_select
 
     @select_diff_file = params[:diff_selected_file]
-    @select_file_directory = params[:diff_selected_directory]
-    @select_ram_file = params[:ram_selected_file]
+    @select_raw_file = params[:raw_selected_file]
 
-    @select_diff_name = session[:directory].to_s + @select_diff_file
-    @select_ram_name = session[:directory].to_s + @select_ram_file
-    @diff = show_diff(@select_ram_name, @select_diff_name)
-
+    @select_diff_name = flash[:directory].to_s + @select_diff_file
+    @select_raw_name = flash[:directory].to_s + @select_raw_file
+    @diff = show_diff(@select_raw_name, @select_diff_name)
+    flash[:directory] = flash[:directory]
   end
 
 

@@ -21,7 +21,7 @@
 
       <% @question_all_version.each do |m| %>
           <tr>
-            <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name ,:selected_path =>@path_directory },  :method => "POST", :remote => true%></td>
+            <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name },  :method => "POST", :remote => true%></td>
             <td><%= m.created_at %></td>
             <td><%= m.result %></td>
             <td><%= m.run_time %></td>
@@ -38,25 +38,12 @@
   </div>
 
   <div class ="diff_area_css">
-    <p><span>選択したバージョン：</span><text id="select_file_ram"><%= @ram_display_file %></text></p>
+    <p><span>選択したバージョン：</span><text id="select_file_raw"><%= @raw_display_file %></text></p>
     <p><span>比較するバージョン</span>
       <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
     </p>
     <div id="diff_area" >
-      <table class="diff">
-        <tr class="head">
-          <th class="old_line">row</th>
-          <th id="code">source code</th>
-        </tr>
-        <% File.open(@ram_display_path, 'r:utf-8') do |f| %>
-            <% f.each_with_index do |line,i| %>
-                <tr>
-                  <td class="old_line"> <%=  i+1 %></td>
-                  <td style="width:100%"><pre id="code"> <%= line.chomp %></pre> </td>
-                </tr>
-            <% end %>
-        <% end %>
-      </table>
+      <%= render 'select_version' %>
     </div>
   </div>
 

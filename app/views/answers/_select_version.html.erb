@@ -3,7 +3,7 @@
     <th class="old_line">row</th>
     <th id="code">source code</th>
   </tr>
-  <% File.open(@new_ram_path, 'r:utf-8') do |f| %>
+  <% File.open(@new_raw_path, 'r:utf-8') do |f| %>
       <% f.each_with_index do |line , i| %>
           <tr>
             <td class="old_line"> <%=  i+1 %></td>
