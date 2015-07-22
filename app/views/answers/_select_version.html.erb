@@ -1,5 +1,14 @@
-<% File.open(@new_ram_path, 'r:utf-8') do |f| %>
-    <% f.each_line do |line| %>
-        <p><%=line %></p>
-    <% end %>
-<% end %>
+<table class="diff">
+  <tr class="head">
+    <th class="old_line">row</th>
+    <th id="code">source code</th>
+  </tr>
+  <% File.open(@new_ram_path, 'r:utf-8') do |f| %>
+      <% f.each_with_index do |line , i| %>
+          <tr>
+            <td class="old_line"> <%=  i+1 %></td>
+            <td style="width:100%"><pre id="code"> <%= line.chomp %> </pre></td>
+          </tr>
+      <% end %>
+  <% end %>
+</table>

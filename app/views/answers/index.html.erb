@@ -38,26 +38,22 @@
   </div>
 
   <div class ="diff_area_css">
-    <p><span>比較バージョン</span>
-      <text id="select_file_ram"><%= @ram_display_file %></text>
-      <text id="diff_select_directory"><%= @path_directory %></text>
+    <p><span>選択したバージョン：</span><text id="select_file_ram"><%= @ram_display_file %></text></p>
+    <p><span>比較するバージョン</span>
       <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
     </p>
     <div id="diff_area" >
-      <table class="gridtable">
-        <tr>
-          <th>行数</th>
-          <th>ソースコード</th>
+      <table class="diff">
+        <tr class="head">
+          <th class="old_line">row</th>
+          <th id="code">source code</th>
         </tr>
         <% File.open(@ram_display_path, 'r:utf-8') do |f| %>
-            <%  num_line = 1 %>
-            <% f.each_line do |line| %>
-
+            <% f.each_with_index do |line,i| %>
                 <tr>
-                  <td> <%=  num_line %></td>
-                  <td style="width:100%"><%=line %></td>
+                  <td class="old_line"> <%=  i+1 %></td>
+                  <td style="width:100%"><pre id="code"> <%= line.chomp %></pre> </td>
                 </tr>
-                <% num_line = num_line + 1 %>
             <% end %>
         <% end %>
       </table>

@@ -1,4 +1,7 @@
 /**
+ * Created by lin on 15/07/20.
+ */
+/**
  * Created by lin on 15/07/16.
  */
 
@@ -13,8 +16,8 @@ $(function(){
             url: "answers/diff_select",
             type: "POST",
             data: {diff_selected_file:diff_selected ,
-                   ram_selected_file:ram_selected,
-                   diff_selected_directory:path
+                ram_selected_file:ram_selected,
+                diff_selected_directory:path
             }
         });
     });

@@ -19,5 +19,5 @@
 //= require lib/jquery-ui-timepicker-addon.js
 //= require_tree .
 //= require_directory ./lib
-//= require_directory ./users
+//= require_directory ./user_js
 

@@ -1,26 +1,43 @@
 
 <table class="diff">
-  <tr class="head">
-    <th class="old_line"> old </th>
-    <th class="new_line"> new </th>
-    <th class="change"> </th>
-    <th id="code"> source code </th>
-  </tr>
-  <% new_line_number = 0 %>
-  <% @diff.each_with_index do |line, i| %>
-      <% new_line_number += 1 %>
-      <tr class=" <%= th_color(line.chars[0]) %>">
-        <th class="old_line"> <%= i + 1 %> </th>
-        <% if line.chars[0] == "+" %>
-            <th class="new_line"> <%= new_line_number %> </th>
-        <% elsif line.chars[0] == "-" %>
-            <% new_line_number -= 1 %>
-            <th class="new_line"> </th>
-        <% else %>
-            <th class="new_line"> <%= new_line_number %> </th>
-        <% end %>
-        <th class="change"> <%= line.chars[0] %> </th>
-        <th><pre id="code"> <%= remove_head(line).chomp %> </pre></th>
+
+  <% if @select_diff_file != "なし" %>
+      <tr class="head">
+        <th class="old_line"> old </th>
+        <th class="new_line"> new </th>
+        <th class="change"> </th>
+        <th id="code"> source code </th>
       </tr>
+      <% new_line_number = 0 %>
+      <% @diff.each_with_index do |line, i| %>
+          <% new_line_number += 1 %>
+          <tr class=" <%= th_color(line.chars[0]) %>">
+            <td class="old_line"> <%= i + 1 %> </td>
+            <% if line.chars[0] == "+" %>
+                <td class="new_line"> <%= new_line_number %> </td>
+            <% elsif line.chars[0] == "-" %>
+                <% new_line_number -= 1 %>
+                <td class="new_line"> </td>
+            <% else %>
+                <td class="new_line"> <%= new_line_number %> </td>
+            <% end %>
+            <td class="change"> <%= line.chars[0] %> </td>
+            <td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
+          </tr>
+      <% end %>
+  <% else %>
+      <tr class="head">
+        <th class="old_line">row</th>
+        <th id="code">source code</th>
+      </tr>
+      <% File.open(@select_ram_name, 'r:utf-8') do |f| %>
+          <% f.each_with_index do |line,i| %>
+              <tr>
+                <td class="old_line"> <%=  i+1 %></td>
+                <td style="width:100%"><pre id="code"> <%= line.chomp %></pre> </td>
+              </tr>
+          <% end %>
+      <% end %>
   <% end %>
+
 </table>

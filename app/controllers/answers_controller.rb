@@ -14,7 +14,9 @@ class AnswersController < ApplicationController
     @ram_display_file  = Answer.where(:question_id => @question_id,
                                :lesson_id=> @lesson_id,
                                :student_id=> @student_id ).last.file_name
+
     @path_directory ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
+    session[:directory]= @path_directory
 
     @ram_display_path = @path_directory + @ram_display_file
 
@@ -94,17 +96,17 @@ class AnswersController < ApplicationController
     @select_file_directory = params[:diff_selected_directory]
     @select_ram_file = params[:ram_selected_file]
 
-    @select_diff_name = @select_file_directory.to_s + @select_diff_file
-    @select_ram_name = @select_file_directory.to_s + @select_ram_file
-
+    @select_diff_name = session[:directory].to_s + @select_diff_file
+    @select_ram_name = session[:directory].to_s + @select_ram_file
     @diff = show_diff(@select_ram_name, @select_diff_name)
 
   end
 
+
   private
   def show_diff(original_file, new_file)
-    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./app/assets/diff.txt`
-    diff = File.open('./app/assets/diff.txt', 'r:utf-8')
+    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./tmp/diff.txt`
+    diff = File.open('./tmp/diff.txt', 'r:utf-8')
     return diff
   end
 

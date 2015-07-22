@@ -1,1 +1,0 @@
-ruby 1.9.3 ではFile.write(IO.write)とFile.binwrite(IO.binwrite)ができ、簡単にファイルに文字列を書き込めるようです!!!!!!!
