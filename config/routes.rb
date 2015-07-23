@@ -5,15 +5,11 @@ Rails.application.routes.draw do
     resources :questions, only: [:index, :show, :new] do
       resources :users do
         get 'answers' => 'answers#index', as: 'answers'
-        post 'answers/select_version' => 'answers#select_version'
-        post 'answers/diff_select' => 'answers#diff_select'
       end
     end
     resources :users do
       resources :questions do
         get 'answers' => 'answers#index', as: 'answers'
-        post 'answers/select_version' => 'answers#select_version'
-        post 'answers/diff_select' => 'answers#diff_select'
       end
     end
     collection do
@@ -22,6 +18,11 @@ Rails.application.routes.draw do
       get ':lesson_id/questions' => 'questions#index', as: 'questions'
       get ':lesson_id/students' => 'lessons#students', as: 'students'
     end
+  end
+
+  scope :ajax do
+    post 'answers/select_version' => 'answers#select_version'
+    post 'answer/diff_select' => 'answers#diff_select'
   end
 
   resources :questions, only: [:index, :show, :new]

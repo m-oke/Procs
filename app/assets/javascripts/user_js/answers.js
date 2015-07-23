@@ -6,7 +6,7 @@ $(function(){
         var raw_selected = $("#select_file_raw").text()
 
         $.ajax({
-            url: "answers/diff_select",
+            url: "/ajax/answer/diff_select",
             type: "POST",
             data: {diff_selected_file:diff_selected ,
                 raw_selected_file:raw_selected,
