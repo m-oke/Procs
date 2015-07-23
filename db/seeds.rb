@@ -66,7 +66,7 @@ end
 
 # 問題
 # 過去の問題
-Question.create(:title => "問題1: フィボナッチ数", :content => "与えられた数値の順番のフィボナッチ数を出力する", :input_description => "任意の自然数", :output_description => "入力の順番のフィボナッチ数",  :run_time_limit => 5, :memory_usage_limit => 256, :cpu_usage_limit => 50)
+Question.create(:title => "問題1: フィボナッチ数", :content => "与えられた数値の順番のフィボナッチ数を出力する", :input_description => "任意の自然数", :output_description => "入力の順番のフィボナッチ数",  :run_time_limit => 5, :memory_usage_limit => 256)
 
 # 現在の問題
 Question.create(:title => "問題2", :content => "問題2の内容", :input_description => "問題2の入力説明", :output_description => "問題2の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
@@ -115,19 +115,19 @@ TestDatum.create(:question_id => 4, :input => "121", :output => "363")
 # 学生1
 #Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :plagiarism_percentage => 0.4)
 # Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => -1, :plagiarism_percentage => 0.4)
-# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version3.txt", :language => "c", :result => 1, :run_time => 1, :memory_usage => 10, :cpu_usage => 7, :plagiarism_percentage => 0.4)
-# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version4.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :cpu_usage => 7, :plagiarism_percentage => 0.9)
+# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version3.txt", :language => "c", :result => 1, :run_time => 1, :memory_usage => 10, :plagiarism_percentage => 0.4)
+# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version4.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :plagiarism_percentage => 0.9)
 
-Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 2, :file_name => "version1.txt", :language => "c", :result => "A", :run_time => 0.1, :memory_usage => 5, :cpu_usage => 7, :plagiarism_percentage => 0.1)
+Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 2, :file_name => "version1.txt", :language => "c", :result => "A", :run_time => 0.1, :memory_usage => 5, :plagiarism_percentage => 0.1)
 
 
 # 学生2
 Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => "TO", :plagiarism_percentage => 0.1)
 
 Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version1.txt", :language => "c", :result => "WA", :plagiarism_percentage => 0.2)
-Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version2.txt", :language => "c", :result => "A", :run_time => 1, :memory_usage => 10, :cpu_usage => 8, :plagiarism_percentage => 0.5)
+Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version2.txt", :language => "c", :result => "A", :run_time => 1, :memory_usage => 10, :plagiarism_percentage => 0.5)
 
 # クラス1の残りの学生
 (9..14).each do |i|
-  Answer.create(:student_id => i, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => "A", :run_time => 3, :memory_usage => 50, :cpu_usage => 10, :plagiarism_percentage => 0.3)
+  Answer.create(:student_id => i, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => "A", :run_time => 3, :memory_usage => 50, :plagiarism_percentage => 0.3)
 end
