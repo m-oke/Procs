@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 class AnswersController < ApplicationController
+  before_filter :authenticate_user!
 
   def index
     @student_id = params[:user_id]
@@ -20,7 +21,13 @@ class AnswersController < ApplicationController
 
     @new_raw_path = @path_directory + @raw_display_file
 
-    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
+    # 該当授業の教師かどうかを取得
+    if Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).nil?
+      flash[:notice] = "該当する授業に参加していません"
+      redirect_to :controller => 'lessons', :action => 'index'
+    else
+      @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
+    end
   end
 
   # post '/answers'
