@@ -12,6 +12,7 @@ class EvaluatePythonJob < ActiveJob::Base
     work_dir = "#{root_dir}/tmp/answers" # 作業ディレクトリ
     work_filename = "#{user_id}_#{lesson_id}_#{question_id}" # 作業用ファイル名接頭辞
     spec_file = "#{work_dir}/#{work_filename}_spec" # 実行時間とメモリ使用量記述ファイル
+    spec_file_tmp = "#{work_dir}/#{work_filename}_spec_tmp" # 実行時間とメモリ使用量記述ファイル
 
     question = Question.find_by(:id => question_id)
     run_time_limit = question.run_time_limit || 5 # 実行時間が未設定ならば5秒
@@ -22,8 +23,10 @@ class EvaluatePythonJob < ActiveJob::Base
     test_count = test_data.size
     original_file = "#{root_dir}/uploads/#{user_id}/#{lesson_id}/#{question_id}/#{answer.file_name}" # アップロードされたファイル
     exe_file = "#{work_dir}/#{work_filename}_exe.py" # 追記後の実行ファイル
+    @max_pss = 0
 
     FileUtils.mkdir_p(work_dir) unless FileTest.exist?(work_dir)
+    FileUtils.copy(original_file, exe_file)
 
     # テストデータをファイル出力
     test_data.each.with_index(1) do |data,i|
@@ -34,33 +37,39 @@ class EvaluatePythonJob < ActiveJob::Base
       File.open("#{work_dir}/#{work_filename}_output#{i}", "w+"){ |f| f.puts(data.output) }
     end
 
-    # 実行ファイルに実行時間とメモリ使用量の計測用スクリプトの追記
-    File.open(exe_file, "w+") do |exe|
-      exe.puts('import time')
-      exe.puts('start = time.perf_counter()')
-      exe.puts("#{File.open(original_file, "r").read}")
-      exe.puts('elapse = time.perf_counter() - start')
-      exe.puts('import resource')
-      exe.puts('ru = resource.getrusage(resource.RUSAGE_SELF)')
-      exe.puts("f = open('#{spec_file}', 'w+', encoding='UTF-8')")
-      exe.puts('f.write(str(round(elapse * 1000)) + "\n")')
-      exe.puts('f.write(str(ru.ru_maxrss))')
-      exe.puts('f.close()')
-    end
-
     Dir.chdir(work_dir)
     spec = Hash.new { |h,k| h[k] = {} }
 
     # テストデータの数だけ繰り返し
     1.upto(test_count) do |i|
+      exec_cmd = "python3 #{exe_file} < #{work_dir}/#{work_filename}_input#{i} > #{work_dir}/#{work_filename}_result#{i}"
+
       begin
         Timeout.timeout(run_time_limit) do
+          start_time = Time.now.instance_eval { self.to_i * 1000 + (usec/1000) }
           # 入力用ファイルを入力し，結果をファイル出力
-          @process = IO.popen("python3 #{exe_file} < #{work_dir}/#{work_filename}_input#{i} > #{work_dir}/#{work_filename}_result#{i}")
+          @process = IO.popen(exec_cmd)
 
-          # 処理の終了を待つ
-          Process.waitpid2(@process.pid)
+          # PSSの更新とプロセスチェック
+          loop do
+            # PSSの更新
+            tmp = `cat /proc/#{@process.pid}/smaps 2> /dev/null | awk '/^Pss/{sum += $2}END{print sum}'`.to_i
+            @max_pss = tmp if tmp > @max_pss
+
+            # 処理の終了チェック
+            begin
+              Timeout.timeout 0.000001 do
+                Process.waitpid2(@process.pid)
+                break
+              end
+            rescue Timeout::Error
+            rescue Errno::ECHILD
+              @elapsed_time = Time.now.instance_eval { self.to_i * 1000 + (usec/1000) } - start_time
+              break
+            end
+          end
         end
+
         # 処理中にタイムアウトになった場合
       rescue Timeout::Error => e
         # Rubyのプロセス管理の理由からpid + 1
@@ -72,6 +81,7 @@ class EvaluatePythonJob < ActiveJob::Base
 
       # 結果と出力用ファイルのdiff
       result = `diff #{work_filename}_output#{i} #{work_filename}_result#{i}`
+      logger.debug("test")
 
       # diff結果が異なればそこでテスト失敗
       unless result.empty?
@@ -80,14 +90,8 @@ class EvaluatePythonJob < ActiveJob::Base
       end
 
       # 実行時間とメモリ使用量を記録
-      time = 0
-      memory = 0
-      File.open(spec_file, "r") do |f|
-        time = f.gets
-        memory = f.gets
-      end
-      spec[i][:time] = time
-      spec[i][:memory] = memory
+      spec[i][:time] = @elapsed_time
+      spec[i][:memory] = @max_pss
     end
 
     # 最大値を求めるためのソート
