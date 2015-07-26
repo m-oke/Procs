@@ -18,10 +18,11 @@ class EvaluatePythonJob < ActiveJob::Base
     answer = Answer.where(:student_id => user_id,
                           :lesson_id => lesson_id,
                           :question_id => question_id).last
+    ext = EXT[answer.language]
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
     original_file = "#{root_dir}/uploads/#{user_id}/#{lesson_id}/#{question_id}/#{answer.file_name}" # アップロードされたファイル
-    exe_file = "#{work_dir}/#{work_filename}_exe.py" # 追記後の実行ファイル
+    exe_file = "#{work_dir}/#{work_filename}_exe#{ext}" # 追記後の実行ファイル
 
     FileUtils.mkdir_p(work_dir) unless FileTest.exist?(work_dir)
     FileUtils.copy(original_file, exe_file)
