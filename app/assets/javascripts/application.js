@@ -21,3 +21,9 @@
 //= require_directory ./lib
 //= require_directory ./user_js
 
+$(function(){
+    $('#proftab a').click(function (e) {
+        $('ul.nav-tabs li.active').removeClass('active')
+        $(this).parent('li').addClass('active')
+    })
+})

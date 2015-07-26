@@ -49,6 +49,14 @@ class LessonsController < ApplicationController
 
   # get '/lessons/:id'
   def show
+    id = params[:id] || 1
+    @lesson = Lesson.find_by(:id => id)
+    @teachers = get_teachers
+  end
+
+  def homeshow
+    id = params[:id] || 1
+    @lesson = Lesson.find_by(:id => id)
     @teachers = get_teachers
   end
 

@@ -1,10 +1,24 @@
-<h1><%= @lesson.name %></h1>
-<p>講義の説明: <%= @lesson.description %></p>
-<p>教員:
-  <% @teachers.each_with_index do |teacher, i| %>
-    <%= teacher.name %>
-    <% if i + 1 < @teachers.count %>
-    ,
+<div id ="proftab">
+  <ul class="nav nav-tabs">
+    <li role="presentation" ><%= link_to  "ホーム", lessons_homeshow_path ,
+                                                        :remote => true  %></li>
+
+    <li role="presentation" class="active"><%= link_to  "問題",  lesson_questions_path(:lesson_id =>@lesson.id ),
+                                         :remote => true , :data => { :toggle=>"tab"} %></li>
+    <% if current_user.has_roles?([:teacher, :root, :admin]) %>
+        <li role="presentation"><a href="#tab3" data-toggle="tab">回答結果</a></li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="tab-content">
+
+  <div class="tab-pane active" id="tab2">
+
+  </div>
+  <% if current_user.has_roles?([:teacher, :root, :admin]) %>
+      <div class="tab-pane fade " id="tab3">
+
+      </div>
   <% end %>
-<% end %>
-</p>
+</div>
