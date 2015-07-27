@@ -34,4 +34,8 @@ $(function(){
         $('#tab2').removeClass('active')
         $('#tab1').addClass('active')
     })
+    $('#students_tab').click(function (e) {
+        $('#tab1').removeClass('active')
+        $('#tab2').addClass('active')
+    })
 })

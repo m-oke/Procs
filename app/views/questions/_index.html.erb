@@ -57,7 +57,7 @@
   </table>
 </div>
 <div>
-  <% if @lesson.id != 1 %>
-      <%= link_to "問題新規作成",new_lesson_question_path(:lesson_id => @lesson.id) %>
+  <% if @is_teacher %>
+      <%= link_to "問題新規作成",new_lesson_question_path(:lesson_id => @lesson.id) ,:remote => true ,class:"btn btn-primary" %>
   <% end %>
 </div>

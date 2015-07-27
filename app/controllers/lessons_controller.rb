@@ -52,6 +52,7 @@ class LessonsController < ApplicationController
     id = params[:id] || 1
     @lesson = Lesson.find_by(:id => id)
     @teachers = get_teachers
+    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).is_teacher
   end
 
   # get '/lessons/:id/students'
