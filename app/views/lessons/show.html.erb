@@ -1,9 +1,8 @@
 <div id ="proftab">
   <ul class="nav nav-tabs">
-    <li role="presentation" ><%= link_to  "ホーム", lessons_homeshow_path ,
-                                                        :remote => true  %></li>
+    <li role="presentation" class="active" id = "home_tab"><a href="#tab1" data-toggle="tab">ホーム</a></li>
 
-    <li role="presentation" class="active"><%= link_to  "問題",  lesson_questions_path(:lesson_id =>@lesson.id ),
+    <li role="presentation" id = "questions_tab" ><%= link_to  "問題",  lesson_questions_path(:lesson_id =>@lesson.id ),
                                          :remote => true , :data => { :toggle=>"tab"} %></li>
     <% if current_user.has_roles?([:teacher, :root, :admin]) %>
         <li role="presentation"><a href="#tab3" data-toggle="tab">回答結果</a></li>
@@ -13,7 +12,19 @@
 
 <div class="tab-content">
 
-  <div class="tab-pane active" id="tab2">
+  <div class="tab-pane active" id="tab1">
+    <h1><%= @lesson.name %></h1>
+    <p>講義の説明: <%= @lesson.description %></p>
+    <p>教員:
+      <% @teachers.each_with_index do |teacher, i| %>
+          <%= teacher.name %>
+          <% if i + 1 < @teachers.count %>
+              ,
+          <% end %>
+      <% end %>
+    </p>
+  </div>
+  <div class="tab-pane" id="tab2">
 
   </div>
   <% if current_user.has_roles?([:teacher, :root, :admin]) %>

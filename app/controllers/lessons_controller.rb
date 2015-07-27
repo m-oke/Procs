@@ -54,12 +54,6 @@ class LessonsController < ApplicationController
     @teachers = get_teachers
   end
 
-  def homeshow
-    id = params[:id] || 1
-    @lesson = Lesson.find_by(:id => id)
-    @teachers = get_teachers
-  end
-
   # get '/lessons/:id/students'
   def students
     @students = get_students
