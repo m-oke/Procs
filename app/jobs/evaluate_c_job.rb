@@ -76,7 +76,7 @@ class EvaluateCJob < ActiveJob::Base
         # 複数のプロセスを実行するため pid + 3
         Process.kill(:KILL, @exec.pid + 3)
         puts "Kill timeout process #{@exec.pid + 3}"
-        cancel_evaluate(answer, "TO", "#{work_dir}/#{work_filename}")
+        cancel_evaluate(answer, "TLE", "#{work_dir}/#{work_filename}")
         return
       end
 
