@@ -47,15 +47,15 @@ class EvaluatePythonJob < ActiveJob::Base
       begin
         Timeout.timeout(run_time_limit) do
           # 入力用ファイルを入力し，結果をファイル出力
-          @process = IO.popen(exec_cmd)
-          Process.waitpid2(@process.pid)
+          @exec = IO.popen(exec_cmd)
+          Process.waitpid2(@exec.pid)
         end
 
         # 処理中にタイムアウトになった場合
-      rescue Timeout::Error => e
-        # Rubyのプロセス管理の理由からpid + 1
-        Process.kill(:KILL, @process.pid + 3)
-        puts "kill timeout process #{@process.pid + 3}"
+      rescue Timeout::Error
+        # 複数のプロセスを実行するため pid + 3
+        Process.kill(:KILL, @exec.pid + 3)
+        puts "Kill timeout process #{@exec.pid + 3}"
         cancel_evaluate(answer, "TO", "#{work_dir}/#{work_filename}")
         return
       end
