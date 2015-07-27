@@ -26,7 +26,7 @@ class QuestionsController < ApplicationController
     @question.samples.build
     @question.test_data.build
     @question.lesson_questions.build
-    @lesson_id =params[:lesson_id] .to_i
+    @lesson_id = params[:lesson_id].to_i
     session[:lesson_id] = @lesson_id
   end
 
@@ -34,11 +34,11 @@ class QuestionsController < ApplicationController
     @question = Question.new(question_params)
     @lesson_id = session[:lesson_id]
     if @question.save
-      flash.notice='問題登録しました'
-      redirect_to lesson_questions_path(:lesson_id=>@lesson_id)
+      flash.notice = '問題を登録しました'
+      redirect_to lesson_questions_path(:lesson_id => @lesson_id)
       session[:lesson_id] = nil
     else
-      redirect_to new_lesson_question_path(:lesson_id=>@lesson_id)
+      redirect_to new_lesson_question_path(:lesson_id => @lesson_id)
     end
   end
 
