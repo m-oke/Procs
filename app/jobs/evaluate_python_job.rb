@@ -45,6 +45,7 @@ class EvaluatePythonJob < ActiveJob::Base
       exec_cmd = "ts=$(date +%s%N); (/usr/bin/time -f '%M' python3 #{exe_file} < #{work_dir}/#{work_filename}_input#{i} > #{work_dir}/#{work_filename}_result#{i}) 2> #{spec_file}; tt=$((($(date +%s%N) - $ts)/1000000)); echo $tt >> #{spec_file}"
 
       begin
+        # 実行時間制限
         Timeout.timeout(run_time_limit) do
           # 入力用ファイルを入力し，結果をファイル出力
           @exec = IO.popen(exec_cmd)

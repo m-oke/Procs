@@ -48,6 +48,10 @@ class AnswersController < ApplicationController
           EvaluatePythonJob.perform_later(:user_id => current_user.id,
                                           :lesson_id => lesson_id,
                                           :question_id => question_id)
+        when 'c'
+          EvaluateCJob.perform_later(:user_id => current_user.id,
+                                          :lesson_id => lesson_id,
+                                          :question_id => question_id)
         end
       end
     else
