@@ -35,8 +35,9 @@ class QuestionsController < ApplicationController
     @question = Question.new(question_params)
     @lesson_id = session[:lesson_id]
     if @question.save
-      flash.notice = '問題を登録しました'
-      redirect_to lesson_questions_path(:lesson_id => @lesson_id)
+      flash.notice='問題登録しました'
+      # redirect_to lesson_questions_path(:lesson_id=>@lesson_id)
+      render :none => true
       session[:lesson_id] = nil
     else
       redirect_to new_lesson_question_path(:lesson_id => @lesson_id)
