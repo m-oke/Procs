@@ -80,9 +80,9 @@ class QuestionsController < ApplicationController
       :run_time_limit,
       :memory_usage_limit,
       :cpu_usage_limit,
-      samples_attributes: [:question_id,:input,:output,:_destroy],
-      test_data_attributes: [:question_id,:input,:output,:_destroy],
-      lesson_questions_attributes: [:lesson_id,:question_id,:start_time,:end_time,:_destroy]
+      samples_attributes: [:question_id, :input, :output, :_destroy],
+      test_data_attributes: [:question_id, :input, :output, :_destroy],
+      lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
     )
   end
 

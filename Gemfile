@@ -53,6 +53,7 @@ group :development, :test do
 end
 
 gem 'yard'
+gem 'nested_form_fields'
 
 gem 'rb-readline'
 gem 'devise'
