@@ -1,8 +1,8 @@
-<%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default"  %>
-<% @title='問題新規作成' %>
-<h1><%= @title %></h1>
 <div id="question_new">
-  <%= nested_form_for(@question ,:url=>{:controller=>"questions", :action=>"create"}) do |f| %>
+  <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default"  %>
+  <% @title='問題新規作成' %>
+  <h1><%= @title %></h1>
+  <%= nested_form_for(@question ,:remote=>true ,:url=>{:controller=>"questions", :action=>"create"} ) do |f| %>
       <div>
         <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>
         <%= f.text_area :title ,style:'resize: vertical', :rows => 2 , :cols => 80  ,required: 'required' %>

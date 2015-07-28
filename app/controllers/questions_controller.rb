@@ -37,10 +37,16 @@ class QuestionsController < ApplicationController
     if @question.save
       flash.notice='問題登録しました'
       # redirect_to lesson_questions_path(:lesson_id=>@lesson_id)
-      render :none => true
+      # render :nothing => true
+      params[:lesson_id] = session[:lesson_id]
+      @lesson = Lesson.find_by(:id => session[:lesson_id])
+      @questions = @lesson.question
+      @is_teacher = Lesson.find_by(:id => session[:lesson_id]).user_lessons.find_by(:user_id => current_user.id, :lesson_id => session[:lesson_id]).is_teacher
+
       session[:lesson_id] = nil
     else
-      redirect_to new_lesson_question_path(:lesson_id => @lesson_id)
+      flash.notice='問題失敗しました'
+      # redirect_to new_lesson_question_path(:lesson_id=>@lesson_id)
     end
   end
 
