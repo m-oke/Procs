@@ -11,7 +11,7 @@ class AnswersController < ApplicationController
     lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
     question_id = params[:id]
     unless file.nil?
-      extention = Answer::EXT[params[:language]]
+      extention = EXT[params[:language]]
       name = file.original_filename
 
       if !(extention == File.extname(name).downcase)
@@ -46,6 +46,10 @@ class AnswersController < ApplicationController
         case params[:language]
         when 'python'
           EvaluatePythonJob.perform_later(:user_id => current_user.id,
+                                          :lesson_id => lesson_id,
+                                          :question_id => question_id)
+        when 'c'
+          EvaluateCJob.perform_later(:user_id => current_user.id,
                                           :lesson_id => lesson_id,
                                           :question_id => question_id)
         end
