@@ -12,10 +12,12 @@ class EvaluateCJob < ActiveJob::Base
     root_dir = Rails.root.to_s
     work_dir = "#{root_dir}/tmp/answers" # 作業ディレクトリ
     work_filename = "#{user_id}_#{lesson_id}_#{question_id}" # 作業用ファイル名接頭辞
-    spec_file = "#{work_dir}/#{work_filename}_spec" # 実行時間とメモリ使用量記述ファイル
+    work_dir_file = "#{work_dir}/#{work_filename}" # 接頭辞
+    spec_file = "#{work_dir_file}_spec" # 実行時間とメモリ使用量記述ファイル
 
     question = Question.find_by(:id => question_id)
     run_time_limit = question.run_time_limit || 5 # 実行時間が未設定ならば5秒
+    memory_usage_limit = question.memory_usage_limit || 256 # メモリ使用量が未設定ならば256MB
     answer = Answer.where(:student_id => user_id,
                           :lesson_id => lesson_id,
                           :question_id => question_id).last
@@ -23,8 +25,8 @@ class EvaluateCJob < ActiveJob::Base
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
     original_file = "#{root_dir}/uploads/#{user_id}/#{lesson_id}/#{question_id}/#{answer.file_name}" # アップロードされたファイル
-    src_file = "#{work_dir}/#{work_filename}_src#{ext}" # コンパイル前のソースファイル
-    exe_file = "#{work_dir}/#{work_filename}_exe" # コンパイル前のソースファイル
+    src_file = "#{work_dir_file}_src#{ext}" # コンパイル前のソースファイル
+    exe_file = "#{work_dir_file}_exe" # コンパイル前のソースファイル
 
     FileUtils.mkdir_p(work_dir) unless FileTest.exist?(work_dir)
     FileUtils.copy(original_file, src_file)
@@ -32,10 +34,10 @@ class EvaluateCJob < ActiveJob::Base
     # テストデータをファイル出力
     test_data.each.with_index(1) do |data,i|
       # 入力用ファイル
-      File.open("#{work_dir}/#{work_filename}_input#{i}", "w+"){ |f| f.write(data.input) }
+      File.open("#{work_dir_file}_input#{i}", "w+"){ |f| f.write(data.input) }
       # 出力用ファイル
       # 実行結果と形式を一緒にするために末尾に改行を追加
-      File.open("#{work_dir}/#{work_filename}_output#{i}", "w+"){ |f| f.puts(data.output) }
+      File.open("#{work_dir_file}_output#{i}", "w+"){ |f| f.puts(data.output) }
     end
 
     Dir.chdir(work_dir)
@@ -54,15 +56,15 @@ class EvaluateCJob < ActiveJob::Base
 
     # コンパイルエラー時
     unless compile_error.empty?
-      puts compile_error
-      cancel_evaluate(answer, "CE", "#{work_dir}/#{work_filename}")
+      puts "Complilation Error"
+      cancel_evaluate(answer, "CE", "#{work_dir_file}")
       return
     end
     Process.waitpid2(@compile.pid)
 
     # テストデータの数だけ試行
     1.upto(test_count) do |i|
-      exec_cmd = "ts=$(date +%s%N); (/usr/bin/time -f '%M' #{exe_file} < #{work_dir}/#{work_filename}_input#{i} > #{work_dir}/#{work_filename}_result#{i}) 2> #{spec_file}; tt=$((($(date +%s%N) - $ts)/1000000)); echo $tt >> #{spec_file}"
+      exec_cmd = "ts=$(date +%s%N); (/usr/bin/time -f '%M' #{exe_file} < #{work_dir_file}_input#{i} > #{work_dir_file}_result#{i}) 2> #{spec_file}; tt=$((($(date +%s%N) - $ts)/1000000)); echo $tt >> #{spec_file}"
 
       begin
         # 実行時間制限
@@ -76,17 +78,18 @@ class EvaluateCJob < ActiveJob::Base
         # 複数のプロセスを実行するため pid + 3
         Process.kill(:KILL, @exec.pid + 3)
         puts "Kill timeout process #{@exec.pid + 3}"
-        cancel_evaluate(answer, "TLE", "#{work_dir}/#{work_filename}")
+        puts "Time Limit Exceeded"
+        cancel_evaluate(answer, "TLE", "#{work_dir_file}")
         return
       end
 
       # 結果と出力用ファイルのdiff
       result = `diff #{work_filename}_output#{i} #{work_filename}_result#{i}`
-      puts result
 
       # diff結果が異なればそこでテスト失敗
       unless result.empty?
-        cancel_evaluate(answer, "WA", "#{work_dir}/#{work_filename}")
+        puts "Wrong Answer"
+        cancel_evaluate(answer, "WA", "#{work_dir_file}")
         return
       end
 
@@ -94,9 +97,16 @@ class EvaluateCJob < ActiveJob::Base
       memory = 0
       time = 0
       File.open(spec_file, "r") do |f|
-        memory = f.gets
-        time = f.gets
+        memory = f.gets.to_i
+        time = f.gets.to_i
       end
+
+      if (memory / 1024) > memory_usage_limit
+        puts "Memory Limit Exceeded"
+        cancel_evaluate(answer, "MLE", "#{work_dir_file}")
+        return
+      end
+
       spec[i][:memory] = memory
       spec[i][:time] = time
     end
@@ -110,7 +120,7 @@ class EvaluateCJob < ActiveJob::Base
     answer.run_time = times.max
     answer.memory_usage = memories.max
     answer.save
-    `rm #{work_dir}/#{work_filename}*`
+    `rm #{work_dir_file}*`
     return
   end
 end
