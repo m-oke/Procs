@@ -9,7 +9,7 @@
       <p>こちらからすべての問題を見ることができます。<br>
       また授業への参加もこちらからできます。</p>
       <p>
-        <%= link_to '問題一覧', '/questions', class: 'btn btn-primary' %>
+        <%= link_to '問題一覧', '/questions/index', class: 'btn btn-primary' %>
         <%= link_to '授業参加', {:controller => :user_lessons, :action => :create}, class: 'btn btn-primary' %>
       </p>
     </div>

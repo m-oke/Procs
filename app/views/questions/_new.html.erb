@@ -1,4 +1,4 @@
-<%= link_to '戻る', lesson_questions_path(:lesson_id =>@lesson_id) %>
+<%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default"  %>
 <% @title='問題新規作成' %>
 <h1><%= @title %></h1>
 <div id="question_new">
