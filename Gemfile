@@ -30,6 +30,7 @@ gem 'bootstrap-sass', '~> 3.3.4'
 gem  'jquery-turbolinks'
 gem  'nested_form'
 gem  'remotipart'
+gem  'nested_form_fields'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
