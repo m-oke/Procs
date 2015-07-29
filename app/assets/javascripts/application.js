@@ -15,6 +15,7 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 //= require jquery-ui
+//= require jquery.remotipart
 //= require lib/jquery.timepicker.js
 //= require lib/jquery-ui-timepicker-addon.js
 //= require_tree .

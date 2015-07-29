@@ -293,6 +293,7 @@ DEPENDENCIES
   rails-footnotes
   rails_admin
   rb-readline
+  remotipart
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   sidekiq
@@ -303,3 +304,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
   yard
+
+BUNDLED WITH
+   1.10.5

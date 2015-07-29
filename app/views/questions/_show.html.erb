@@ -4,6 +4,7 @@
     }
 
 </style>
+<%= render "layouts/notice" %>
 <% if params[:lesson_id] %>
     <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default"  %>
 <% else %>
@@ -70,7 +71,7 @@
 
 <% unless @is_teacher %>
     <h3 id="answer">投稿</h3>
-    <%= form_tag({:controller => "answers", :action =>  "create"},:remote => true, :authenticity_token => true, :multipart => true) do  %>
+    <%= form_tag({:controller => "answers", :action =>  "create"}, :remote=> true, :authenticity_token => true, :multipart => true) do  %>
         <div class="answer form-group" name="answer">
           <div class="answer form-group" name="language">
             <%= label_tag :language, '使用言語' %>
@@ -87,14 +88,4 @@
         </div>
     <% end %>
 <% end %>
-<script>
 
-    $('#file_up_ajax').click(function(e){
-        $.ajax({
-            url: answers_path,
-            type: "POST",
-            data: {
-            }
-        });
-    })
-</script>

@@ -39,6 +39,12 @@ class AnswersController < ApplicationController
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def create
+    lesson_id = params[:lesson_id]
+    @question = Question.find_by(:id => params[:id])
+    @is_teacher = Lesson.find_by(:id => lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id =>lesson_id).is_teacher
+    @latest_answer = Answer.latest_answer(:student_id => current_user.id,
+                                          :question_id => params[:id],
+                                          :lesson_id => lesson_id) || Answer.new
     file = params[:upload_file]
     lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
     question_id = params[:id]
