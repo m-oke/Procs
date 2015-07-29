@@ -51,7 +51,7 @@
       </div>
 
       <div class=" field_question">
-        <%= f.label :test_data,"解答用データ" %><br/>
+        <%= f.label :test_data,"解答用データ" %><span>(<span class="inputnote">＊</span>)</span><br/>
         <%= f.fields_for :test_data do |builder| %>
         <fieldset>
           <%= builder.hidden_field :question_id , :value=>(@question_id +1) %>
@@ -70,9 +70,9 @@
         <%= f.number_field :run_time_limit,  size: 20 %>
       </div>
       <div>
-        <%= f.label :memory_usage_limit , 'メモリ制限'%>（単位：）<br/>
+        <%= f.label :memory_usage_limit , 'メモリ制限'%>（単位：MB）<br/>
         <%= f.number_field :memory_usage_limit,  size: 20 %>
-      </div>MB
+      </div>
 
 
       <div class="btn_submit">
