@@ -11,7 +11,7 @@
     <% unless @is_teacher %>
       <th>結果</th>
       <th>回答</th>
-      <th>履歴</th>
+      <th>解答詳細</th>
     <% end %>
   </tr>
   <% @questions.each.with_index(1) do |question, i| %>
@@ -50,7 +50,11 @@
         <% else %>
           <td><%= link_to('回答', question_path(:id => question.id) + '#answer', class: 'btn btn-default') %></td>
         <% end %>
-        <td></td>
+        <% if @latest_answer.file_name.nil? %>
+          <td>未解答</td>
+        <% else %>
+          <td><%= link_to(@latest_answer.file_name, lesson_question_user_answers_path(:controller => 'answers', :action => 'index', :question_id => question.id, :user_id => current_user.id)) %></td>
+        <% end %>
       <% end %>
     </tr>
   <% end %>
