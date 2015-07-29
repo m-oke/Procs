@@ -7,7 +7,7 @@ class AnswersController < ApplicationController
     @lesson_id = params[:lesson_id]
     @question_id = params[:question_id]
     if Lesson.find_by(:id => @lesson_id).nil? || Question.find_by(:id => @question_id).nil? || User.find_by(:id => @student_id).nil?
-      redirect_to root_path, :alert => '入力が間違っています' and return
+      redirect_to root_path, :alert => 'パスが間違っています' and return
     end
     @question_all_version= Answer.where(:question_id => @question_id,
                                         :lesson_id=> @lesson_id,
