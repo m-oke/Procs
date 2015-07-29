@@ -6,7 +6,7 @@
 </style>
 <%= render "layouts/notice" %>
 <% if params[:lesson_id] %>
-    <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default"  %>
+    <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
 <% else %>
     <%= link_to '問題一覧に戻る', questions_path %>
 <% end %>

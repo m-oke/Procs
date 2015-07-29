@@ -1,63 +1,66 @@
-<h2>問題一覧</h2>
-<div class="table-responsive">
-  <table class="table table-bordered table-striped">
-    <tr>
-      <th>問題ID</th>
-      <th>問題名</th>
-      <% if @lesson.id != 1 %>
-          <th>開始時間</th>
-          <th>終了時間</th>
-      <% end %>
-      <% unless @is_teacher %>
-          <th>結果</th>
-          <th>回答</th>
-          <th>履歴</th>
-      <% end %>
-    </tr>
-    <% @questions.each.with_index(1) do |question, i| %>
-        <tr>
-          <td><%= i %></td>
-          <% if @lesson.id != 1 %>
-              <td><%= link_to(question.title, lesson_question_path(:lesson_id => params[:lesson_id], :id => question.id),:remote =>true) %></td>
-          <% else %>
-              <td><%= link_to(question.title, question_path(:id => question.id)) %></td>
-          <% end %>
-
-          <% if @lesson.id != 1 %>
-              <td>
-                <% if @lesson.lesson_questions.find_by(:question_id => question.id).start_time.nil? %>
-                    <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time %>
-                <% else %>
-                    <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ")  %>
-                <% end %>
-              </td>
-              <td>
-                <% if @lesson.lesson_questions.find_by(:question_id => question.id).end_time.nil? %>
-                    <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time %>
-                <% else %>
-                    <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %>
-                <% end %>
-              </td>
-          <% end %>
-
-          <% unless @is_teacher %>
-              <% @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                                       :question_id => question.id,
-                                                       :lesson_id => @lesson.id) || Answer.new %>
-              <td><%= Answer::RESULT[@latest_answer.result] %></td>
-              <% if @lesson.id != 1 %>
-                  <td><%= link_to('回答', lesson_question_path(:id => question.id) + '#answer', class: 'btn btn-default') %></td>
-              <% else %>
-                  <td><%= link_to('回答', question_path(:id => question.id) + '#answer', class: 'btn btn-default') %></td>
-              <% end %>
-              <td></td>
-          <% end %>
-        </tr>
+<%= render "layouts/notice" %>
+<div class="btn-right">
+    <% if @is_teacher %>
+        <%= link_to "問題新規作成",new_lesson_question_path(:lesson_id => @lesson.id) ,:remote => true ,:class=>"btn btn-primary" %>
     <% end %>
-  </table>
 </div>
 <div>
-  <% if @is_teacher %>
-      <%= link_to "問題新規作成",new_lesson_question_path(:lesson_id => @lesson.id) ,:remote => true ,:class=>"btn btn-primary" %>
-  <% end %>
+  <h2>問題一覧</h2>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th>問題ID</th>
+        <th>問題名</th>
+        <% if @lesson.id != 1 %>
+            <th>開始時間</th>
+            <th>終了時間</th>
+        <% end %>
+        <% unless @is_teacher %>
+            <th>結果</th>
+            <th>回答</th>
+            <th>履歴</th>
+        <% end %>
+      </tr>
+      <% @questions.each.with_index(1) do |question, i| %>
+          <tr>
+            <td><%= i %></td>
+            <% if @lesson.id != 1 %>
+                <td><%= link_to(question.title, lesson_question_path(:lesson_id => params[:lesson_id], :id => question.id),:remote =>true) %></td>
+            <% else %>
+                <td><%= link_to(question.title, question_path(:id => question.id)) %></td>
+            <% end %>
+
+            <% if @lesson.id != 1 %>
+                <td>
+                  <% if @lesson.lesson_questions.find_by(:question_id => question.id).start_time.nil? %>
+                      <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time %>
+                  <% else %>
+                      <%= @lesson.lesson_questions.find_by(:question_id => question.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ")  %>
+                  <% end %>
+                </td>
+                <td>
+                  <% if @lesson.lesson_questions.find_by(:question_id => question.id).end_time.nil? %>
+                      <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time %>
+                  <% else %>
+                      <%= @lesson.lesson_questions.find_by(:question_id => question.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %>
+                  <% end %>
+                </td>
+            <% end %>
+
+            <% unless @is_teacher %>
+                <% @latest_answer = Answer.latest_answer(:student_id => current_user.id,
+                                                         :question_id => question.id,
+                                                         :lesson_id => @lesson.id) || Answer.new %>
+                <td><%= Answer::RESULT[@latest_answer.result] %></td>
+                <% if @lesson.id != 1 %>
+                    <td><%= link_to('回答', lesson_question_path(:lesson_id => params[:lesson_id], :id => question.id) + '#answer', :remote => true, class: 'btn btn-default') %></td>
+                <% else %>
+                    <td><%= link_to('回答', question_path(:id => question.id) + '#answer', class: 'btn btn-default') %></td>
+                <% end %>
+                <td></td>
+            <% end %>
+          </tr>
+      <% end %>
+    </table>
+  </div>
 </div>
