@@ -89,10 +89,7 @@ class AnswersController < ApplicationController
     else
       flash[:alert] = 'ファイルが選択されていません。'
     end
-    if lesson_id == "1"
-      redirect_to :controller => 'questions', :action => 'show', :id => question_id and return
-    end
-    redirect_to :controller => 'questions', :action => 'show', :lesson_id => lesson_id, :id => question_id
+    # redirect_to :controller => 'questions', :action => 'show', :lesson_id => params[:lesson_id], :id => params[:id]
   end
 
   def select_version

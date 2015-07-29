@@ -19,23 +19,5 @@
 //= require lib/jquery-ui-timepicker-addon.js
 //= require_tree .
 //= require_directory ./lib
-//= require_directory ./user_js
+//= require_directory ./users
 
-$(function(){
-    $('#proftab a').click(function (e) {
-        $('ul.nav-tabs li.active').removeClass('active')
-        $(this).parent('li').addClass('active')
-    })
-    $('#questions_tab').click(function (e) {
-        $('#tab1').removeClass('active')
-        $('#tab2').addClass('active')
-    })
-    $('#home_tab').click(function (e) {
-        $('#tab2').removeClass('active')
-        $('#tab1').addClass('active')
-    })
-    $('#students_tab').click(function (e) {
-        $('#tab1').removeClass('active')
-        $('#tab2').addClass('active')
-    })
-})
