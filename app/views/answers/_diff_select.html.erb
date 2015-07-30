@@ -3,10 +3,10 @@
 
   <% if @select_diff_file != "なし" %>
       <tr class="head">
-        <th class="old_line"> old </th>
-        <th class="new_line"> new </th>
+        <th class="old_line"> Old </th>
+        <th class="new_line"> New </th>
         <th class="change"> </th>
-        <th id="code"> source code </th>
+        <th id="code"> Source Code </th>
       </tr>
       <% new_line_number = 0 %>
       <% @diff.each_with_index do |line, i| %>
