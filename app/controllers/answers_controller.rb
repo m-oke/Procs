@@ -9,9 +9,6 @@ class AnswersController < ApplicationController
     if Lesson.find_by(:id => @lesson_id).nil? || Question.find_by(:id => @question_id).nil? || User.find_by(:id => @student_id).nil?
       redirect_to root_path, :alert => 'パスが間違っています' and return
     end
-    @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                          :question_id => @question_id,
-                                          :lesson_id => @lesson_id) || Answer.new
     @question_all_version= Answer.where(:question_id => @question_id,
                                         :lesson_id=> @lesson_id,
                                         :student_id=> @student_id )

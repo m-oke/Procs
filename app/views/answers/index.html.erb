@@ -23,10 +23,10 @@
           <tr>
             <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name },  :method => "POST", :remote => true%></td>
             <td><%= m.created_at %></td>
-            <td><%= RESULT[@latest_answer.result] %></td>
+            <td><%= RESULT[m.result] %></td>
             <td><%= m.run_time %></td>
             <td><%= m.memory_usage %></td>
-            <td><%= m.language %></td>
+            <td><%= m.language.capitalize %></td>
             <td><%= @dead_date_question.start_time%></td>
             <td><%= @dead_date_question.end_time%></td>
             <td><%= m.plagiarism_percentage %></td>
