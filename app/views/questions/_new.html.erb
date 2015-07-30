@@ -57,12 +57,12 @@
           <div class="">
             <%= f.fields_for :test_data do |builder| %>
               <div class="left">
-                <%= builder.label :input,"入力" %>
-                <%= builder.file_field :upload_file, required: 'required' %>
+                <%= builder.label :input, "入力" %>
+                <%= builder.file_field :input, required: 'required' %>
               </div>
               <div class="left">
-                <%= builder.label :input,"出力" %>
-                <%= builder.file_field :upload_file, required: 'required' %>
+                <%= builder.label :output, "出力" %>
+                <%= builder.file_field :output, required: 'required' %>
               </div>
               <div class="left">
                 <p class="help-block">ファイルサイズは10MBまで</p>

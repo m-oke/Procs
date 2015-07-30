@@ -32,6 +32,18 @@ class QuestionsController < ApplicationController
   end
 
   def create
+    i = 1
+    test_data = {}
+    params['question']['test_data_attributes'].each do |key, val|
+      files = {}
+      files['input'] = val['input']
+      files['output'] = val['output']
+      val['input'] = val['input'].original_filename
+      val['output'] = val['output'].original_filename
+      test_data["#{i}"] = files
+      i += 1
+    end
+
     @question = Question.new(question_params)
     @lesson_id = session[:lesson_id]
     if @question.save

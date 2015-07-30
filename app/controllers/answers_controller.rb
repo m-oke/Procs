@@ -65,9 +65,9 @@ class AnswersController < ApplicationController
         /\d+/ =~ old_file.file_name unless old_file.nil?
         version = $&.to_i
         next_version = (version + 1).to_s
-        next_name = "version" + next_version + extention
+        next_name = "version#{next_version}#{extention}"
 
-        File.open(path + "/" + next_name, 'wb') do |f|
+        File.open("#{path}/#{next_name}", 'wb') do |f|
           f.write(file.read)
         end
         answer = Answer.new(:language => params[:language],
