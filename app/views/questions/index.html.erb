@@ -53,7 +53,7 @@
         <% if @latest_answer.file_name.nil? %>
           <td>未解答</td>
         <% else %>
-          <td><%= link_to(@latest_answer.file_name, lesson_question_user_answers_path(:controller => 'answers', :action => 'index', :question_id => question.id, :user_id => current_user.id)) %></td>
+          <td><%= link_to(@latest_answer.file_name, lesson_question_user_answers_path(:controller => 'answers', :action => 'index',:lesson_id => params[:lesson_id] , :question_id => question.id, :user_id => current_user.id)) %></td>
         <% end %>
       <% end %>
     </tr>
