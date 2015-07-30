@@ -8,7 +8,6 @@
       <tr>
         <th>バージョン</th>
         <th>提出時間</th>
-        <!-- 結果の表示内容を変更-->
         <th>結果</th>
         <th>実行時間</th>
         <th>消耗メモリ</th>
@@ -24,7 +23,7 @@
           <tr>
             <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name },  :method => "POST", :remote => true%></td>
             <td><%= m.created_at %></td>
-            <td><%= m.result %></td>
+            <td><%= RESULT[@latest_answer.result] %></td>
             <td><%= m.run_time %></td>
             <td><%= m.memory_usage %></td>
             <td><%= m.language %></td>
