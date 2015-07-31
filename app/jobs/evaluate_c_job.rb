@@ -9,10 +9,8 @@ class EvaluateCJob < ActiveJob::Base
   # @param [Fixnum] question_id 問題ID
   def perform(user_id:, lesson_id:, question_id:)
     # ファイル名やファイル場所の設定
-    root_dir = Rails.root.to_s
-    work_dir = "#{root_dir}/tmp/answers" # 作業ディレクトリ
     work_filename = "#{user_id}_#{lesson_id}_#{question_id}" # 作業用ファイル名接頭辞
-    work_dir_file = "#{work_dir}/#{work_filename}" # 接頭辞
+    work_dir_file = EVALUATE_WORK_DIR.join(work_filename) # 接頭辞
     spec_file = "#{work_dir_file}_spec" # 実行時間とメモリ使用量記述ファイル
 
     question = Question.find_by(:id => question_id)
@@ -24,11 +22,11 @@ class EvaluateCJob < ActiveJob::Base
     ext = EXT[answer.language]
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
-    original_file = "#{root_dir}/uploads/#{user_id}/#{lesson_id}/#{question_id}/#{answer.file_name}" # アップロードされたファイル
+    original_file = UPLOADS_ANSWERS_PATH.join(user_id.to_s, lesson_id.to_s, question_id.to_s, answer.file_name) # アップロードされたファイル
     src_file = "#{work_dir_file}_src#{ext}" # コンパイル前のソースファイル
     exe_file = "#{work_dir_file}_exe" # コンパイル前のソースファイル
 
-    FileUtils.mkdir_p(work_dir) unless FileTest.exist?(work_dir)
+    FileUtils.mkdir_p(EVALUATE_WORK_DIR) unless FileTest.exist?(EVALUATE_WORK_DIR)
     FileUtils.copy(original_file, src_file)
 
     # テストデータをファイル出力
@@ -40,9 +38,8 @@ class EvaluateCJob < ActiveJob::Base
       File.open("#{work_dir_file}_output#{i}", "w+"){ |f| f.puts(data.output) }
     end
 
-    Dir.chdir(work_dir)
+    Dir.chdir(EVALUATE_WORK_DIR)
     spec = Hash.new { |h,k| h[k] = {} }
-
 
     compile_cmd = "gcc #{src_file} -o #{exe_file} -w"
     # コンパイル

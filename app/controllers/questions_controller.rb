@@ -52,14 +52,14 @@ class QuestionsController < ApplicationController
       @lesson = Lesson.find_by(:id => session[:lesson_id])
       @questions = @lesson.question
       @is_teacher = Lesson.find_by(:id => session[:lesson_id]).user_lessons.find_by(:user_id => current_user.id, :lesson_id => session[:lesson_id]).is_teacher
-      upload_test_data_path = Rails.root.join('uploads', 'questions', @question.id.to_s).to_s
-      FileUtils.mkdir_p(upload_test_data_path) unless FileTest.exist?(upload_test_data_path)
+      uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
+      FileUtils.mkdir_p(uploads_test_data_path) unless FileTest.exist?(uploads_test_data_path)
 
       test_data.each do |key, val|
-        File.open("#{upload_test_data_path}/input#{key}", "wb") do |f|
+        File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
           f.write(val['input'].read)
         end
-        File.open("#{upload_test_data_path}/output#{key}", "wb") do |f|
+        File.open("#{uploads_test_data_path}/output#{key}", "wb") do |f|
           f.write(val['output'].read)
         end
       end
