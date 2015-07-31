@@ -2,8 +2,16 @@ Rails.application.routes.draw do
   root :to => 'lessons#index'
 
   resources :lessons do
-    resources :questions, only: [:index, :show, :new]
-
+    resources :questions, only: [:index, :show, :new] do
+      resources :users do
+        get 'answers' => 'answers#index', as: 'answers'
+      end
+    end
+    resources :users do
+      resources :questions do
+        get 'answers' => 'answers#index', as: 'answers'
+      end
+    end
     collection do
       get '/join' => 'user_lessons#new'
       post '/join' => 'user_lessons#create'
@@ -12,14 +20,19 @@ Rails.application.routes.draw do
     end
   end
 
+  scope :ajax do
+    post 'answers/select_version' => 'answers#select_version'
+    post 'answer/diff_select' => 'answers#diff_select'
+  end
+
   resources :questions, only: [:index, :show, :new]
   resources :answers, only: [:create]
 
   devise_for :users, :controllers => {
-    :sessions => 'users/sessions',
-    :registrations => 'users/registrations',
-    :passwords => 'users/passwords'
-  }
+                       :sessions => 'users/sessions',
+                       :registrations => 'users/registrations',
+                       :passwords => 'users/passwords'
+                   }
 
   get '/questions/' => 'questions#index'
   get '/questions/new' => 'questions#new'

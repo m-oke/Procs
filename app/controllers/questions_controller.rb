@@ -8,6 +8,7 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] id Quesionのid
   def index
     id = params[:lesson_id] || 1
+    params[:lesson_id] = params[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => id)
     unless @lesson.nil?
       if @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).nil?

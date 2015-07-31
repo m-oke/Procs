@@ -1,3 +1,69 @@
 // Place all the styles related to the Answers controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.my-custom-class {
+  font-size: 110%;
+}
+
+
+.diff_area_css {
+  position: relative;
+  padding: 15px 15px 15px;
+  border-color: #e5e5e5 #eee #eee;
+  border-style: solid;
+  border-width: 3px 0;
+  -webkit-box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
+  box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
+
+}
+
+ table.diff {
+   width: 100%;
+   border-collapse: collapse;
+   border: 2px #808080 solid;
+ }
+.old_line {
+  width: 50px;
+  border: 1px #808080 solid;
+  border-width: 0px 1px;
+  color: #aaaaaa;
+  text-align: right;
+  padding: 0px 10px 0px 0px;
+}
+.new_line {
+  width: 50px;
+  border: 1px #808080 solid;
+  border-width: 0px 1px;
+  color: #aaaaaa;
+  text-align: right;
+  padding: 0px 10px 0px 0px;
+}
+.change {
+  width: 30px;
+  padding: 0px 5px 0px 5px;
+}
+.head {
+  border: 1px #808080 solid;
+  border-width: 2px 1px;
+}
+.red {
+  background-color: #ff8888;
+}
+.green {
+  background-color: #88ff88;
+}
+.normal {
+  background-color: #ffffff;
+}
+pre#code {
+  display: inline;
+  padding: 0px 2px 0px 2px;
+  margin: 0 0 0 0;
+  line-height: 0px;
+  word-break: normal;
+  word-wrap: normal;
+  color: #000000;
+  background-color: transparent;
+  border: 0px solid #ffffff;
+  font-family: "Hiragino Kaku Gothic ProN", sans-self;
+}
