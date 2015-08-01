@@ -19,7 +19,7 @@ class AnswersController < ApplicationController
                                :lesson_id=> @lesson_id,
                                :student_id=> @student_id ).last.file_name
 
-    @path_directory ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
+    @path_directory = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + "/"
     flash[:directory]= @path_directory
 
     @new_raw_path = @path_directory + @raw_display_file
