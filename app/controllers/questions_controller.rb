@@ -32,12 +32,17 @@ class QuestionsController < ApplicationController
   end
 
   def create
+    @lesson_id = session[:lesson_id]
     i = 1
     test_data = {}
     params['question']['test_data_attributes'].each do |key, val|
       files = {}
       files['input'] = val['input']
       files['output'] = val['output']
+      if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
+        flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
+        redirect_to new_lesson_question_path(:lesson_id => @lesson_id) and return
+      end
       val['input'] = "input#{i}"
       val['output'] = "output#{i}"
       test_data["#{i}"] = files
@@ -45,7 +50,6 @@ class QuestionsController < ApplicationController
     end
 
     @question = Question.new(question_params)
-    @lesson_id = session[:lesson_id]
     if @question.save
       flash.notice='問題登録しました'
       params[:lesson_id] = session[:lesson_id]
