@@ -22,27 +22,19 @@ class EvaluatePythonJob < ActiveJob::Base
     ext = EXT[answer.language]
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
+    test_data_dir = UPLOADS_QUESTIONS_PATH.join(question_id.to_s)
     original_file = UPLOADS_ANSWERS_PATH.join(user_id.to_s, lesson_id.to_s, question_id.to_s, answer.file_name) # アップロードされたファイル
     exe_file = "#{work_dir_file}_exe#{ext}" # 追記後の実行ファイル
 
     FileUtils.mkdir_p(EVALUATE_WORK_DIR) unless FileTest.exist?(EVALUATE_WORK_DIR)
     FileUtils.copy(original_file, exe_file)
 
-    # テストデータをファイル出力
-    test_data.each.with_index(1) do |data,i|
-      # 入力用ファイル
-      File.open("#{work_dir_file}_input#{i}", "w+"){ |f| f.write(data.input) }
-      # 出力用ファイル
-      # python実行結果と形式を一緒にするために末尾に改行を追加
-      File.open("#{work_dir_file}_output#{i}", "w+"){ |f| f.puts(data.output) }
-    end
-
     Dir.chdir(EVALUATE_WORK_DIR)
     spec = Hash.new { |h,k| h[k] = {} }
 
     # テストデータの数だけ繰り返し
     1.upto(test_count) do |i|
-      exec_cmd = "ts=$(date +%s%N); (/usr/bin/time -f '%M' python3 #{exe_file} < #{work_dir_file}_input#{i} > #{work_dir_file}_result#{i}) 2> #{spec_file}; tt=$((($(date +%s%N) - $ts)/1000000)); echo $tt >> #{spec_file}"
+      exec_cmd = "ts=$(date +%s%N); (/usr/bin/time -f '%M' python3 #{exe_file} < #{test_data_dir}/input#{i} > #{work_dir_file}_result#{i}) 2> #{spec_file}; tt=$((($(date +%s%N) - $ts)/1000000)); echo $tt >> #{spec_file}"
 
       begin
         # 実行時間制限
@@ -63,7 +55,7 @@ class EvaluatePythonJob < ActiveJob::Base
       end
 
       # 結果と出力用ファイルのdiff
-      result = `diff #{work_filename}_output#{i} #{work_filename}_result#{i}`
+      result = `diff #{test_data_dir}/output#{i} #{work_filename}_result#{i}`
 
       # diff結果が異なればそこでテスト失敗
       unless result.empty?
