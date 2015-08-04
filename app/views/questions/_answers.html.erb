@@ -1,0 +1,35 @@
+<h3 id="answer"></h3>
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+  <tr>
+    <th>学籍番号</th>
+    <th>氏名</th>
+    <th>提出時間</th>
+    <th>結果</th>
+    <th>実行時間(ms)</th>
+    <th>メモリ使用量(MB/KB)</th>
+    <th>使用言語</th>
+    <th>学生類似度</th>
+    <th>WEB類似度</th>
+
+  </tr>
+  <% @students.each do |student| %>
+    <% answer = Answer.latest_answer(:student_id => student.id,
+                                     :question_id => params[:id],
+                                     :lesson_id => @lesson.id) || nil
+       %>
+
+    <tr>
+      <td><%= student.student_number %></td>
+      <td><%= student.name %></td>
+      <td><%= answer.created_at %> </td>
+      <td><%= RESULT[answer.result] %></td>
+      <td><%= answer.run_time %></td>
+      <td><%= answer.memory_usage %></td>
+      <td><%= answer.language.capitalize %></td>
+      <td><%= answer.plagiarism_percentage %></td>
+      <td></td>
+    </tr>
+  <% end %>
+</table>
+</div>
