@@ -49,28 +49,28 @@ ActiveRecord::Schema.define(version: 20150707084241) do
   end
 
   create_table "questions", force: :cascade do |t|
-    t.string   "title",              limit: 255,   null: false
+    t.string   "title",              limit: 255,                 null: false
     t.text     "content",            limit: 65535
     t.text     "input_description",  limit: 65535
     t.text     "output_description", limit: 65535
-    t.integer  "run_time_limit",     limit: 4
-    t.integer  "memory_usage_limit", limit: 4
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.integer  "run_time_limit",     limit: 4,     default: 60
+    t.integer  "memory_usage_limit", limit: 4,     default: 512
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
   end
 
   create_table "samples", force: :cascade do |t|
     t.integer  "question_id", limit: 4,   null: false
-    t.string   "input",       limit: 255
-    t.string   "output",      limit: 255
+    t.string   "input",       limit: 255, null: false
+    t.string   "output",      limit: 255, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
 
   create_table "test_data", force: :cascade do |t|
     t.integer  "question_id", limit: 4,   null: false
-    t.string   "input",       limit: 255
-    t.string   "output",      limit: 255
+    t.string   "input",       limit: 255, null: false
+    t.string   "output",      limit: 255, null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end

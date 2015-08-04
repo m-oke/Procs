@@ -1,4 +1,4 @@
-<h3 id="answer"></h3>
+<h3 id="answer">解答状況</h3>
 <div class="table-responsive">
 <table class="table table-bordered table-striped">
   <tr>
@@ -16,17 +16,21 @@
   <% @students.each do |student| %>
     <% answer = Answer.latest_answer(:student_id => student.id,
                                      :question_id => params[:id],
-                                     :lesson_id => @lesson.id) || nil
+                                     :lesson_id => @lesson.id) || Answer.new
        %>
 
     <tr>
-      <td><%= student.student_number %></td>
+      <td><%= link_to(student.student_number, lesson_question_user_answers_path(:controller => 'answers',
+                                                                    :action => 'index',
+                                                                    :lesson_id => @lesson.id,
+                                                                    :question_id => @question.id,
+                                                                    :user_id => student.id), :remote => ( @lesson.id != 1)) %></td>
       <td><%= student.name %></td>
       <td><%= answer.created_at %> </td>
       <td><%= RESULT[answer.result] %></td>
       <td><%= answer.run_time %></td>
       <td><%= answer.memory_usage %></td>
-      <td><%= answer.language.capitalize %></td>
+      <td><%= answer.language.capitalize unless answer.language.nil? %></td>
       <td><%= answer.plagiarism_percentage %></td>
       <td></td>
     </tr>

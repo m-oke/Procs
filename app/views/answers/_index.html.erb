@@ -1,4 +1,3 @@
-<%unless @is_teacher %>
 <div>
   <% if @lesson_id.to_i == 1 %>
       <%=  link_to '問題詳細に戻る', question_path(:id => @question_id),:class=>"btn btn-default btn_top"    %>
@@ -7,7 +6,6 @@
                                             :remote => true ,:class=>"btn btn-default btn_top"    %>
   <% end %>
 </div>
-<% end %>
 <div>
   <h2>学生解答詳細</h2>
   <div class="questions_list">
@@ -60,3 +58,4 @@
   </div>
 
 </div>
+<%= javascript_include_tag "answers/answers.js" %>

@@ -122,7 +122,7 @@ Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 2, :file_name =
 
 
 # 学生2
-Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => "TO", :plagiarism_percentage => 0.1)
+Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => "TLE", :plagiarism_percentage => 0.1)
 
 Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version1.txt", :language => "c", :result => "WA", :plagiarism_percentage => 0.2)
 Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version2.txt", :language => "c", :result => "A", :run_time => 1, :memory_usage => 10, :plagiarism_percentage => 0.5)
