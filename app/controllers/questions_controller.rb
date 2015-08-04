@@ -69,7 +69,6 @@ class QuestionsController < ApplicationController
       end
 
       flash.notice = '問題を登録しました'
-      redirect_to lesson_questions_path(:lesson_id => @lesson_id)
       session[:lesson_id] = nil
     else
       flash.notice='問題失敗しました'

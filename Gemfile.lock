@@ -288,7 +288,6 @@ DEPENDENCIES
   minitest-stub_any_instance
   mysql2
   nested_form
-  nested_form_fields
   pry
   pry-rails
   rails (= 4.2.1)
