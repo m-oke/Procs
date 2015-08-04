@@ -32,21 +32,47 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @question = Question.new(question_params)
     @lesson_id = session[:lesson_id]
+    i = 1
+    test_data = {}
+    params['question']['test_data_attributes'].each do |key, val|
+      files = {}
+      files['input'] = val['input']
+      files['output'] = val['output']
+      if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
+        flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
+        redirect_to new_lesson_question_path(:lesson_id => @lesson_id) and return
+      end
+      val['input'] = "input#{i}"
+      val['output'] = "output#{i}"
+      test_data["#{i}"] = files
+      i += 1
+    end
+
+    @question = Question.new(question_params)
     if @question.save
       flash.notice='問題登録しました'
-      # redirect_to lesson_questions_path(:lesson_id=>@lesson_id)
-      # render :nothing => true
       params[:lesson_id] = session[:lesson_id]
       @lesson = Lesson.find_by(:id => session[:lesson_id])
       @questions = @lesson.question
       @is_teacher = Lesson.find_by(:id => session[:lesson_id]).user_lessons.find_by(:user_id => current_user.id, :lesson_id => session[:lesson_id]).is_teacher
+      uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
+      FileUtils.mkdir_p(uploads_test_data_path) unless FileTest.exist?(uploads_test_data_path)
 
+      test_data.each do |key, val|
+        File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
+          f.write(val['input'].read)
+        end
+        File.open("#{uploads_test_data_path}/output#{key}", "wb") do |f|
+          f.write(val['output'].read)
+        end
+      end
+
+      flash.notice = '問題を登録しました'
+      redirect_to lesson_questions_path(:lesson_id => @lesson_id)
       session[:lesson_id] = nil
     else
       flash.notice='問題失敗しました'
-      # redirect_to new_lesson_question_path(:lesson_id=>@lesson_id)
     end
   end
 
@@ -80,9 +106,9 @@ class QuestionsController < ApplicationController
       :run_time_limit,
       :memory_usage_limit,
       :cpu_usage_limit,
-      samples_attributes: [:question_id,:input,:output,:_destroy],
-      test_data_attributes: [:question_id,:input,:output,:_destroy],
-      lesson_questions_attributes: [:lesson_id,:question_id,:start_time,:end_time,:_destroy]
+      samples_attributes: [:question_id, :input, :output, :_destroy],
+      test_data_attributes: [:question_id, :input, :output, :_destroy],
+      lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
     )
   end
 

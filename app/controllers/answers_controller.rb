@@ -19,7 +19,7 @@ class AnswersController < ApplicationController
                                :lesson_id=> @lesson_id,
                                :student_id=> @student_id ).last.file_name
 
-    @path_directory ='./uploads/'+ @student_id.to_s +  '/' + @lesson_id.to_s + '/' + @question_id.to_s + '/'
+    @path_directory = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + "/"
     flash[:directory]= @path_directory
 
     @new_raw_path = @path_directory + @raw_display_file
@@ -56,8 +56,8 @@ class AnswersController < ApplicationController
       elsif file.size > 10.megabyte
         flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
       else
-        path = Rails.root.join('uploads', current_user.id.to_s, lesson_id, question_id).to_s
-        FileUtils.mkdir_p(path) unless FileTest.exist?(path)
+        uploads_answers_path = UPLOADS_ANSWERS_PATH.join(current_user.id.to_s, lesson_id, question_id)
+        FileUtils.mkdir_p(uploads_answers_path) unless FileTest.exist?(uploads_answers_path)
 
         old_file = Answer.where(:lesson_id => lesson_id,
                                :student_id => current_user.id,
@@ -65,9 +65,9 @@ class AnswersController < ApplicationController
         /\d+/ =~ old_file.file_name unless old_file.nil?
         version = $&.to_i
         next_version = (version + 1).to_s
-        next_name = "version" + next_version + extention
+        next_name = "version#{next_version}#{extention}"
 
-        File.open(path + "/" + next_name, 'wb') do |f|
+        File.open("#{uploads_answers_path}/#{next_name}", 'wb') do |f|
           f.write(file.read)
         end
         answer = Answer.new(:language => params[:language],
