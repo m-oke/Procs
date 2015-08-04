@@ -20,11 +20,17 @@
        %>
 
     <tr>
-      <td><%= link_to(student.student_number, lesson_question_user_answers_path(:controller => 'answers',
-                                                                    :action => 'index',
-                                                                    :lesson_id => @lesson.id,
-                                                                    :question_id => @question.id,
-                                                                    :user_id => student.id), :remote => ( @lesson.id != 1)) %></td>
+      <td>
+        <% unless answer.new_record? %>
+          <%= link_to(student.student_number, lesson_question_user_answers_path(:controller => 'answers',
+                                                                                :action => 'index',
+                                                                                :lesson_id => @lesson.id,
+                                                                                :question_id => @question.id,
+                                                                                :user_id => student.id), :remote => ( @lesson.id != 1)) %>
+        <% else %>
+          <%= student.student_number %>
+        <% end %>
+      </td>
       <td><%= student.name %></td>
       <td><%= answer.created_at %> </td>
       <td><%= RESULT[answer.result] %></td>

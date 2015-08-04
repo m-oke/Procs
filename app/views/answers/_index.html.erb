@@ -7,7 +7,10 @@
   <% end %>
 </div>
 <div>
-  <h2>学生解答詳細</h2>
+  <h2>解答詳細</h2>
+  <% if @is_teacher %>
+    <h4>名前 : <%= User.find_by(:id => @student_id).name %></h4>
+  <% end %>
   <div class="questions_list">
     <div>
       <h3>問題<%= @question_id %></h3>
