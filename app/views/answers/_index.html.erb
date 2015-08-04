@@ -1,0 +1,62 @@
+<%unless @is_teacher %>
+<div>
+  <% if @lesson_id.to_i == 1 %>
+      <%=  link_to '問題詳細に戻る', question_path(:id => @question_id),:class=>"btn btn-default btn_top"    %>
+  <% else %>
+  <%=  link_to '問題詳細に戻る', lesson_question_path(:lesson_id =>@lesson_id,  :id => @question_id  ),
+                                            :remote => true ,:class=>"btn btn-default btn_top"    %>
+  <% end %>
+</div>
+<% end %>
+<div>
+  <h2>学生解答詳細</h2>
+  <div class="questions_list">
+    <div>
+      <h3>問題<%= @question_id %></h3>
+    </div>
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th>バージョン</th>
+        <th>提出時間</th>
+        <th>結果</th>
+        <th>実行時間(ms)</th>
+        <th>メモリ使用量(MB/KB)</th>
+        <th>使用言語</th>
+        <th>開始時間</th>
+        <th>終了時間</th>
+        <th>学生類似度</th>
+        <th>WEB類似度</th>
+      </tr>
+
+
+      <% @question_all_version.each do |m| %>
+          <tr>
+            <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name },  :method => "POST", :remote => true%></td>
+            <td><%= m.created_at %></td>
+            <td><%= RESULT[m.result] %></td>
+            <td><%= m.run_time %></td>
+            <td><%= m.memory_usage %></td>
+            <td><%= m.language.capitalize! %></td>
+            <td><%= @dead_date_question.start_time%></td>
+            <td><%= @dead_date_question.end_time%></td>
+            <td><%= m.plagiarism_percentage %></td>
+            <td><%=  %></td>
+          </tr>
+      <% end %>
+    </table>
+
+  </div>
+
+  <div class ="diff_area_css">
+    <p><span>選択したバージョン：</span><text id="select_file_raw"><%= @raw_display_file %></text></p>
+    <% if @is_teacher %>
+        <p><span>比較するバージョン</span>
+          <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
+        </p>
+    <% end %>
+    <div id="diff_area" >
+      <%= render 'select_version' %>
+    </div>
+  </div>
+
+</div>

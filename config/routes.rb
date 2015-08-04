@@ -38,7 +38,6 @@ Rails.application.routes.draw do
   get '/questions/new' => 'questions#new'
   post '/questions/' => 'questions#create'
 
-
   devise_scope :user do
     get 'users/teacher/new', :to => 'users/registrations#new_teacher'
   end

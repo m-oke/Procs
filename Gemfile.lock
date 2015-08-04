@@ -293,6 +293,7 @@ DEPENDENCIES
   rails-footnotes
   rails_admin
   rb-readline
+  remotipart
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   sidekiq

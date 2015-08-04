@@ -1,18 +1,8 @@
 <h1>授業新規作成</h1>
 <%= form_for @lesson do |f| %>
-    <p>
-      <%= f.label :name , '授業名'%><br>
-      <%= f.text_field :name , :col => 80%>
-    </p>
-
-
-
-    <p>
-      <%= f.label :description , '説明'%><br>
-      <%= f.text_area :description , :rows => 10 , :cols => 80%>
-    <p>
-
-    <p>
-      <%= f.submit %>
-    </p>
+    <%= f.label :name , '授業名'%><span>(<span class="inputnote">＊</span>)</span><br>
+    <%= f.text_area :name , :rows => 2 , :class => 'text-area-css1', required: 'required' %></br>
+    <%= f.label :description , '説明'%><br>
+    <%= f.text_area :description , :rows => 10 ,:class => 'text-area-css1'%></br>
+    <%= f.submit  '登録',:class=>'btn btn-primary'  %>
 <% end %>

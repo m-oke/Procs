@@ -3,7 +3,7 @@
 * Copyright (c) 2015 Trent Richardson; Licensed MIT */
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
-		define(['jquery.remotipart', 'jquery.ui'], factory);
+		define(['jquery.remotipart.js', 'jquery.ui'], factory);
 	} else {
 		factory(jQuery);
 	}

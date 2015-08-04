@@ -12,7 +12,7 @@
         factory(require("jquery"));
     } else if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
-		define(['jquery.remotipart'], factory);
+		define(['jquery.remotipart.js'], factory);
 	} else {
 		// Browser globals
 		factory(jQuery);

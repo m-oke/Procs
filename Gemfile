@@ -29,6 +29,7 @@ gem 'bootstrap-sass', '~> 3.3.4'
 # use ajax for input form  add or delete
 gem  'jquery-turbolinks'
 gem  'nested_form'
+gem  'remotipart'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

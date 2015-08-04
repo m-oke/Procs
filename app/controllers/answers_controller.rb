@@ -40,8 +40,13 @@ class AnswersController < ApplicationController
   # @param [Fixnum] id Questionのid
   def create
     file = params[:upload_file]
-    lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
     question_id = params[:id]
+    lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
+    @lesson = Lesson.find_by(:id => lesson_id)
+    @question = Question.find_by(:id => params[:id])
+    @is_teacher = Lesson.find_by(:id => lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id =>lesson_id).is_teacher
+
+    @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
     unless file.nil?
       extention = EXT[params[:language]]
       name = file.original_filename
@@ -74,6 +79,7 @@ class AnswersController < ApplicationController
                             :run_time => 0,
                             :memory_usage => 0)
         answer.save
+        @latest_answer = answer
         flash[:notice] = '回答を投稿しました。'
         case params[:language]
         when 'python'
@@ -87,12 +93,14 @@ class AnswersController < ApplicationController
         end
       end
     else
+      @latest_answer = Answer.latest_answer(:student_id => current_user.id,
+                                            :question_id => params[:id],
+                                            :lesson_id => lesson_id) || nil
       flash[:alert] = 'ファイルが選択されていません。'
     end
-    if lesson_id == "1"
-      redirect_to :controller => 'questions', :action => 'show', :id => question_id and return
+    if @lesson.id == 1
+      redirect_to :controller => 'questions', :action => 'show',  :id => question_id
     end
-    redirect_to :controller => 'questions', :action => 'show', :lesson_id => lesson_id, :id => question_id
   end
 
   def select_version

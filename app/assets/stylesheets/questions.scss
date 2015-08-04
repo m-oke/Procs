@@ -5,8 +5,7 @@
 
 .field_question{
   margin-top: 10px;
-  width: 75%;
-  padding: 10px;
+  width: 100%;
 }
 
 .datepicket1{
@@ -23,4 +22,19 @@
 .btn_submit{
   margin-top:4px;
 }
-
+.btn_top{
+  position: relative;
+  margin-top : 10px;
+}
+.btn-right{
+  position: relative;
+  float:right;
+}
+.text-area-css1{
+  width:100%;
+  resize: vertical;
+}
+.text-area-css2{
+  width:45%;
+  resize: vertical
+}
