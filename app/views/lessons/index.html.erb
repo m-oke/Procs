@@ -2,9 +2,11 @@
 <% if current_user.nil? %>
     ログインまたは新規登録してください
 <% else %>
-    <% if current_user.has_role? [:teacher, :root ,:admin] %>
-        <%= link_to '授業作成', :controller =>lessons, :action =>new, class: 'btn btn-primary'%>
-    <% end %>
+    <div class = "lesson-new">
+      <% if current_user.has_role?(:teacher) %>
+          <%= link_to '授業作成',{ :controller =>"lessons", :action =>"new"}, :class => 'btn btn-primary'%>
+      <% end %>
+    </div>
     <div class="hero-unit">
       <h1>Procsへようこそ!</h1>
       <p>こちらからすべての問題を見ることができます。<br>
