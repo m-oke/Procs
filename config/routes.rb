@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   resources :lessons do
     resources :questions, only: [:index, :show, :new, :create], param: :question_id  do
       member do
-        get '/answer' => 'answers#index'
+        get '/answer' => 'answers#index', :constraints => OnlyAjaxRequest
       end
     end
     resources :students, only: [] do
