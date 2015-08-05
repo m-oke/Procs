@@ -6,15 +6,26 @@ class AnswersController < ApplicationController
     @student_id = params[:student_id] || current_user.id
     @lesson_id = params[:lesson_id] || 1
     @question_id = params[:question_id]
-
     if Lesson.find_by(:id => @lesson_id).nil? || Question.find_by(:id => @question_id).nil? || User.find_by(:id => @student_id).nil?
-      redirect_to root_path, :alert => 'パスが間違っています' and return
+      redirect_to root_path, :alert => '該当する解答は存在しません' and return
     end
+    unless params[:student_id].nil?
+      @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id)
+
+      # 該当授業の教師かどうかを取得
+      if @is_teacher.nil?
+        redirect_to root_path, :alert => '該当する授業に参加していません' and return
+      end
+      @is_teacher = @is_teacher.is_teacher
+      unless @is_teacher
+        redirect_to root_path, :alert => '該当する解答は存在しません' and return
+      end
+    end
+
     @question_all_version= Answer.where(:question_id => @question_id,
                                         :lesson_id=> @lesson_id,
                                         :student_id=> @student_id )
-    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id  ,
-                                                 question_id: @question_id )
+    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id, question_id: @question_id )
 
     @raw_display_file  = Answer.where(:question_id => @question_id,
                                :lesson_id=> @lesson_id,
@@ -24,14 +35,6 @@ class AnswersController < ApplicationController
     flash[:directory]= @path_directory
 
     @new_raw_path = @path_directory + @raw_display_file
-
-    # 該当授業の教師かどうかを取得
-    if Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).nil?
-      flash[:notice] = "該当する授業に参加していません"
-      redirect_to :controller => 'lessons', :action => 'index'
-    else
-      @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
-    end
   end
 
   # post '/answers'
