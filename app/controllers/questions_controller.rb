@@ -75,11 +75,11 @@ class QuestionsController < ApplicationController
     end
   end
 
-  # get '/lessons/:id'
+  # get '/lessons/;lesson_id/question/:question_id'
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def show
-    @question = Question.find_by(:id => params[:id])
+    @question = Question.find_by(:id => params[:question_id])
     lesson_id = params[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => lesson_id)
     if @lesson.nil? || @lesson.user_lessons.find_by(:user_id => current_user.id).nil?
@@ -88,7 +88,7 @@ class QuestionsController < ApplicationController
       redirect_to lessons_path, :alert => '該当する問題が存在しません。' and return
     end
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                          :question_id => params[:id],
+                                          :question_id => params[:question_id],
                                           :lesson_id => lesson_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher

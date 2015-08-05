@@ -25,9 +25,9 @@
           <tr>
             <td><%= i %></td>
             <% if @lesson.id != 1 %>
-                <td><%= link_to(question.title, lesson_question_path(:lesson_id => params[:lesson_id], :id => question.id),:remote =>true) %></td>
+                <td><%= link_to(question.title, lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id),:remote =>true) %></td>
             <% else %>
-                <td><%= link_to(question.title, question_path(:id => question.id)) %></td>
+                <td><%= link_to(question.title, question_path(:question_id => question.id)) %></td>
             <% end %>
 
             <% if @lesson.id != 1 %>
@@ -53,9 +53,9 @@
                                                          :lesson_id => @lesson.id) || Answer.new %>
                 <td><%= Answer::RESULT[@latest_answer.result] %></td>
                 <% if @lesson.id != 1 %>
-                    <td><%= link_to('回答', lesson_question_path(:lesson_id => params[:lesson_id], :id => question.id) + '#answer', :remote => true, class: 'btn btn-default') %></td>
+                    <td><%= link_to('回答', lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id) + '#answer', :remote => true, class: 'btn btn-default') %></td>
                 <% else %>
-                    <td><%= link_to('回答', question_path(:id => question.id) + '#answer', class: 'btn btn-default') %></td>
+                    <td><%= link_to('回答', question_path(:question_id => question.id) + '#answer', class: 'btn btn-default') %></td>
                 <% end %>
                 <td></td>
             <% end %>

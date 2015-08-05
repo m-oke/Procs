@@ -2,14 +2,14 @@ Rails.application.routes.draw do
   root :to => 'lessons#index'
 
   resources :lessons do
-    resources :questions, only: [:index, :show, :new] do
-      resources :users do
-        get 'answers' => 'answers#index', as: 'answers'
+    resources :questions, only: [:index, :show, :new, :create], param: :question_id  do
+      member do
+        get '/answer' => 'answers#index'
       end
     end
-    resources :users do
-      resources :questions do
-        get 'answers' => 'answers#index', as: 'answers'
+    resources :students, only: [] do
+      scope '/questions/:question_id' do
+        resources :answers, only: [:index]
       end
     end
     collection do
@@ -24,7 +24,11 @@ Rails.application.routes.draw do
     post 'answer/diff_select' => 'answers#diff_select'
   end
 
-  resources :questions, only: [:index, :show]
+  resources :questions, only: [:index, :show], param: :question_id do
+    member do
+      get '/answer' => 'answers#index'
+    end
+  end
   resources :answers, only: [:create]
 
   devise_for :users, :controllers => {
