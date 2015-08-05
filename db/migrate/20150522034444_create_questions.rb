@@ -7,6 +7,7 @@ class CreateQuestions < ActiveRecord::Migration
       t.text :output_description
       t.integer :run_time_limit, :default => 60
       t.integer :memory_usage_limit, :default => 512
+      t.integer :cpu_usage_limit
 
       t.timestamps null: false
     end
