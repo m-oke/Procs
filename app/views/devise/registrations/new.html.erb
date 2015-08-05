@@ -1,15 +1,13 @@
 <h2>新規登録</h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= devise_error_messages! %>
-
   <div class="field">
     <%= f.label :student_number, "学籍番号" %><br />
     <%= f.text_field :student_number %>
   </div>
 
   <div class="field">
-    <%= f.label :name, "名前" %><br />
+    <%= f.label :name, "名前" %>(<span class="inputnote">＊</span>)<br />
     <%= f.text_field :name %>
   </div>
 
@@ -19,14 +17,14 @@
   </div>
 
   <div class="field">
-    <%= f.label :email, "メールアドレス" %><br />
+    <%= f.label :email, "メールアドレス" %>(<span class="inputnote">＊</span>)<br />
     <%= f.email_field :email, autofocus: true %>
   </div>
 
   <%= hidden_field_tag "user[roles][]", :student %>
 
   <div class="field">
-    <%= f.label :password, "パスワード" %>
+    <%= f.label :password, "パスワード" %>(<span class="inputnote">＊</span>)
     <% if @minimum_password_length %>
     <em>(<%= @minimum_password_length %> characters minimum)</em>
     <% end %><br />
@@ -34,7 +32,7 @@
   </div>
 
   <div class="field">
-    <%= f.label :password_confirmation, "パスワードの確認" %><br />
+    <%= f.label :password_confirmation, "パスワードの確認" %>(<span class="inputnote">＊</span>)<br />
     <%= f.password_field :password_confirmation, autocomplete: "off" %>
   </div>
 

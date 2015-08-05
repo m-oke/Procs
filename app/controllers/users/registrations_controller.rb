@@ -20,7 +20,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
 
-    resource.save
+    if resource.save
+      UserLesson.create(:user_id => resource.id, :lesson_id => 1, :is_teacher => false)
+    end
+
     yield resource if block_given?
     if resource.persisted?
       if resource.active_for_authentication?
