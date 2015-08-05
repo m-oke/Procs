@@ -15,18 +15,16 @@
   </tr>
   <% @students.each do |student| %>
     <% answer = Answer.latest_answer(:student_id => student.id,
-                                     :question_id => params[:id],
+                                     :question_id => params[:question_id],
                                      :lesson_id => @lesson.id) || Answer.new
        %>
 
     <tr>
       <td>
         <% unless answer.new_record? %>
-          <%= link_to(student.student_number, lesson_question_user_answers_path(:controller => 'answers',
-                                                                                :action => 'index',
-                                                                                :lesson_id => @lesson.id,
-                                                                                :question_id => @question.id,
-                                                                                :user_id => student.id), :remote => ( @lesson.id != 1)) %>
+          <%= link_to(student.student_number, answer_lesson_question_path(:lesson_id => @lesson.id,
+                                                                          :question_id => @question.id,
+                                                                          :student_id => student.id), :remote => ( @lesson.id != 1)) %>
         <% else %>
           <%= student.student_number %>
         <% end %>

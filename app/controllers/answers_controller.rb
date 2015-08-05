@@ -3,9 +3,10 @@ class AnswersController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    @student_id = params[:user_id]
-    @lesson_id = params[:lesson_id]
+    @student_id = params[:student_id] || current_user.id
+    @lesson_id = params[:lesson_id] || 1
     @question_id = params[:question_id]
+
     if Lesson.find_by(:id => @lesson_id).nil? || Question.find_by(:id => @question_id).nil? || User.find_by(:id => @student_id).nil?
       redirect_to root_path, :alert => 'パスが間違っています' and return
     end
@@ -40,10 +41,10 @@ class AnswersController < ApplicationController
   # @param [Fixnum] id Questionのid
   def create
     file = params[:upload_file]
-    question_id = params[:id]
+    question_id = params[:question_id]
     lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
     @lesson = Lesson.find_by(:id => lesson_id)
-    @question = Question.find_by(:id => params[:id])
+    @question = Question.find_by(:id => question_id)
     @is_teacher = Lesson.find_by(:id => lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id =>lesson_id).is_teacher
 
     @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
@@ -94,12 +95,12 @@ class AnswersController < ApplicationController
       end
     else
       @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                            :question_id => params[:id],
+                                            :question_id => question_id,
                                             :lesson_id => lesson_id) || nil
       flash[:alert] = 'ファイルが選択されていません。'
     end
     if @lesson.id == 1
-      redirect_to :controller => 'questions', :action => 'show',  :id => question_id
+      redirect_to :controller => 'questions', :action => 'show',  :question_id => question_id
     end
   end
 
