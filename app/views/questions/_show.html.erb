@@ -48,11 +48,11 @@
   </table>
   <% unless @latest_answer.nil? %>
     <% if @lesson.id != 1 %>
-      <%= link_to("解答詳細", answer_lesson_question_path(:lesson_id => @lesson.id,
+      <%= link_to("解答詳細", answers_lesson_question_path(:lesson_id => @lesson.id,
                                                           :question_id => @question.id),
                   :remote => ( @lesson.id != 1), class: 'btn btn-default') %>
     <% else %>
-      <%= link_to("解答詳細", answer_question_path(:question_id => @question.id), class: 'btn btn-default') %>
+      <%= link_to("解答詳細", answers_question_path(:question_id => @question.id), class: 'btn btn-default') %>
     <% end %>
   <% end %>
 </div>

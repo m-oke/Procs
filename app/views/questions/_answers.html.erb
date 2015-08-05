@@ -22,7 +22,7 @@
     <tr>
       <td>
         <% unless answer.new_record? %>
-          <%= link_to(student.student_number, answer_lesson_question_path(:lesson_id => @lesson.id,
+          <%= link_to(student.student_number, lesson_student_answers_path(:lesson_id => @lesson.id,
                                                                           :question_id => @question.id,
                                                                           :student_id => student.id), :remote => ( @lesson.id != 1)) %>
         <% else %>
