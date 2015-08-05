@@ -15,7 +15,6 @@ Rails.application.routes.draw do
     collection do
       get '/join' => 'user_lessons#new'
       post '/join' => 'user_lessons#create'
-      get ':lesson_id/questions' => 'questions#index', as: 'questions'
       get ':lesson_id/students' => 'lessons#students', as: 'students'
     end
   end
@@ -25,14 +24,14 @@ Rails.application.routes.draw do
     post 'answer/diff_select' => 'answers#diff_select'
   end
 
-  resources :questions, only: [:index, :show, :create]
+  resources :questions, only: [:index, :show]
   resources :answers, only: [:create]
 
   devise_for :users, :controllers => {
-                       :sessions => 'users/sessions',
-                       :registrations => 'users/registrations',
-                       :passwords => 'users/passwords'
-                   }
+    :sessions => 'users/sessions',
+    :registrations => 'users/registrations',
+    :passwords => 'users/passwords'
+  }
 
 
   devise_scope :user do
