@@ -4,6 +4,7 @@ class QuestionsController < ApplicationController
   before_filter :authenticate_user!
 
   # get '/quesions' || get '/lessons/:lesson_id/questions'
+  # 問題一覧を表示
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Quesionのid
   def index
@@ -75,7 +76,8 @@ class QuestionsController < ApplicationController
     end
   end
 
-  # get '/lessons/;lesson_id/question/:question_id'
+  # get '/lessons/:lesson_id/questions/:question_id'
+  # 問題詳細を表示
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def show
