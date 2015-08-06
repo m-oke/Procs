@@ -3,22 +3,27 @@
 
   <% if @select_diff_file != "なし" %>
       <tr class="head">
-        <th class="old_line"> Compared </th>
-        <th class="new_line"> Selected </th>
+        <th class="old_line"> Selected </th>
+        <th class="new_line"> Compared </th>
         <th class="change"> </th>
         <th id="code"> Source Code </th>
       </tr>
+      <% old_line_number = 0 %>
       <% new_line_number = 0 %>
       <% @diff.each_with_index do |line, i| %>
+          <% old_line_number += 1 %>
           <% new_line_number += 1 %>
           <tr class=" <%= th_color(line.chars[0]) %>">
-            <td class="old_line"> <%= i + 1 %> </td>
             <% if line.chars[0] == "+" %>
+                <% old_line_number -= 1 %>
+                <td class="old_line"> </td>
                 <td class="new_line"> <%= new_line_number %> </td>
             <% elsif line.chars[0] == "-" %>
                 <% new_line_number -= 1 %>
+                <td class="old_line"> <%= old_line_number %> </td>
                 <td class="new_line"> </td>
             <% else %>
+                <td class="old_line"> <%= old_line_number %> </td>
                 <td class="new_line"> <%= new_line_number %> </td>
             <% end %>
             <td class="change"> <%= line.chars[0] %> </td>
