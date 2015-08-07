@@ -4,6 +4,7 @@ class QuestionsController < ApplicationController
   before_filter :authenticate_user!
 
   # get '/quesions' || get '/lessons/:lesson_id/questions'
+  # 問題一覧を表示
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Quesionのid
   def index
@@ -33,9 +34,11 @@ class QuestionsController < ApplicationController
 
   def create
     @lesson_id = session[:lesson_id]
-    i = 1
+
+    # アップロードされたテストデータを取得
+    # TestDatumモデルにはファイル名を入力
     test_data = {}
-    params['question']['test_data_attributes'].each do |key, val|
+    params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
       files = {}
       files['input'] = val['input']
       files['output'] = val['output']
@@ -46,19 +49,23 @@ class QuestionsController < ApplicationController
       val['input'] = "input#{i}"
       val['output'] = "output#{i}"
       test_data["#{i}"] = files
-      i += 1
     end
 
     @question = Question.new(question_params)
     if @question.save
-      flash.notice='問題登録しました'
+      flash.notice='問題を登録しました'
+
+      # ajax用の変数
       params[:lesson_id] = session[:lesson_id]
       @lesson = Lesson.find_by(:id => session[:lesson_id])
       @questions = @lesson.question
       @is_teacher = Lesson.find_by(:id => session[:lesson_id]).user_lessons.find_by(:user_id => current_user.id, :lesson_id => session[:lesson_id]).is_teacher
+
+      # テストデータのディレクトリを作成
       uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
       FileUtils.mkdir_p(uploads_test_data_path) unless FileTest.exist?(uploads_test_data_path)
 
+      # テストデータの保存
       test_data.each do |key, val|
         File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
           f.write(val['input'].read)
@@ -75,7 +82,8 @@ class QuestionsController < ApplicationController
     end
   end
 
-  # get '/lessons/;lesson_id/question/:question_id'
+  # get '/lessons/:lesson_id/questions/:question_id'
+  # 問題詳細を表示
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def show

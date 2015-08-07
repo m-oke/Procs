@@ -16,15 +16,14 @@ class UserLessonsController < ApplicationController
       render :new  and return
     end
 
-    @user_lesson = UserLesson.new(
-                                  :user_id => current_user.id,
+    @user_lesson = UserLesson.new(:user_id => current_user.id,
                                   :lesson_id => lesson.id,
-                                  :is_teacher => current_user.has_role?(:teacher))
+                                  :is_teacher => false)
 
-    if !UserLesson.exists?(:user_id => current_user.id, :lesson_id => lesson.id, :is_teacher => current_user.has_role?(:teacher)) &&
+    if !UserLesson.exists?(:user_id => current_user.id, :lesson_id => lesson.id, :is_teacher => false) &&
         @user_lesson.save
       flash[:notice] = "「#{lesson.name}」に参加しました。"
-      redirect_to :controller => 'lessons', :action => 'index'
+      redirect_to :controller => 'lessons', :action => 'show', :id => lesson.id
     else
       flash.now[:alert] = "あなたは既にこの授業に参加しています。"
       render :new and return
