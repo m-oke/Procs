@@ -61,6 +61,9 @@ class LessonsController < ApplicationController
   # get '/lessons/:id/students'
   def students
     @students = get_students
+    @lesson_id = params[:lesson_id]
+    @lesson_questions = LessonQuestion.where(:lesson_id => @lesson_id)
+    @lesson_questions_count = @lesson_questions.count
   end
 
   # get '/lessons/:id/students/:student_id'

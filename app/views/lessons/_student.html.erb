@@ -38,8 +38,7 @@
           <% unless answer.nil? %>
               <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_no,
                                                                           :question_id => question.id,
-                                                                          :student_id => @student.id),
-                              :remote => true  %></td>
+                                                                          :student_id => @student.id),:remote => true  %></td>
               <td><%=  Answer::RESULT[answer.result] %></td>
               <td><%= answer.run_time %></td>
               <% if answer.memory_usage / 1024 == 0 %>
