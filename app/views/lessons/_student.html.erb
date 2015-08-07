@@ -1,0 +1,50 @@
+<%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"btn btn-default btn_top" %>
+<h1>学生詳細ページ</h1>
+<div>
+  <p>学籍番号<%= @student.student_number %></p>
+  <p>名前<%= @student.name %></p>
+  <p>学年</p>
+  <p>学部</p>
+  <p>学科</p>
+  <p>emailアドレス<%= @student.email %></p>
+</div>
+<div>
+  <table class="table table-bordered table-striped">
+    <tr>
+      <th>問題番号</th>
+      <th>問題名</th>
+      <th>結果</th>
+      <th>実行時間(ms)</th>
+      <th>メモリ使用量(MB/KB)</th>
+      <th>終了時間</th>
+      <th>提出</th>
+    </tr>
+    <% num = 0 %>
+    <% @all_questions.each do |lesson_question| %>
+        <tr>
+          <% num = num + 1 %>
+          <% question = Question.find_by(:id => lesson_question.question_id) %>
+          <% answer = Answer.where(:lesson_id => @lesson_no ,:student_id => @student.id ,:question_id =>lesson_question.question_id).last %>
+          <td><%= num  %></td>
+          <td><%= question.title %></td>
+          <% unless answer.nil? %>
+              <td><%=  Answer::RESULT[answer.result] %></td>
+              <td><%= answer.run_time %></td>
+              <% if answer.memory_usage / 1024 == 0 %>
+                  <td><%= "#{answer.memory_usage} KB" %></td>
+              <% else %>
+                  <td><%= "#{answer.memory_usage / 1024} MB" %></td>
+              <% end %>
+              <td><%= lesson_question.end_time %></td>
+              <td><%= answer.created_at %></td>
+          <% else %>
+              <td><p>-</p></td>
+              <td><%= %></td>
+              <td><%= %></td>
+              <td><%= lesson_question.end_time %></td>
+              <td><%= %></td>
+          <% end %>
+        </tr>
+    <% end %>
+  </table>
+</div>

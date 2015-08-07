@@ -8,7 +8,9 @@
     </tr>
     <% @students.each do |student| %>
         <tr>
-          <td><%= student.student_number %></td>
+          <td><%= link_to student.student_number , student_lessons_path( :lesson_id => params[:lesson_id] , :student_num => student.student_number),
+                                                  :method => "POST",
+                                                  :remote => true  %></td>
           <td><%= student.name %></td>
           <td> - </td>
         </tr>

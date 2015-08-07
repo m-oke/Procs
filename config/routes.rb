@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get '/join' => 'user_lessons#new'
       post '/join' => 'user_lessons#create'
       get ':lesson_id/students' => 'lessons#students', as: 'students'
+      post ':lesson_id/students/:student_num' => 'lessons#student', as: 'student'
     end
   end
 

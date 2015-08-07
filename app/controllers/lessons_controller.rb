@@ -63,6 +63,14 @@ class LessonsController < ApplicationController
     @students = get_students
   end
 
+  # get '/lessons/:id/students/:student_id'
+  def student
+    @lesson_no = params[:lesson_id]
+    @student_num = params[:student_num]
+    @student = User.find_by(:student_number => @student_num )
+    @all_questions = LessonQuestion.where(:lesson_id => @lesson_no)
+  end
+
   #Luhnアルゴリズムの導入
   def init
     require 'luhn'
