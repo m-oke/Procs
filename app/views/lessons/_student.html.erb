@@ -26,8 +26,11 @@
           <% question = Question.find_by(:id => lesson_question.question_id) %>
           <% answer = Answer.where(:lesson_id => @lesson_no ,:student_id => @student.id ,:question_id =>lesson_question.question_id).last %>
           <td><%= num  %></td>
-          <td><%= question.title %></td>
           <% unless answer.nil? %>
+              <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_no,
+                                                                          :question_id => question.id,
+                                                                          :student_id => @student.id),
+                              :remote => true  %></td>
               <td><%=  Answer::RESULT[answer.result] %></td>
               <td><%= answer.run_time %></td>
               <% if answer.memory_usage / 1024 == 0 %>
@@ -38,6 +41,7 @@
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
           <% else %>
+              <td><%= question.title %></td>
               <td><p>-</p></td>
               <td><%= %></td>
               <td><%= %></td>

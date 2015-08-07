@@ -69,6 +69,7 @@ class LessonsController < ApplicationController
     @student_num = params[:student_num]
     @student = User.find_by(:student_number => @student_num )
     @all_questions = LessonQuestion.where(:lesson_id => @lesson_no)
+    flash[:student_num] = @student_num
   end
 
   #Luhnアルゴリズムの導入
