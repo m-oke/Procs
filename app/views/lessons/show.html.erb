@@ -22,7 +22,7 @@
       </tr>
       <tr>
         <th>授業の説明</th>
-        <td><%= @lesson.description %></td>
+        <td><%= simple_format(h(@lesson.description)) %></td>
       </tr>
       <tr>
         <th>教員</th>
