@@ -45,24 +45,31 @@ class AnswersController < ApplicationController
   def create
     file = params[:upload_file]
     question_id = params[:question_id]
-    lesson_id = params[:lesson_id].present? ? params[:lesson_id] : "1"
+    lesson_id = params[:lesson_id].present? ? params[:lesson_id] : 1
+
+    # ajax用の変数
     @lesson = Lesson.find_by(:id => lesson_id)
     @question = Question.find_by(:id => question_id)
     @is_teacher = Lesson.find_by(:id => lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id =>lesson_id).is_teacher
-
     @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
+
+    # ファイルが選択されている場合
     unless file.nil?
       extention = EXT[params[:language]]
       name = file.original_filename
 
+      # ファイルのチェック
       if !(extention == File.extname(name).downcase)
         flash[:alert] = '使用言語とファイル拡張子が一致しません。'
       elsif file.size > 10.megabyte
         flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
       else
-        uploads_answers_path = UPLOADS_ANSWERS_PATH.join(current_user.id.to_s, lesson_id, question_id)
+
+        # 保存ディレクトリの作成
+        uploads_answers_path = UPLOADS_ANSWERS_PATH.join(current_user.id.to_s, lesson_id.to_s, question_id)
         FileUtils.mkdir_p(uploads_answers_path) unless FileTest.exist?(uploads_answers_path)
 
+        # 最後の解答のファイル名の取得
         old_file = Answer.where(:lesson_id => lesson_id,
                                :student_id => current_user.id,
                                :question_id => question_id).last
@@ -71,9 +78,12 @@ class AnswersController < ApplicationController
         next_version = (version + 1).to_s
         next_name = "version#{next_version}#{extention}"
 
+        # ファイルの保存
         File.open("#{uploads_answers_path}/#{next_name}", 'wb') do |f|
           f.write(file.read)
         end
+
+        # Answerモデルの保存
         answer = Answer.new(:language => params[:language],
                             :question_id => question_id,
                             :lesson_id => lesson_id,
@@ -82,9 +92,13 @@ class AnswersController < ApplicationController
                             :student_id => current_user.id,
                             :run_time => 0,
                             :memory_usage => 0)
-        answer.save
+        unless answer.save
+          flash[:notice] = "解答の保存に失敗しました．" and return
+        end
         @latest_answer = answer
-        flash[:notice] = '回答を投稿しました。'
+        flash[:notice] = '解答を投稿しました。'
+
+        # 評価スクリプトをメッセージキューに入れる
         case params[:language]
         when 'python'
           EvaluatePythonJob.perform_later(:user_id => current_user.id,
@@ -96,12 +110,16 @@ class AnswersController < ApplicationController
                                           :question_id => question_id)
         end
       end
+
+    # ファイルが選択されていなかった場合
     else
       @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                             :question_id => question_id,
                                             :lesson_id => lesson_id) || nil
       flash[:alert] = 'ファイルが選択されていません。'
     end
+
+    # パブリック授業の場合
     if @lesson.id == 1
       redirect_to :controller => 'questions', :action => 'show',  :question_id => question_id
     end
