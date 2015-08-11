@@ -48,4 +48,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def is_teacher_check(user_id: )
+    if(User.find_by(:id => user_id).has_role?(:teacher))
+      return true
+    else
+      redirect_to root_path, :alert => "あなたはこの権限がありません"
+      return false
+    end
+  end
 end

@@ -11,6 +11,9 @@ class LessonsController < ApplicationController
   # get '/lessons/new'
   def new
     @lesson = Lesson.new
+    unless is_teacher_check(:user_id => current_user.id)
+      return
+    end
   end
 
   # post '/lessons'
