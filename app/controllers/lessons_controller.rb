@@ -11,8 +11,10 @@ class LessonsController < ApplicationController
   # get '/lessons/new'
   def new
     @lesson = Lesson.new
-    unless is_teacher_check(:user_id => current_user.id)
-      return
+
+    #教師の資格があるかどうかを確認する
+    unless(User.find_by(:id => current_user.id).has_role?(:teacher))
+      redirect_to root_path, :alert => "あなたはこの権限がありません" and return
     end
   end
 
