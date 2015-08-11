@@ -11,6 +11,11 @@ class LessonsController < ApplicationController
   # get '/lessons/new'
   def new
     @lesson = Lesson.new
+
+    #教師の資格があるかどうかを確認する
+    unless(User.find_by(:id => current_user.id).has_role?(:teacher))
+      redirect_to root_path, :alert => "あなたはこの権限がありません" and return
+    end
   end
 
   # post '/lessons'
@@ -31,7 +36,7 @@ class LessonsController < ApplicationController
 
         #Teacherの情報をuser_lessonに記入する
         @user_lesson.lesson_id = @lesson.id
-        @user_lesson.is_teacher = TRUE
+        @user_lesson.is_teacher = true
         @user_lesson.save
 
         flash.notice = 'クラス作成しました！'
