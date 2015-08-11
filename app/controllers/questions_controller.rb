@@ -92,7 +92,6 @@ class QuestionsController < ApplicationController
     else
       @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
     end
-
   end
 
 

@@ -29,14 +29,14 @@
       <th>提出</th>
     </tr>
     <% num = 0 %>
-    <% @all_questions.each do |lesson_question| %>
+    <% @lesson_questions.each do |lesson_question| %>
         <tr>
           <% num = num + 1 %>
           <% question = Question.find_by(:id => lesson_question.question_id) %>
-          <% answer = Answer.where(:lesson_id => @lesson_no ,:student_id => @student.id ,:question_id =>lesson_question.question_id).last %>
+          <% answer = Answer.where(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id =>lesson_question.question_id).last %>
           <td><%= num  %></td>
           <% unless answer.nil? %>
-              <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_no,
+              <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
                                                                           :question_id => question.id,
                                                                           :student_id => @student.id),:remote => true  %></td>
               <td><%=  Answer::RESULT[answer.result] %></td>
@@ -60,3 +60,4 @@
     <% end %>
   </table>
 </div>
+<% flash[:previous] = "student" %>
