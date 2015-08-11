@@ -31,7 +31,7 @@ class LessonsController < ApplicationController
 
         #Teacherの情報をuser_lessonに記入する
         @user_lesson.lesson_id = @lesson.id
-        @user_lesson.is_teacher = TRUE
+        @user_lesson.is_teacher = true
         @user_lesson.save
 
         flash.notice = 'クラス作成しました！'
