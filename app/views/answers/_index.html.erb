@@ -1,12 +1,12 @@
 <div>
   <% if @lesson_id.to_i == 1 %>
-      <%=  link_to '問題詳細に戻る', question_path(:question_id => @question_id),:class=>"btn btn-default btn_top"    %>
-  <% elsif flash[:student_num].nil?%>
-  <%=  link_to '問題詳細に戻る', lesson_question_path(:lesson_id =>@lesson_id,  :question_id => @question_id  ),
-                                            :remote => true ,:class=>"btn btn-default btn_top"    %>
-  <% else%>
-  <%=  link_to '学生詳細ページ', student_lessons_path(:lesson_id =>@lesson_id,  :student_num => flash[:student_num]  ),
-               :remote => true , :method => "POST", :class=>"btn btn-default btn_top"    %>
+      <%=  link_to '問題詳細に戻る', question_path(:question_id => @question_id),:class=>"btn btn-default btn_top" %>
+  <% elsif flash[:previous] == "question" %>
+    <%=  link_to '問題詳細に戻る', lesson_question_path(:lesson_id =>@lesson_id,  :question_id => @question_id),
+                                            :remote => true, :class=>"btn btn-default btn_top" %>
+  <% elsif flash[:previous] == "student" %>
+      <%=  link_to '学生詳細に戻る', student_lessons_path(:lesson_id =>@lesson_id, :student_id => params[:student_id]),
+           :remote => true, :class=>"btn btn-default btn_top" %>
   <% end %>
 </div>
 <div>
@@ -35,7 +35,7 @@
 
       <% @question_all_version.each do |m| %>
           <tr>
-            <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name },  :method => "POST", :remote => true%></td>
+            <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name }, :remote => true%></td>
             <td><%= m.created_at %></td>
             <td><%= RESULT[m.result] %></td>
             <td><%= m.run_time %></td>
@@ -55,7 +55,7 @@
     <p><span>選択したバージョン：</span><text id="select_file_raw"><%= @raw_display_file %></text></p>
     <% if @is_teacher %>
         <p><span>比較するバージョン</span>
-          <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name ,{:prompt => "なし"},{:id=>'diff_select'})%>
+          <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name , {:prompt => "なし"}, {:id => 'diff_select'})%>
         </p>
     <% end %>
     <div id="diff_area" >
