@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
-  before_action :exclude_lesson_one
-
+  before_action :check_question, only: [:show]
+  before_action :check_lesson, only: [:index, :new]
   before_filter :authenticate_user!
 
   # get '/quesions' || get '/lessons/:lesson_id/questions'
@@ -10,17 +10,11 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] id Quesionのid
   def index
     id = params[:lesson_id] || 1
-    params[:lesson_id] = params[:lesson_id] || 1
+    params[:lesson_id] = id
     @lesson = Lesson.find_by(:id => id)
-    unless @lesson.nil?
-      if @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).nil?
-        redirect_to root_path, :alert => '該当する授業に参加していません．' and return
-      end
-      @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
-      @questions = @lesson.question
-    else
-      redirect_to root_path, :alert => '該当する授業が存在しません。' and return
-    end
+    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
+    @questions = @lesson.question
+
   end
 
   def new
@@ -30,11 +24,10 @@ class QuestionsController < ApplicationController
     @question.test_data.build
     @question.lesson_questions.build
     @lesson_id = params[:lesson_id].to_i
-    session[:lesson_id] = @lesson_id
   end
 
   def create
-    @lesson_id = session[:lesson_id]
+    @lesson_id = params[:lesson_id]
 
     # アップロードされたテストデータを取得
     # TestDatumモデルにはファイル名を入力
@@ -57,10 +50,10 @@ class QuestionsController < ApplicationController
       flash.notice='問題を登録しました'
 
       # ajax用の変数
-      params[:lesson_id] = session[:lesson_id]
-      @lesson = Lesson.find_by(:id => session[:lesson_id])
+      params[:lesson_id] = @lesson_id
+      @lesson = Lesson.find_by(:id => @lesson_id)
       @questions = @lesson.question
-      @is_teacher = Lesson.find_by(:id => session[:lesson_id]).user_lessons.find_by(:user_id => current_user.id, :lesson_id => session[:lesson_id]).is_teacher
+      @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
 
       # テストデータのディレクトリを作成
       uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
@@ -77,9 +70,8 @@ class QuestionsController < ApplicationController
       end
 
       flash.notice = '問題を登録しました'
-      session[:lesson_id] = nil
     else
-      flash.notice='問題失敗しました'
+      flash.notice='問題の登録に失敗しました'
     end
   end
 
@@ -91,11 +83,6 @@ class QuestionsController < ApplicationController
     @question = Question.find_by(:id => params[:question_id])
     lesson_id = params[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => lesson_id)
-    if @lesson.nil? || @lesson.user_lessons.find_by(:user_id => current_user.id).nil?
-      redirect_to root_path, :alert => '該当する授業に参加していません．' and return
-    elsif @question.nil? || @question.lesson_questions.find_by(:lesson_id => lesson_id).nil?
-      redirect_to lessons_path, :alert => '該当する問題が存在しません。' and return
-    end
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                           :question_id => params[:question_id],
                                           :lesson_id => lesson_id) || nil
@@ -105,7 +92,6 @@ class QuestionsController < ApplicationController
     else
       @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
     end
-
   end
 
 
@@ -125,23 +111,21 @@ class QuestionsController < ApplicationController
     )
   end
 
-  # lesson_id == 1の場合は表示しない
+  # 該当する問題が存在するかどうか
   # @param [Fixnum] lesson_id
-  def exclude_lesson_one
-    if params[:lesson_id] == "1"
-      redirect_to root_path, :alert => "該当する授業が存在しません。"
-    end
+  # @param [Fixnum] question_id
+  def check_question
+    lesson_id = params[:lesson_id] || 1
+    question_id = params[:question_id]
+    return unless access_question_check(:user_id => current_user.id, :lesson_id => lesson_id, :question_id => question_id)
+    @quesions = Question.find_by(:id => question_id)
   end
 
-  def url_access_rule
-    if params[:lesson_id] == "1"
-      redirect_to root_path, :alert => "該当する授業が存在しません。"
-    else
-      str= request.url
-      if str.include?("questions")|| str.include?("students")
-        redirect_to root_path, :alert => "該当するページが存在しません。"
-      end
-    end
+  # 該当する授業が存在するかどうか
+  # @param [Fixnum] lesson_id
+  # @param [Fixnum] question_id
+  def check_lesson
+    id = params[:lesson_id] || 1
+    return unless access_lesson_check(:user_id => current_user.id, :lesson_id => id)
   end
-
 end

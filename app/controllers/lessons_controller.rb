@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 class LessonsController < ApplicationController
-  before_action :set_lesson, only: [:show, :questions, :students]
+  before_action :check_lesson, only: [:show, :students]
   before_filter :authenticate_user!
   before_action :init
 
@@ -16,7 +16,6 @@ class LessonsController < ApplicationController
   # post '/lessons'
   # クラスの作成
   def create
-    # @lesson = Lesson.new(params[:lesson])
     @lesson = Lesson.new(params_lesson)
     @user_lesson = UserLesson.new
     @user_lesson.user_id = current_user.id
@@ -49,13 +48,8 @@ class LessonsController < ApplicationController
 
   # get '/lessons/:id'
   def show
-    id = params[:id] || 1
-    @lesson = Lesson.find_by(:id => id)
-    unless access_lesson_check(:user_id => current_user.id, :lesson_id => @lesson.id)
-      return
-    end
     @teachers = get_teachers
-    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => id).is_teacher
+    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson.id).is_teacher
   end
 
   # get '/lessons/:id/students'
@@ -68,11 +62,10 @@ class LessonsController < ApplicationController
 
   # get '/lessons/:id/students/:student_id'
   def student
-    @lesson_no = params[:lesson_id]
-    @student_num = params[:student_num]
-    @student = User.find_by(:student_number => @student_num )
-    @all_questions = LessonQuestion.where(:lesson_id => @lesson_no)
-    flash[:student_num] = @student_num
+    @lesson_id = params[:lesson_id]
+    @student_id = params[:student_id]
+    @student = User.find_by(:id => @student_id )
+    @lesson_questions = LessonQuestion.where(:lesson_id => @lesson_id)
   end
 
   #Luhnアルゴリズムの導入
@@ -85,12 +78,10 @@ class LessonsController < ApplicationController
   # idまたはlesson_idから該当するLessonを検索
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id 一部のURLでのlesson_id
-  def set_lesson
+  def check_lesson
     id = params[:lesson_id] || params[:id]
+    return unless access_lesson_check(:user_id => current_user.id, :lesson_id => id)
     @lesson = Lesson.find_by(:id => id)
-    if (id == "1") || @lesson.nil?
-      redirect_to root_path, :alert => "該当する授業が存在しません。"
-    end
   end
 
   # 該当するlessonに所属するstudentを取得

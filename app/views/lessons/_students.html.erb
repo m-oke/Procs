@@ -9,20 +9,14 @@
     <% @students.each do |student| %>
         <% @right_answer = 0 %>
         <tr>
-          <td><%= link_to student.student_number , student_lessons_path( :lesson_id => params[:lesson_id] , :student_num => student.student_number),
-                                                  :method => "POST",
+          <td><%= link_to student.student_number , student_lessons_path( :lesson_id => params[:lesson_id] , :student_id => student.id),
                                                   :remote => true  %></td>
           <td><%= student.name %></td>
           <td>
             <% @lesson_questions.each do |lesson_question| %>
-                <% @answer = Answer.where(:lesson_id => @lesson_id ,:student_id => student.id ,:question_id =>lesson_question.question_id).last %>
-                <% unless @answer.nil?%>
-                    <% if @answer.result == "A" %>
-                        <% @right_answer = @right_answer + 1 %>
-                    <% end %>
-                <% end %>
+              <% @accept_count = Answer.records(:student_id => student.id, :lesson_id => params[:lesson_id]) %>
             <% end %>
-            <%= "#{@right_answer}/#{@lesson_questions_count}"  %>
+            <%= "#{@accept_count}/#{@lesson_questions_count}"  %>
           </td>
         </tr>
     <% end %>
