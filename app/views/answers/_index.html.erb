@@ -1,9 +1,12 @@
 <div>
   <% if @lesson_id.to_i == 1 %>
       <%=  link_to '問題詳細に戻る', question_path(:question_id => @question_id),:class=>"btn btn-default btn_top"    %>
-  <% else %>
+  <% elsif flash[:student_num].nil?%>
   <%=  link_to '問題詳細に戻る', lesson_question_path(:lesson_id =>@lesson_id,  :question_id => @question_id  ),
                                             :remote => true ,:class=>"btn btn-default btn_top"    %>
+  <% else%>
+  <%=  link_to '学生詳細ページ', student_lessons_path(:lesson_id =>@lesson_id,  :student_num => flash[:student_num]  ),
+               :remote => true , :method => "POST", :class=>"btn btn-default btn_top"    %>
   <% end %>
 </div>
 <div>

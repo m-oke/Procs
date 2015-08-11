@@ -2,3 +2,70 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+table.student {
+  width: 100%;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0px 15px;
+  font-size: 12px;
+}
+
+table.student th,
+table.student td {
+  padding: 10px;
+  color: #000000;
+  font-weight: normal;
+  font-size: 15px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+table.student th {
+  background: #295890;
+  vertical-align: middle;
+  text-align: left;
+  width: 80px;
+  overflow: visible;
+  position: relative;
+  color: #fff;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+table.student th:after {
+  left: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(136, 183, 213, 0);
+  border-left-color: #295890;
+  border-width: 10px;
+  margin-top: -10px;
+}
+/* firefox */
+@-moz-document url-prefix() {
+  table.student th::after {
+    float: right;
+    padding: 0;
+    left: 30px;
+    top: 10px;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: relative;
+    pointer-events: none;
+    border: 10px solid transparent;
+    border-left: #295890 10px solid;
+    margin-top: -10px;
+  }
+}
+
+table.student td {
+  background: #f8f8f8;
+  width: 360px;
+  padding-left: 20px;
+}

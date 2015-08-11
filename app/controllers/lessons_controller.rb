@@ -61,6 +61,18 @@ class LessonsController < ApplicationController
   # get '/lessons/:id/students'
   def students
     @students = get_students
+    @lesson_id = params[:lesson_id]
+    @lesson_questions = LessonQuestion.where(:lesson_id => @lesson_id)
+    @lesson_questions_count = @lesson_questions.count
+  end
+
+  # get '/lessons/:id/students/:student_id'
+  def student
+    @lesson_no = params[:lesson_id]
+    @student_num = params[:student_num]
+    @student = User.find_by(:student_number => @student_num )
+    @all_questions = LessonQuestion.where(:lesson_id => @lesson_no)
+    flash[:student_num] = @student_num
   end
 
   #Luhnアルゴリズムの導入

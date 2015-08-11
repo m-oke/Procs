@@ -8,7 +8,7 @@
 <% if params[:lesson_id] %>
     <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
 <% else %>
-    <%= link_to '問題一覧', questions_path, :class => "btn btn-default btn_top" %>
+    <%= link_to '問題一覧に戻る', questions_path, :class => "btn btn-default btn_top" %>
 <% end %>
 
 <h2><%= @question.title %></h2>
