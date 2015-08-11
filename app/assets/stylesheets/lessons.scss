@@ -16,6 +16,8 @@ table.student td {
   color: #000000;
   font-weight: normal;
   font-size: 15px;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 table.student th {

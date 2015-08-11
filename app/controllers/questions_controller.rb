@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
   before_action :exclude_lesson_one
+
   before_filter :authenticate_user!
 
   # get '/quesions' || get '/lessons/:lesson_id/questions'
@@ -132,5 +133,15 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def url_access_rule
+    if params[:lesson_id] == "1"
+      redirect_to root_path, :alert => "該当する授業が存在しません。"
+    else
+      str= request.url
+      if str.include?("questions")|| str.include?("students")
+        redirect_to root_path, :alert => "該当するページが存在しません。"
+      end
+    end
+  end
 
 end
