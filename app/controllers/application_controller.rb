@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   # @return [Boolean]
   def access_lesson_check(user_id:, lesson_id:)
     lesson = Lesson.find_by(:id => lesson_id)
-    if(lesson_id == "1" || lesson.nil?)
+    if (lesson_id == "1" || lesson.nil?)
       redirect_to root_path, :alert => "該当する授業が存在しません"
       return false
     elsif lesson.user_lessons.where(:lesson_id => lesson_id, :user_id => user_id).empty?
@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   # @param [Fixnum] question_id
   # @return [Boolean]
   def access_question_check(user_id:, lesson_id:, question_id:)
-    if access_lesson_check(:user_id => user_id, :lesson_id => lesson_id, :question_id => question_id)
+    if access_lesson_check(:user_id => user_id, :lesson_id => lesson_id)
       question = Question.find_by(:id => question_id)
       if question.nil?
         redirect_to lesson_path(:id => lesson_id), :alert => "該当する問題が存在しません"
