@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
   before_action :check_question, only: [:show]
-  before_action :check_lesson, only: [:index]
+  before_action :check_lesson, only: [:index, :new]
   before_filter :authenticate_user!
 
   # get '/quesions' || get '/lessons/:lesson_id/questions'

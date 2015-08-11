@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root :to => 'lessons#index'
 
   resources :lessons do
-    resources :questions, only: [:index, :show, :new, :create], param: :question_id  do
+    resources :questions, only: [:index, :show, :new, :create], param: :question_id, :constraints => OnlyAjaxRequest do
       member do
         get '/answers' => 'answers#index', :constraints => OnlyAjaxRequest
       end
@@ -15,8 +15,8 @@ Rails.application.routes.draw do
     collection do
       get '/join' => 'user_lessons#new'
       post '/join' => 'user_lessons#create'
-      get ':lesson_id/students' => 'lessons#students', as: 'students'
-      post ':lesson_id/students/:student_num' => 'lessons#student', as: 'student'
+      get ':lesson_id/students' => 'lessons#students', as: 'students', :constraints => OnlyAjaxRequest
+      post ':lesson_id/students/:student_id' => 'lessons#student', as: 'student'
     end
   end
 
