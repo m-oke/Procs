@@ -34,6 +34,13 @@ class EvaluatePythonJob < ActiveJob::Base
 
     # テストデータの数だけ繰り返し
     1.upto(test_count) do |i|
+      result = "P"
+      memory = 0
+      time = 0
+      spec[i][:result] = result
+      spec[i][:memory] = memory
+      spec[i][:time] = time
+
       exec_cmd = "ts=$(date +%s%N); (/usr/bin/time -f '%M' python3 #{exe_file} < #{test_data_dir}/input#{i} > #{work_dir_file}_result#{i}) 2> #{spec_file}; tt=$((($(date +%s%N) - $ts)/1000000)); echo $tt >> #{spec_file}"
 
       begin
@@ -50,23 +57,21 @@ class EvaluatePythonJob < ActiveJob::Base
         Process.kill(:KILL, @exec.pid + 3)
         puts "Kill timeout process #{@exec.pid + 3}"
         puts "Time Limit Exceeded"
-        cancel_evaluate(answer, "TLE", "#{work_dir_file}")
-        return
+        spec[i][:result] = "TLE"
+        next
       end
 
       # 結果と出力用ファイルのdiff
-      result = `diff #{test_data_dir}/output#{i} #{work_filename}_result#{i}`
+      diff = `diff #{test_data_dir}/output#{i} #{work_filename}_result#{i}`
 
       # diff結果が異なればそこでテスト失敗
-      unless result.empty?
+      unless diff.empty?
         puts "Wrong Answer"
-        cancel_evaluate(answer, "WA", "#{work_dir_file}")
-        return
+        spec[i][:result] = "WA"
+        next
       end
 
       # 実行時間とメモリ使用量を記録
-      memory = 0
-      time = 0
       File.open(spec_file, "r") do |f|
         memory = f.gets.to_i
         time = f.gets.to_i
@@ -74,22 +79,38 @@ class EvaluatePythonJob < ActiveJob::Base
 
       if (memory / 1024) > memory_usage_limit
         puts "Memory Limit Exceeded"
-        cancel_evaluate(answer, "MLE", "#{work_dir_file}")
-        return
+        spec[i][:result] = "MLE"
+        next
       end
 
+      spec[i][:result] = "A"
       spec[i][:memory] = memory
       spec[i][:time] = time
     end
 
     # 最大値を求めるためのソート
+    results =  spec.inject([]){|prev, (key, val)| prev.push val[:result]}
     times = spec.inject([]){|prev, (key, val)| prev.push val[:time]}
     memories = spec.inject([]){|prev, (key, val)| prev.push val[:memory]}
 
+    # resultを求める
+    passed = 0
+    res = "A"
+    results.each do |result|
+      case result
+      when "A"
+        passed += 1
+      when "WA" || ("MLE" && (res != "WA")) || ("TLE" && (res != "WA" || res != "MLE"))
+        res = result
+      end
+    end
+
     # 実行結果を記録
-    answer.result = "A"
+    answer.result = res
     answer.run_time = times.max
     answer.memory_usage = memories.max
+    answer.test_passed = passed
+    answer.test_count = test_count
     answer.save
     `rm #{work_dir_file}*`
     return
