@@ -14,8 +14,8 @@ class EvaluatePythonJob < ActiveJob::Base
     spec_file = "#{work_dir_file}_spec" # 実行時間とメモリ使用量記述ファイル
 
     question = Question.find_by(:id => question_id)
-    run_time_limit = question.run_time_limit || 5 # 実行時間が未設定ならば5秒
-    memory_usage_limit = question.memory_usage_limit || 256 # メモリ使用量が未設定ならば256MB
+    run_time_limit = question.run_time_limit.to_f / 1000
+    memory_usage_limit = question.memory_usage_limit
     answer = Answer.where(:student_id => user_id,
                           :lesson_id => lesson_id,
                           :question_id => question_id).last
@@ -23,7 +23,9 @@ class EvaluatePythonJob < ActiveJob::Base
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
     test_data_dir = UPLOADS_QUESTIONS_PATH.join(question_id.to_s)
-    original_file = UPLOADS_ANSWERS_PATH.join(user_id.to_s, lesson_id.to_s, question_id.to_s, answer.file_name) # アップロードされたファイル
+    # アップロードされたファイル
+    original_file = UPLOADS_ANSWERS_PATH.join(user_id.to_s, lesson_id.to_s, question_id.to_s, answer.file_name)
+
     exe_file = "#{work_dir_file}_exe#{ext}" # 追記後の実行ファイル
 
     FileUtils.mkdir_p(EVALUATE_WORK_DIR) unless FileTest.exist?(EVALUATE_WORK_DIR)
