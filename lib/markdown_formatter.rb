@@ -38,15 +38,15 @@ module ActionDispatch
         name_width, verb_width, path_width, reqs_width = widths(routes).zip(header_lengths).map(&:max)
 
         routes.map do |r|
-          "| #{r[:name].rjust(name_width)} | #{r[:verb].ljust(verb_width)} | #{r[:path].ljust(path_width)} | #{r[:reqs].ljust(reqs_width)} |"
+          "| #{r[:name].rjust(name_width)} | #{r[:verb].ljust(verb_width)} | #{r[:path].ljust(path_width)} | #{r[:reqs].ljust(reqs_width)} | |"
         end
       end
 
       def draw_header(routes)
         name_width, verb_width, path_width, reqs_width = widths(routes)
 
-        header = "| #{"Prefix".rjust(name_width)} | #{"Verb".ljust(verb_width)} | #{"URI Pattern".ljust(path_width)} | #{"Controller#Action".ljust(reqs_width)} |\n"
-        divider = "| #{'-' * name_width} | #{'-' * verb_width} | #{'-' * path_width} | #{'-' * reqs_width} |"
+        header = "| #{"Prefix".rjust(name_width)} | #{"Verb".ljust(verb_width)} | #{"URI Pattern".ljust(path_width)} | #{"Controller#Action".ljust(reqs_width)} |          Purpose      |\n"
+        divider = "| #{'-' * name_width} | #{'-' * verb_width} | #{'-' * path_width} | #{'-' * reqs_width} |--------------------------------------|"
 #        divider = "-" * header.size
         header + divider
       end
