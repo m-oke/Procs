@@ -17,18 +17,20 @@
         <% end %>
         <% unless @is_teacher %>
             <th>結果</th>
-            <th>回答</th>
-            <th>履歴</th>
+            <th>解答</th>
+            <th>解答詳細</th>
         <% end %>
       </tr>
       <% @questions.each.with_index(1) do |question, i| %>
           <tr>
             <td><%= i %></td>
-            <% if @lesson.id != 1 %>
-                <td><%= link_to(question.title, lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id),:remote =>true) %></td>
-            <% else %>
-                <td><%= link_to(question.title, question_path(:question_id => question.id)) %></td>
-            <% end %>
+            <td>
+              <% if @lesson.id != 1 %>
+                <%= link_to(question.title, lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id),:remote =>true) %>
+              <% else %>
+                <%= link_to(question.title, question_path(:question_id => question.id)) %>
+              <% end %>
+            </td>
 
             <% if @lesson.id != 1 %>
                 <td>
@@ -52,15 +54,26 @@
                                                          :question_id => question.id,
                                                          :lesson_id => @lesson.id) || Answer.new %>
                 <td><%= Answer::RESULT[@latest_answer.result] %></td>
-                <% if @lesson.id != 1 %>
-                    <td><%= link_to('回答', lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id) + '#answer', :remote => true, class: 'btn btn-default') %></td>
-                <% else %>
-                    <td><%= link_to('回答', question_path(:question_id => question.id) + '#answer', class: 'btn btn-default') %></td>
-                <% end %>
-                <td></td>
+                <td>
+                  <% if @lesson.id != 1 %>
+                    <%= link_to('解答', lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id) + '#answer', :remote => true, class: 'btn btn-default') %>
+                  <% else %>
+                    <%= link_to('解答', question_path(:question_id => question.id) + '#answer', class: 'btn btn-default') %>
+                  <% end %>
+                <td>
+                  <% if @lesson.id != 1 %>
+                    <%= link_to('解答詳細', answers_lesson_question_path(:lesson_id => @lesson.id, :question_id => question.id),
+                                :disabled => (@latest_answer.new_record?), :remote => true, class: 'btn btn-default') %>
+                  <% else %>
+                    <%= link_to('解答詳細', answers_question_path(:question_id => question.id),
+                                :disabled => (@latest_answer.new_record?), class: 'btn btn-default') %>
+                  <% end %>
+
+                </td>
             <% end %>
           </tr>
       <% end %>
     </table>
   </div>
 </div>
+<% flash[:previous] = 'questions' %>
