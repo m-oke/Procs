@@ -36,7 +36,7 @@
       </div>
 
       <div class="field_question">
-        <fieldset>
+        <fieldset id="samples">
           <legend>入出力サンプル(<span class="inputnote">＊</span>)</legend>
           <%= f.fields_for :samples do |builder| %>
 
@@ -52,7 +52,7 @@
       </div>
 
       <div class="field_question">
-        <fieldset>
+        <fieldset id="test_data">
           <legend>解答用データ(<span class="inputnote">＊</span>)</legend>
           <%= f.fields_for :test_data do |builder| %>
             <div class="left">
