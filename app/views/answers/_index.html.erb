@@ -50,8 +50,14 @@
             <td><%= m.created_at %></td>
             <td><%= RESULT[m.result] %></td>
             <td><%= m.run_time %></td>
-            <td><%= m.memory_usage %></td>
-            <td><%= m.language.capitalize! %></td>
+            <td>
+              <% if m.memory_usage / 1024 == 0 %>
+                <%= "#{m.memory_usage} KB" %>
+              <% else %>
+                <%= "#{m.memory_usage / 1024} MB" %>
+              <% end %>
+            </td>
+            <td><%= m.language.capitalize %></td>
             <td><%= @dead_date_question.start_time%></td>
             <td><%= @dead_date_question.end_time%></td>
             <td><%= "#{m.test_passed} / #{m.test_count}" %></td>
