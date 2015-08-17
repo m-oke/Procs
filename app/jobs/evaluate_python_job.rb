@@ -96,14 +96,19 @@ class EvaluatePythonJob < ActiveJob::Base
     memories = spec.inject([]){|prev, (key, val)| prev.push val[:memory]}
 
     # resultを求める
+    # 優先度: WA > MLE > TLE > A
     passed = 0
     res = "A"
     results.each do |result|
       case result
       when "A"
         passed += 1
-      when "WA" || ("MLE" && (res != "WA")) || ("TLE" && (res != "WA" || res != "MLE"))
+      when "WA"
         res = result
+      when "MLE"
+        res = result if res != "WA"
+      when "TLE"
+        res = result if res != "WA" && res != "MLE"
       end
     end
 
