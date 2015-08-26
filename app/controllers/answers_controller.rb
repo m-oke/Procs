@@ -22,7 +22,7 @@ class AnswersController < ApplicationController
       end
     end
 
-    @question_all_version= Answer.where(:question_id => @question_id,
+    @answer_all_version= Answer.where(:question_id => @question_id,
                                         :lesson_id=> @lesson_id,
                                         :student_id=> @student_id )
     @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id, question_id: @question_id )

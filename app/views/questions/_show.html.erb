@@ -20,12 +20,14 @@
       <th>結果</th>
       <th>実行時間(ms)</th>
       <th>メモリ使用量(MB/KB)</th>
+      <th>正解数</th>
     </tr>
     <tr>
       <td>制限</td>
       <td>-</td>
       <td><%= @question.run_time_limit %> ms</td>
       <td><%= @question.memory_usage_limit %> MB</td>
+      <td>-</td>
     </tr>
     <% unless @is_teacher %>
         <tr>
@@ -34,14 +36,18 @@
               <td>-</td>
               <td>-</td>
               <td>-</td>
+              <td>-</td>
           <% else %>
               <td><%= RESULT[@latest_answer.result] %></td>
               <td><%= @latest_answer.run_time.round %> ms</td>
-              <% if @latest_answer.memory_usage / 1024 == 0 %>
-                  <td><%= "#{@latest_answer.memory_usage} KB" %></td>
+              <td>
+                <% if @latest_answer.memory_usage / 1024 == 0 %>
+                <%= "#{@latest_answer.memory_usage} KB" %>
               <% else %>
-                  <td><%= "#{@latest_answer.memory_usage / 1024} MB" %></td>
-              <% end %>
+                <%= "#{@latest_answer.memory_usage / 1024} MB" %>
+                <% end %>
+              </td>
+              <td><%= "#{@latest_answer.test_passed} / #{@latest_answer.test_count}" %></td>
           <% end %>
         </tr>
     <% end %>

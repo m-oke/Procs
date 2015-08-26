@@ -1,12 +1,20 @@
 <div>
   <% if @lesson_id.to_i == 1 %>
-      <%=  link_to '問題詳細に戻る', question_path(:question_id => @question_id),:class=>"btn btn-default btn_top" %>
-  <% elsif flash[:previous] == "question" %>
-    <%=  link_to '問題詳細に戻る', lesson_question_path(:lesson_id =>@lesson_id,  :question_id => @question_id),
-                                            :remote => true, :class=>"btn btn-default btn_top" %>
-  <% elsif flash[:previous] == "student" %>
-      <%=  link_to '学生詳細に戻る', student_lessons_path(:lesson_id =>@lesson_id, :student_id => params[:student_id]),
-           :remote => true, :class=>"btn btn-default btn_top" %>
+    <% if flash[:previous] == "question" %>
+      <%=  link_to '問題詳細に戻る', question_path(:question_id => @question_id),:class => "btn btn-default btn_top" %>
+    <% elsif flash[:previous] == "questions" %>
+      <%= link_to '問題一覧に戻る', questions_path, :class => "btn btn-default btn_top" %>
+    <% end %>
+  <% else %>
+    <% if flash[:previous] == "question" %>
+      <%=  link_to '問題詳細に戻る', lesson_question_path(:lesson_id => @lesson_id, :question_id => @question_id),
+           :remote => true, :class => "btn btn-default btn_top" %>
+    <% elsif flash[:previous] == "questions" %>
+      <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => @lesson_id), :remote => true, :class => "btn btn-default btn_top" %>
+    <% elsif flash[:previous] == "student" %>
+      <%=  link_to '学生詳細に戻る', student_lessons_path(:lesson_id => @lesson_id, :student_id => params[:student_id]),
+           :remote => true, :class => "btn btn-default btn_top" %>
+    <% end %>
   <% end %>
 </div>
 <div>
@@ -28,23 +36,35 @@
         <th>使用言語</th>
         <th>開始時間</th>
         <th>終了時間</th>
-        <th>学生類似度</th>
-        <th>WEB類似度</th>
+        <th>正解数</th>
+        <% if @is_teacher %>
+          <th>学生類似度</th>
+          <th>WEB類似度</th>
+        <% end %>
       </tr>
 
 
-      <% @question_all_version.each do |m| %>
+      <% @answer_all_version.each do |m| %>
           <tr>
             <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name }, :remote => true%></td>
             <td><%= m.created_at %></td>
             <td><%= RESULT[m.result] %></td>
             <td><%= m.run_time %></td>
-            <td><%= m.memory_usage %></td>
-            <td><%= m.language.capitalize! %></td>
+            <td>
+              <% if m.memory_usage / 1024 == 0 %>
+                <%= "#{m.memory_usage} KB" %>
+              <% else %>
+                <%= "#{m.memory_usage / 1024} MB" %>
+              <% end %>
+            </td>
+            <td><%= m.language.capitalize %></td>
             <td><%= @dead_date_question.start_time%></td>
             <td><%= @dead_date_question.end_time%></td>
-            <td><%= m.plagiarism_percentage %></td>
-            <td><%=  %></td>
+            <td><%= "#{m.test_passed} / #{m.test_count}" %></td>
+            <% if @is_teacher %>
+              <td><%= m.plagiarism_percentage %></td>
+              <td><%=  %></td>
+            <% end %>
           </tr>
       <% end %>
     </table>
@@ -55,7 +75,7 @@
     <p><span>選択したバージョン：</span><text id="select_file_raw"><%= @raw_display_file %></text></p>
     <% if @is_teacher %>
         <p><span>比較するバージョン</span>
-          <%= collection_select(:id, :file_name, @question_all_version, :id, :file_name , {:prompt => "なし"}, {:id => 'diff_select'})%>
+          <%= collection_select(:id, :file_name, @answer_all_version, :id, :file_name , {:prompt => "なし"}, {:id => 'diff_select'})%>
         </p>
     <% end %>
     <div id="diff_area" >
