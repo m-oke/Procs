@@ -52,14 +52,13 @@
         </tr>
     <% end %>
   </table>
-  <% unless @latest_answer.nil? %>
-    <% if @lesson.id != 1 %>
-      <%= link_to("解答詳細", answers_lesson_question_path(:lesson_id => @lesson.id,
-                                                          :question_id => @question.id),
-                  :remote => ( @lesson.id != 1), class: 'btn btn-default') %>
-    <% else %>
-      <%= link_to("解答詳細", answers_question_path(:question_id => @question.id), class: 'btn btn-default') %>
-    <% end %>
+  <% if @lesson.id != 1 %>
+    <%= button_to("解答詳細", answers_lesson_question_path(:lesson_id => @lesson.id,
+                                                        :question_id => @question.id),
+                :method => :get, :disabled => @latest_answer.nil?, :remote => ( @lesson.id != 1), class: 'btn btn-default') %>
+  <% else %>
+    <%= button_to("解答詳細", answers_question_path(:question_id => @question.id),
+                :method => :get, :disabled => @latest_answer.nil?, class: 'btn btn-default') %>
   <% end %>
 </div>
 
