@@ -23,6 +23,8 @@ module Procs
     config.i18n.default_locale = :ja
 
     # Do not swallow errors in after_commit/after_rollback callbacks
+    config.time_zone = 'Asia/Tokyo'
+    config.active_record.default_timezone = :local
     config.active_record.raise_in_transactional_callbacks = true
     config.action_controller.permit_all_parameters = true
     config.active_job.queue_adapter = :sidekiq

@@ -56,17 +56,28 @@
                 <td><%= Answer::RESULT[@latest_answer.result] %></td>
                 <td>
                   <% if @lesson.id != 1 %>
-                    <%= link_to('解答', lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id) + '#answer', :remote => true, class: 'btn btn-default') %>
+                    <!--現在時間と開始時間・終了時間を比較し、時間内かどうかを確認する-->
+                    <% if (@lesson.lesson_questions.find_by(:question_id => question.id).start_time.nil? ||
+                            @lesson.lesson_questions.find_by(:question_id => question.id).start_time.to_time < Time.now) &&
+                      (@lesson.lesson_questions.find_by(:question_id => question.id).end_time.nil? ||
+                            Time.now < @lesson.lesson_questions.find_by(:question_id => question.id).end_time.to_time) %>
+                      <%= button_to('解答', lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id) + '#answer',
+                                  :method => :get, :remote => true, class: 'btn btn-default') %>
+                    <% else %>
+                      <%= button_to('解答', lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question.id),
+                                    :method => :get, :disabled => true, :remote => true, class: 'btn btn-default') %>
+                    <% end %>
                   <% else %>
-                    <%= link_to('解答', question_path(:question_id => question.id) + '#answer', class: 'btn btn-default') %>
+                    <%= button_to('解答', question_path(:question_id => question.id) + '#answer', :method => :get, class: 'btn btn-default') %>
                   <% end %>
+                </td>
                 <td>
                   <% if @lesson.id != 1 %>
-                    <%= link_to('解答詳細', answers_lesson_question_path(:lesson_id => @lesson.id, :question_id => question.id),
-                                :disabled => (@latest_answer.new_record?), :remote => true, class: 'btn btn-default') %>
+                    <%= button_to('解答詳細', answers_lesson_question_path(:lesson_id => @lesson.id, :question_id => question.id),
+                                :method => :get, :disabled => (@latest_answer.new_record?), :remote => true, class: 'btn btn-default') %>
                   <% else %>
-                    <%= link_to('解答詳細', answers_question_path(:question_id => question.id),
-                                :disabled => (@latest_answer.new_record?), class: 'btn btn-default') %>
+                    <%= button_to('解答詳細', answers_question_path(:question_id => question.id),
+                                :method => :get, :disabled => (@latest_answer.new_record?), class: 'btn btn-default') %>
                   <% end %>
 
                 </td>
