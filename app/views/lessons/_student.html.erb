@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
     jQuery(document).ready(function(){
-        jQuery(".test_fancybox").fancybox({
+        jQuery(".draw_fancybox").fancybox({
             maxWidth    : 800,
             maxHeight   : 600,
             fitToView   : false,
@@ -33,6 +33,7 @@
       </tr>
     </tbody>
   </table>
+<h2>解答状況</h2>
 <div>
   <div>
     <div style="float:right;"><p>問題変更前の回答です</p></div>
@@ -79,8 +80,10 @@
               <td><%= answer.created_at %></td>
               <td>
                 <span>
-                  <%= link_to "チェック", lessons_internet_check_path, :remote => true , :method => "GET" , :class=>"btn btn-default" %>
-                  <a class="test_fancybox btn btn-default" href="#intnet_check_results">表示する</a>
+                  <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
+                                                                  :student_id => @student.id,
+                                                                  :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+                  <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox" href="#intnet_check_results_<%=lesson_question.question_id %>" >表示する</a>
                 </span>
               </td>
           <% else %>
@@ -89,11 +92,12 @@
               <td><%= %></td>
               <td><%= %></td>
               <td><%= lesson_question.end_time %></td>
-              <td><%= %></td>
+              <td><%= %>
               <td>
                 <span>
-                  <%= link_to "チェック", lessons_internet_check_path, :remote => true , :method => "GET" , :class=>"btn btn-default" %>
-                  <a class="test_fancybox btn btn-default" href="#intnet_check_results">表示する</a>
+                  <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
+                                                                  :student_id => @student.id,
+                                                                  :question_id => lesson_question.question_id ), :remote => true , :disabled => "true", :id => "ajax_link_#{lesson_question.question_id}", :method => "post", :class=>"btn btn-default" %>
                 </span>
               </td>
           <% end %>
@@ -101,6 +105,7 @@
     <% end %>
   </table>
 </div>
-<div id="intnet_check_results">
-
+<%  @lesson_questions.each do |lesson_question| %>
+<div id="intnet_check_results_<%=lesson_question.question_id %>" class="intnet-check-results-css" >
 </div>
+<% end %>

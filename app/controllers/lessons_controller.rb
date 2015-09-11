@@ -77,7 +77,16 @@ class LessonsController < ApplicationController
 
   # source code check through internet
   def internet_check
-    query = "人工知能"
+    @question_id = params[:question_id]
+    @student_id = params[:student_id]
+    @lesson_id = params[:student_id]
+    if(@question_id.to_i == 1)
+      query = "人工知能"
+    elsif(@question_id.to_i == 2)
+      query = "常総市　鬼怒川"
+    else
+      query = "筑波大学"
+    end
     bing = Bing.new(APIKEY, 10, 'Web')
     @results = bing.search(query)
   end

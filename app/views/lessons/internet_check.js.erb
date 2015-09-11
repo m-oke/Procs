@@ -1,4 +1,5 @@
-$('#intnet_check_results').html(
+$('#intnet_check_results_<%= @question_id %>').html(
         "<%= escape_javascript(render 'internet_check') %>"
 );
-$()
+$('#ajax_link_<%= @question_id %>').addClass('disabled','true')
+$('#display_<%= @question_id %>').css('visibility' ,'visible')

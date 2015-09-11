@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   scope :ajax do
     get 'answers/select_version' => 'answers#select_version'
     get 'answers/diff_select' => 'answers#diff_select'
-    get 'lessons/internet_check' =>'lessons#internet_check'
+    post 'lessons/internet_check' =>'lessons#internet_check'
   end
 
   resources :questions, only: [:index, :show], param: :question_id do

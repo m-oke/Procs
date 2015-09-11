@@ -26,6 +26,9 @@
 .test_fancybox{
 
 }
-#intnet_check_results {
+.intnet-check-results-css {
     display: none
+}
+.draw_fancybox{
+    visibility: hidden;
 }
