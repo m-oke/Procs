@@ -75,6 +75,13 @@ class LessonsController < ApplicationController
     @lesson_questions = LessonQuestion.where(:lesson_id => @lesson_id)
   end
 
+  # source code check through internet
+  def internet_check
+    query = "人工知能"
+    bing = Bing.new(APIKEY, 10, 'Web')
+    @results = bing.search(query)
+  end
+
   #Luhnアルゴリズムの導入
   def init
     require 'luhn'

@@ -77,8 +77,12 @@
               <% end %>
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
-
-              <td><%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"test_fancybox fancybox.ajax" %></td>
+              <td>
+                <span>
+                  <%= link_to "チェック", lessons_internet_check_path, :remote => true , :method => "GET" , :class=>"btn btn-default" %>
+                  <a class="test_fancybox btn btn-default" href="#intnet_check_results">表示する</a>
+                </span>
+              </td>
           <% else %>
               <td><%= question.title %></td>
               <td><p>-</p></td>
@@ -86,10 +90,17 @@
               <td><%= %></td>
               <td><%= lesson_question.end_time %></td>
               <td><%= %></td>
-
-              <td><%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"test_fancybox fancybox.ajax" %></td>
+              <td>
+                <span>
+                  <%= link_to "チェック", lessons_internet_check_path, :remote => true , :method => "GET" , :class=>"btn btn-default" %>
+                  <a class="test_fancybox btn btn-default" href="#intnet_check_results">表示する</a>
+                </span>
+              </td>
           <% end %>
         </tr>
     <% end %>
   </table>
+</div>
+<div id="intnet_check_results">
+
 </div>
