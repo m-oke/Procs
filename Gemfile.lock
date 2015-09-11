@@ -82,6 +82,8 @@ GEM
     factory_girl_rails (4.5.0)
       factory_girl (~> 4.5.0)
       railties (>= 3.0.0)
+    fancybox2-rails (0.2.8)
+      railties (>= 3.1.0, < 5.0)
     font-awesome-rails (4.3.0.0)
       railties (>= 3.2, < 5.0)
     globalid (0.3.5)
@@ -222,6 +224,7 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    searchbing (0.2.4)
     sidekiq (3.4.2)
       celluloid (~> 0.16.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -276,6 +279,7 @@ DEPENDENCIES
   devise
   dotenv-rails
   factory_girl_rails
+  fancybox2-rails (~> 0.2.8)
   hirb
   hirb-unicode
   jbuilder (~> 2.0)
@@ -304,6 +308,7 @@ DEPENDENCIES
   remotipart
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
+  searchbing (~> 0.2.4)
   sidekiq
   sinatra
   spring

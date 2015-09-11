@@ -1,3 +1,19 @@
+<script type="text/javascript">
+
+    jQuery(document).ready(function(){
+        jQuery(".test_fancybox").fancybox({
+            maxWidth    : 800,
+            maxHeight   : 600,
+            fitToView   : false,
+            width       : '70%',
+            height      : '70%',
+            autoSize    : false,
+            closeClick  : false,
+            openEffect  : 'none',
+            closeEffect : 'none'
+        });
+    });
+</script>
 <%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"btn btn-default btn_top" %>
 <h1>学生詳細ページ</h1>
 
@@ -31,6 +47,7 @@
       <th>メモリ使用量(MB/KB)</th>
       <th>終了時間</th>
       <th>提出</th>
+      <th>Internet Copy Check</th>
     </tr>
     <% num = 0 %>
     <% @lesson_questions.each do |lesson_question| %>
@@ -60,6 +77,8 @@
               <% end %>
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
+
+              <td><%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"test_fancybox fancybox.ajax" %></td>
           <% else %>
               <td><%= question.title %></td>
               <td><p>-</p></td>
@@ -67,9 +86,10 @@
               <td><%= %></td>
               <td><%= lesson_question.end_time %></td>
               <td><%= %></td>
+
+              <td><%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"test_fancybox fancybox.ajax" %></td>
           <% end %>
         </tr>
     <% end %>
   </table>
 </div>
-<% flash[:previous] = "student" %>

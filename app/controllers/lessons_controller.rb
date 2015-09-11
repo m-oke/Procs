@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 class LessonsController < ApplicationController
+  require 'searchbing'
+  APIKEY = "b03khzsJqXejAfMS3U1ik0lC2Ryd5lnhKu/wZEXaOAc"
   before_action :check_lesson, only: [:show, :students]
   before_filter :authenticate_user!
   before_action :init
