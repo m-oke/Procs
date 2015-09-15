@@ -34,6 +34,9 @@ gem  'remotipart'
 # Use Microsoft search engine
 gem 'searchbing', '~> 0.2.4'
 gem 'fancybox2-rails', '~> 0.2.8'
+gem 'addressable'
+gem 'json', '~> 1.8.3'
+gem 'net-http-persistent', '~> 2.9.4'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

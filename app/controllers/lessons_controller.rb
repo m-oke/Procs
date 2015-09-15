@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 class LessonsController < ApplicationController
+  #bing
   require 'searchbing'
   APIKEY = "b03khzsJqXejAfMS3U1ik0lC2Ryd5lnhKu/wZEXaOAc"
+  #google
+  require 'addressable/uri'
+  require 'json'
+  require 'net/http/persistent'
+  GOOGLE_API_KEY = 'AIzaSyAPy05rFWhHMEpOXUbiJ1rgt4ygEOqJHGw'
+  GOOGLE_ENGINE_ID = '006988608042267398432:yloxhbwl0zk'
   before_action :check_lesson, only: [:show, :students]
   before_filter :authenticate_user!
   before_action :init
@@ -77,18 +84,28 @@ class LessonsController < ApplicationController
 
   # source code check through internet
   def internet_check
+    #get data from ajax
     @question_id = params[:question_id]
     @student_id = params[:student_id]
     @lesson_id = params[:student_id]
+
+    @question = Question.find_by(:id => @question_id)
+    @answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+
     if(@question_id.to_i == 1)
-      query = "人工知能"
+      search_query = "人工知能"
     elsif(@question_id.to_i == 2)
-      query = "常総市　鬼怒川"
+      search_query = "常総市　鬼怒川"
     else
-      query = "筑波大学"
+      search_query = "筑波大学"
     end
     bing = Bing.new(APIKEY, 10, 'Web')
-    @results = bing.search(query)
+    @results = bing.search(search_query)
+
+    @search_url = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_query}"
+    @uri = Addressable::URI.parse(@search_url)
+    g_result = JSON.parse(Net::HTTP.get(@uri))
+    puts g_result
   end
 
   #Luhnアルゴリズムの導入
