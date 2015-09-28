@@ -1,11 +1,7 @@
 <div>
-  <p>全部<%= @results[0][:WebTotal] %>件がある</p>
-  <p>****************************************</p>
-  <% @results[0][:Web].each do |page| %>
-      <p>タイトル：<%=page[:Title]%></p>
-      <p>内容：<%= page[:Description] %></p>
-      <p>Url内容：<%= page[:Url] %></p>
-      <p>詳細Url：<%= page[:DisplayUrl] %></p>
-      <p>****************************************</p>
+  <%@result.each do |item| %>
+      <p>title: <%= item[0] %></p>
+      <p>link: <%= item[1] %></p>
+      <p>times: <%= item[2] %></p>
   <% end %>
 </div>
