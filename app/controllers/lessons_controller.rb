@@ -12,6 +12,8 @@ class LessonsController < ApplicationController
   #google
   GOOGLE_API_KEY = 'AIzaSyAPy05rFWhHMEpOXUbiJ1rgt4ygEOqJHGw'
   GOOGLE_ENGINE_ID = '006988608042267398432:yloxhbwl0zk'
+  PROBLEM_KEY_WORD1 = "the 3n+1 problem"
+  PROBLEM_KEY_WORD2 = "jolly jumpers problem"
 
   # get '/'
   def index
@@ -85,7 +87,7 @@ class LessonsController < ApplicationController
   # source code check through internet
   def internet_check
     @result = Array.new(0,Array.new(3,0))
-    search_limit = 1
+    search_limit = 5
 
     #get data from ajax
     @question_id = params[:question_id]
@@ -111,32 +113,39 @@ class LessonsController < ApplicationController
     default_google_search_check = 1
     default_bing_search_check = 0
     keep_search_limit = search_limit
+    # wordA AND ("wordB" or "wordC")
     if default_google_search_check == 1
+      search_word_two = ''
+      search_word_one = ''
       while search_limit > 0 do
-        search_keyword = keywordContent[num]
-        search_keyword = search_keyword + ' ' + temp_keyword
-        temp_keyword = search_keyword
-        search_keyword = google_keyword_processing(search_keyword)
+        search_word_one = keywordContent[num]
+        if num > 0
+          search_word_two = keywordContent[num-1]
+        end
+        search_keyword = google_keyword_processing(search_word_one,search_word_two)
+
         pp search_keyword
         g_results = internet_search_json(search_keyword,'google search')
-        if g_results.length != 0
-          g_results['items'].each do |item|
-            title = item['title']
-            link = item['link']
-            nSize = @result.size
-            if nSize == 0
-              @result.push([title,link,1])
-            else
-              nMark = -1
-              for n in 0..nSize-1
-                if @result[n][1]==link
-                  nMark = n
-                end
-              end
-              if nMark != -1
-                @result[nMark][2] = @result[nMark][2] + 1
-              else
+        if g_results != 'HTTPError'
+          if g_results['searchInformation']['totalResults'] != "0"
+            g_results['items'].each do |item|
+              title = item['title']
+              link = item['link']
+              nSize = @result.size
+              if nSize == 0
                 @result.push([title,link,1])
+              else
+                nMark = -1
+                for n in 0..nSize-1
+                  if @result[n][1]==link
+                    nMark = n
+                  end
+                end
+                if nMark != -1
+                  @result[nMark][2] = @result[nMark][2] + 1
+                else
+                  @result.push([title,link,1])
+                end
               end
             end
           end
@@ -166,7 +175,7 @@ class LessonsController < ApplicationController
         # b_results = bing.search(search_keyword)
         pp search_keyword
         b_results = internet_search_json(search_keyword,'bing search')
-        if b_results.length != 0
+        if b_results!= 'HTTPError'
           b_results[0][:Web].each do |page|
             title = page[:Title]
             link = page[:Url]
@@ -279,6 +288,9 @@ class LessonsController < ApplicationController
               line = ''
             end
           end
+          if line[0,3] == 'for' && line.include?('for')
+            line = ''
+          end
         end
 
         if line.size>0
@@ -286,7 +298,7 @@ class LessonsController < ApplicationController
         end
       end
     end
-    File.delete(copyFullPath)
+    # File.delete(copyFullPath)
     return a
   end
 
@@ -332,13 +344,36 @@ class LessonsController < ApplicationController
     return result
   end
 
-  def google_keyword_processing(keyword)
-    #delete " " symbol code
-    while keyword.include?('"') do
-      keyword = keyword.sub(/"/,' ')
+  def google_keyword_processing(keyword1,keyword2)
+    # #delete " " symbol code
+    while keyword1.include?('"') do
+      keyword1 = keyword1.sub(/"/,' ')
     end
-    # return 'jolly jumpers problem ' +keyword
-    return ' the 3n+1 problem ' + keyword
+    if keyword2 == ''
+      return PROBLEM_KEY_WORD1 + ' ' + "\"#{keyword1}\""
+    else
+      # return 'jolly jumpers problem ' +keyword
+      while keyword2.include?('"') do
+        keyword2 = keyword2.sub(/"/,' ')
+      end
+      return PROBLEM_KEY_WORD1 + ' ' + "(\"#{keyword1}\" OR \"#{keyword2}\")"
+    end
+
+  end
+
+  def bing_keyword_processing(keyword , split_word)
+    temp_keyword = ''
+    if keyword.include?(split_word)
+      keyword = keyword.split(split_word)
+      keyword.each do |temp|
+        temp_keyword = temp_keyword + "\"#{temp}\"" + ' '
+      end
+      # return "\"jolly jumpers problem\"" + ' ' + temp_keyword
+      return "\"#{PROBLEM_KEY_WORD1}\"" + ' ' + temp_keyword
+    else
+      # return "\"jolly jumpers problem\"" + ' ' + "\"#{keyword}\""
+      return "\"#{PROBLEM_KEY_WORD1}\"" + ' ' + "\"#{keyword}\""
+    end
   end
 
   def internet_search_json(search_word, search_type)
@@ -360,7 +395,7 @@ class LessonsController < ApplicationController
       pp full_address
     end
     if search_type == 'google search'
-      search_word = URI.encode_www_form_component(search_word)
+      search_word = URI.encode(search_word)
       full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}"
       pp full_address
     end
@@ -383,31 +418,19 @@ class LessonsController < ApplicationController
             result_set = body[:d][:results]
           else
             g_results = JSON.parse(res.body)
+
           end
         else
           puts [uri.to_s, res.value].join(" : ")
-          result_set = []
+          result_set = 'HTTPError'
       end
     rescue => e
       puts [uri.to_s, e.class, e].join(" : ")
-      result_set = []
+      result_set = 'HTTPError'
     end
 
   end
 
-  def bing_keyword_processing(keyword , word)
-    temp_keyword = ''
-    if keyword.include?(word)
-      keyword = keyword.split(word)
-      keyword.each do |temp|
-        temp_keyword = temp_keyword + "\"#{temp}\"" + ' '
-      end
-      # return "\"jolly jumpers problem\"" + ' ' + temp_keyword
-      return "\"the 3n+1 problem\"" + ' ' + temp_keyword
-    else
-      # return "\"jolly jumpers problem\"" + ' ' + "\"#{keyword}\""
-      return "\"the 3n+1 problem\"" + ' ' + "\"#{keyword}\""
-    end
-  end
+
 
 end

@@ -1,7 +1,7 @@
 <div>
   <%@result.each do |item| %>
       <p>title: <%= item[0] %></p>
-      <p>link: <%= item[1] %></p>
+      <%= link_to item[1],"#{item[1]}", :target => ["'_blank'"] %>
       <p>times: <%= item[2] %></p>
   <% end %>
 </div>
