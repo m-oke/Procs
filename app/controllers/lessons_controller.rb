@@ -98,6 +98,7 @@ class LessonsController < ApplicationController
     @answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
 
     fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + @answer.file_name
+    csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
 
     arrayReturn = get_keyword_from_source(fullPathName)
     keywordContent=arrayReturn.sort do |item1,item2|
@@ -110,20 +111,21 @@ class LessonsController < ApplicationController
 
     num = 0
     temp_keyword = ''
+    temp_keyword_csv = []
     default_google_search_check = 1
     default_bing_search_check = 0
     keep_search_limit = search_limit
     # wordA AND ("wordB" or "wordC")
     if default_google_search_check == 1
-      search_word_two = ''
-      search_word_one = ''
+      old_word_google = ''
       while search_limit > 0 do
-        search_word_one = keywordContent[num]
-        if num > 0
-          search_word_two = keywordContent[num-1]
+        search_word = keywordContent[num]
+        if old_word_google != ''
+          search_word = old_word_google + 'google_search' + search_word
         end
-        search_keyword = google_keyword_processing(search_word_one,search_word_two)
-
+        old_word_google = search_word
+        search_keyword = google_keyword_processing(search_word,'google_search')
+        temp_keyword_csv.push(search_keyword)
         pp search_keyword
         g_results = internet_search_json(search_keyword,'google search')
         if g_results != 'HTTPError'
@@ -209,6 +211,7 @@ class LessonsController < ApplicationController
       @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
+      write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
     end
 
   end
@@ -344,21 +347,37 @@ class LessonsController < ApplicationController
     return result
   end
 
-  def google_keyword_processing(keyword1,keyword2)
+  def google_keyword_processing(keyword,split_word)
     # #delete " " symbol code
-    while keyword1.include?('"') do
-      keyword1 = keyword1.sub(/"/,' ')
+    while keyword.include?('"') do
+      keyword = keyword.sub(/"/,' ')
     end
-    if keyword2 == ''
-      return PROBLEM_KEY_WORD1 + ' ' + "\"#{keyword1}\""
-    else
-      # return 'jolly jumpers problem ' +keyword
-      while keyword2.include?('"') do
-        keyword2 = keyword2.sub(/"/,' ')
+    while keyword.include?('&') do
+      keyword = keyword.sub(/&/,' ')
+    end
+    # if keyword2 == ''
+    #   return PROBLEM_KEY_WORD1 + ' ' + "\"#{keyword1}\""
+    # else
+    #   # return 'jolly jumpers problem ' +keyword
+    #   while keyword2.include?('"') do
+    #     keyword2 = keyword2.sub(/"/,' ')
+    #   end
+    #   return PROBLEM_KEY_WORD1 + ' ' + "(\"#{keyword1}\" OR \"#{keyword2}\")"
+    # end
+    temp_keyword = ''
+    if keyword.include?(split_word)
+      keyword = keyword.split(split_word)
+      keyword.each do |temp|
+        temp_keyword = temp_keyword+ temp + ' '
+        # temp_keyword = temp_keyword+ "\"#{temp}\"" + ' '
       end
-      return PROBLEM_KEY_WORD1 + ' ' + "(\"#{keyword1}\" OR \"#{keyword2}\")"
+      # return "\"jolly jumpers problem\"" + ' ' + temp_keyword
+      return PROBLEM_KEY_WORD1 + ' ' + temp_keyword
+    else
+      # return "\"jolly jumpers problem\"" + ' ' + "\"#{keyword}\""
+      return PROBLEM_KEY_WORD1 + ' ' + keyword
+      # return PROBLEM_KEY_WORD1 + ' ' + "\"#{keyword}\""
     end
-
   end
 
   def bing_keyword_processing(keyword , split_word)
@@ -431,6 +450,18 @@ class LessonsController < ApplicationController
 
   end
 
-
+  def write_search_results_log(full_path,results,keywords)
+    File.delete(full_path)
+    CSV.open(full_path,'w') do |out|
+      out << ["title","link","times"]
+      results.each do |result|
+        out << [result[0],result[1],result[2]]
+      end
+      out << ["keyword"]
+      keywords.each do |keyword|
+        out << [keyword]
+      end
+    end
+  end
 
 end
