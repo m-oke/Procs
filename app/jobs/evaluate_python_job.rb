@@ -2,16 +2,15 @@
 class EvaluatePythonJob < ActiveJob::Base
   queue_as :evaluate
   include EvaluateProgram
+  EVAL_ENV = "docker" # 検証用の環境変数
 
   # pythonプログラムの評価実行
   # @param [Fixnum] user_id ユーザID
   # @param [Fixnum] lesson_id 授業ID
   # @param [Fixnum] question_id 問題ID
   def perform(user_id:, lesson_id:, question_id:)
-    # ファイル名やファイル場所の設定
-    work_filename = "#{user_id}_#{lesson_id}_#{question_id}" # 作業用ファイル名接頭辞
-    work_dir_file = EVALUATE_WORK_DIR.join(work_filename) # 接頭辞
-    spec_file = "#{work_dir_file}_spec" # 実行時間とメモリ使用量記述ファイル
+    # 作業ディレクトリ名を乱数で生成
+    dir_name = EVALUATE_WORK_DIR.to_s + "/" + Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
 
     question = Question.find_by(:id => question_id)
     run_time_limit = question.run_time_limit.to_f / 1000
@@ -23,16 +22,23 @@ class EvaluatePythonJob < ActiveJob::Base
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
     test_data_dir = UPLOADS_QUESTIONS_PATH.join(question_id.to_s)
+
     # アップロードされたファイル
     original_file = UPLOADS_ANSWERS_PATH.join(user_id.to_s, lesson_id.to_s, question_id.to_s, answer.file_name)
 
-    exe_file = "#{work_dir_file}_exe#{ext}" # 追記後の実行ファイル
+    exe_file = "python#{ext}" # 追記後の実行ファイル
 
-    FileUtils.mkdir_p(EVALUATE_WORK_DIR) unless FileTest.exist?(EVALUATE_WORK_DIR)
+    # 作業ディレクトリの作成
+    FileUtils.mkdir_p(dir_name) unless FileTest.exist?(dir_name)
+    # 作業ディレクトリへ移動
+    Dir.chdir(dir_name)
+
+    # 作業ディレクトリにプログラムとテストデータをコピー
     FileUtils.copy(original_file, exe_file)
+    FileUtils.copy(Dir.glob(test_data_dir.to_s + "/*"), ".")
 
-    Dir.chdir(EVALUATE_WORK_DIR)
     spec = Hash.new { |h,k| h[k] = {} }
+    containers = []
 
     # テストデータの数だけ繰り返し
     1.upto(test_count) do |i|
@@ -43,7 +49,11 @@ class EvaluatePythonJob < ActiveJob::Base
       spec[i][:memory] = memory
       spec[i][:time] = time
 
-      exec_cmd = "ts=$(date +%s%N); (/usr/bin/time -f '%M' python3 #{exe_file} < #{test_data_dir}/input#{i} > #{work_dir_file}_result#{i}) 2> #{spec_file}; tt=$((($(date +%s%N) - $ts)/1000000)); echo $tt >> #{spec_file}"
+      # コンテナ名を乱数のハッシュで生成
+      container_name = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
+      containers.push(container_name)
+      # dockerコンテナでプログラムを実行
+      exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work errorcode/python_sandbox"
 
       begin
         # 実行時間制限
@@ -55,16 +65,15 @@ class EvaluatePythonJob < ActiveJob::Base
 
         # 処理中にタイムアウトになった場合
       rescue Timeout::Error
-        # 複数のプロセスを実行するため pid + 3
-        Process.kill(:KILL, @exec.pid + 3)
-        puts "Kill timeout process #{@exec.pid + 3}"
+        `docker kill #{container_name}`
+        puts "Kill timeout container #{container_name}"
         puts "Time Limit Exceeded"
         spec[i][:result] = "TLE"
         next
       end
 
       # 結果と出力用ファイルのdiff
-      diff = `diff #{test_data_dir}/output#{i} #{work_filename}_result#{i}`
+      diff = `diff output#{i} result#{i}`
 
       # diff結果が異なればそこでテスト失敗
       unless diff.empty?
@@ -74,7 +83,7 @@ class EvaluatePythonJob < ActiveJob::Base
       end
 
       # 実行時間とメモリ使用量を記録
-      File.open(spec_file, "r") do |f|
+      File.open("spec#{i}", "r") do |f|
         memory = f.gets.to_i
         time = f.gets.to_i
       end
@@ -119,7 +128,13 @@ class EvaluatePythonJob < ActiveJob::Base
     answer.test_passed = passed
     answer.test_count = test_count
     answer.save
-    `rm #{work_dir_file}*`
+
+    # コンテナの削除
+    containers.each {|c| `docker rm #{c}`}
+
+    # 作業ディレクトリの削除
+    Dir.chdir("..")
+    `rm -r #{dir_name}`
     return
   end
 end
