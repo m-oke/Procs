@@ -6,3 +6,4 @@ UPLOADS_PATH = Rails.root.join('uploads') # ファイルアップロードディ
 UPLOADS_ANSWERS_PATH = UPLOADS_PATH.join("answers") # 解答ファイルのアップロードディレクトリ
 UPLOADS_QUESTIONS_PATH = UPLOADS_PATH.join("questions") # 問題のテストデータアップロードディレクトリ
 EVALUATE_WORK_DIR = Rails.root.join("tmp", "answers") # 評価時の作業ディレクトリ
+DOCKER_PATH = Rails.root.join("docker") # Dockerイメージ用のパス
