@@ -41,64 +41,76 @@ class EvaluatePythonJob < ActiveJob::Base
     containers = []
 
     # テストデータの数だけ繰り返し
-    1.upto(test_count) do |i|
-      result = "P"
-      memory = 0
-      time = 0
-      spec[i][:result] = result
-      spec[i][:memory] = memory
-      spec[i][:time] = time
+    begin
+      t = Thread.new do
+        1.upto(test_count) do |i|
+          pp "start #{i}"
+          result = "P"
+          memory = 0
+          time = 0
+          spec[i][:result] = result
+          spec[i][:memory] = memory
+          spec[i][:time] = time
 
-      # コンテナ名を乱数のハッシュで生成
-      container_name = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
-      containers.push(container_name)
-      # dockerコンテナでプログラムを実行
-      exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work procs/python_sandbox"
+          # コンテナ名を乱数のハッシュで生成
+          container_name = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
+          containers.push(container_name)
+          # dockerコンテナでプログラムを実行
+          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work procs/python_sandbox"
 
-      begin
-        # 実行時間制限
-        Timeout.timeout(run_time_limit) do
-          # 入力用ファイルを入力し，結果をファイル出力
-          @exec = IO.popen(exec_cmd)
-          Process.waitpid2(@exec.pid)
+          begin
+            # 実行時間制限
+            Timeout.timeout(run_time_limit) do
+              # 入力用ファイルを入力し，結果をファイル出力
+              @exec = IO.popen(exec_cmd)
+              Process.waitpid2(@exec.pid)
+            end
+
+            # 処理中にタイムアウトになった場合
+          rescue Timeout::Error
+            `docker kill #{container_name}`
+            puts "Kill timeout container #{container_name}"
+            puts "Time Limit Exceeded"
+            spec[i][:result] = "TLE"
+            next
+          end
+
+          # 結果と出力用ファイルのdiff
+          diff = `diff output#{i} result#{i}`
+
+          # diff結果が異なればそこでテスト失敗
+          unless diff.empty?
+            puts "Wrong Answer"
+            spec[i][:result] = "WA"
+            next
+          end
+
+          # 実行時間とメモリ使用量を記録
+          File.open("spec#{i}", "r") do |f|
+            memory = f.gets.to_i
+            utime = f.gets.to_f
+            stime = f.gets.to_f
+            time = (utime + stime) * 1000
+        puts "memory = #{memory}"
+        puts "utime = #{utime}"
+        puts "stime = #{stime}"
+        puts "time = #{time}"
+          end
+
+          if (memory / 1024) > memory_usage_limit
+            puts "Memory Limit Exceeded"
+            spec[i][:result] = "MLE"
+            next
+          end
+
+          spec[i][:result] = "A"
+          spec[i][:memory] = memory
+          spec[i][:time] = time
         end
-
-        # 処理中にタイムアウトになった場合
-      rescue Timeout::Error
-        `docker kill #{container_name}`
-        puts "Kill timeout container #{container_name}"
-        puts "Time Limit Exceeded"
-        spec[i][:result] = "TLE"
-        next
       end
-
-      # 結果と出力用ファイルのdiff
-      diff = `diff output#{i} result#{i}`
-
-      # diff結果が異なればそこでテスト失敗
-      unless diff.empty?
-        puts "Wrong Answer"
-        spec[i][:result] = "WA"
-        next
-      end
-
-      # 実行時間とメモリ使用量を記録
-      File.open("spec#{i}", "r") do |f|
-        memory = f.gets.to_i
-        utime = f.gets.to_f
-        stime = f.gets.to_f
-        time = (utime + stime) * 1000.0
-      end
-
-      if (memory / 1024) > memory_usage_limit
-        puts "Memory Limit Exceeded"
-        spec[i][:result] = "MLE"
-        next
-      end
-
-      spec[i][:result] = "A"
-      spec[i][:memory] = memory
-      spec[i][:time] = time
+      t.join
+    rescue
+      pp $!
     end
 
     # 最大値を求めるためのソート
