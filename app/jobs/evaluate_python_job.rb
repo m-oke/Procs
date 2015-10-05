@@ -53,7 +53,7 @@ class EvaluatePythonJob < ActiveJob::Base
       container_name = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
       containers.push(container_name)
       # dockerコンテナでプログラムを実行
-      exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work errorcode/python_sandbox"
+      exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work procs/python_sandbox"
 
       begin
         # 実行時間制限
@@ -85,7 +85,9 @@ class EvaluatePythonJob < ActiveJob::Base
       # 実行時間とメモリ使用量を記録
       File.open("spec#{i}", "r") do |f|
         memory = f.gets.to_i
-        time = f.gets.to_i
+        utime = f.gets.to_f
+        stime = f.gets.to_f
+        time = (utime + stime) * 1000.0
       end
 
       if (memory / 1024) > memory_usage_limit
