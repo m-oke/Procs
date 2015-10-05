@@ -34,7 +34,7 @@ class EvaluateCJob < ActiveJob::Base
     Dir.chdir(EVALUATE_WORK_DIR)
     spec = Hash.new { |h,k| h[k] = {} }
 
-    compile_cmd = "gcc #{src_file} -o #{exe_file} -w"
+    compile_cmd = "g++ #{src_file} -o #{exe_file} -w"
     # コンパイル
     @compile = IO.popen(compile_cmd, :err => [:child, :out])
 
