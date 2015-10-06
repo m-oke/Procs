@@ -87,7 +87,7 @@ class LessonsController < ApplicationController
   # source code check through internet
   def internet_check
     @result = Array.new(0,Array.new(3,0))
-    search_limit = 5
+    search_limit = 1
 
     #get data from ajax
     @question_id = params[:question_id]
@@ -116,6 +116,42 @@ class LessonsController < ApplicationController
     default_bing_search_check = 0
     keep_search_limit = search_limit
     # wordA AND ("wordB" or "wordC")
+    if default_google_search_check ==2
+      old_word_google = ''
+      while search_limit > 0 do
+        search_word = keywordContent[num]
+        if old_word_google != ''
+          search_word = old_word_google + 'google_search' + search_word
+        end
+        old_word_google = search_word
+        search_keyword = google_keyword_processing(search_word,'google_search')
+        temp_keyword_csv.push(search_keyword)
+        pp search_keyword
+        results_temp = GoogleCustomSearchApi.search(search_keyword)
+        results_temp["items"].each do |item|
+          title = item['title']
+          link = item['link']
+          nSize = @result.size
+          if nSize == 0
+            @result.push([title,link,1])
+          else
+            nMark = -1
+            for n in 0..nSize-1
+              if @result[n][1]==link
+                nMark = n
+              end
+            end
+            if nMark != -1
+              @result[nMark][2] = @result[nMark][2] + 1
+            else
+              @result.push([title,link,1])
+            end
+          end
+        end
+        search_limit = search_limit - 1
+        num = num + 1
+      end
+    end
     if default_google_search_check == 1
       old_word_google = ''
       while search_limit > 0 do
@@ -349,12 +385,12 @@ class LessonsController < ApplicationController
 
   def google_keyword_processing(keyword,split_word)
     # #delete " " symbol code
-    while keyword.include?('"') do
-      keyword = keyword.sub(/"/,' ')
-    end
-    while keyword.include?('&') do
-      keyword = keyword.sub(/&/,' ')
-    end
+    # while keyword.include?('"') do
+    #   keyword = keyword.sub(/"/,' ')
+    # end
+    # while keyword.include?('&') do
+    #   keyword = keyword.sub(/&/,' ')
+    # end
     # if keyword2 == ''
     #   return PROBLEM_KEY_WORD1 + ' ' + "\"#{keyword1}\""
     # else
@@ -368,15 +404,14 @@ class LessonsController < ApplicationController
     if keyword.include?(split_word)
       keyword = keyword.split(split_word)
       keyword.each do |temp|
-        temp_keyword = temp_keyword+ temp + ' '
-        # temp_keyword = temp_keyword+ "\"#{temp}\"" + ' '
+        # temp_keyword = temp_keyword+ temp + ' '
+        temp_keyword = temp_keyword+ "\"#{temp}\"" + ' '
       end
       # return "\"jolly jumpers problem\"" + ' ' + temp_keyword
       return PROBLEM_KEY_WORD1 + ' ' + temp_keyword
     else
       # return "\"jolly jumpers problem\"" + ' ' + "\"#{keyword}\""
       return PROBLEM_KEY_WORD1 + ' ' + keyword
-      # return PROBLEM_KEY_WORD1 + ' ' + "\"#{keyword}\""
     end
   end
 
@@ -396,6 +431,10 @@ class LessonsController < ApplicationController
   end
 
   def internet_search_json(search_word, search_type)
+    # problem_key_word = 'jolly jumpers problem  ("A[abs(V[I]-V[I+1])] = 1" OR "if(!A[I]){")'
+    problem_key_word = 'jolly jumpers problem  A[abs(V[I]-V[I+1])] = 1  if(!A[I])'
+    search_word2 = 'A[abs(V[I]-V[I+1])] = 1'
+    search_word_test = 'while(scanf("%d %d",n,m)==2)'
     if search_type == 'bing search'
       user = ''
       account_key = APIKEY
@@ -414,8 +453,14 @@ class LessonsController < ApplicationController
       pp full_address
     end
     if search_type == 'google search'
-      search_word = URI.encode(search_word)
-      full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}"
+      # search_word = URI.encode(search_word)
+
+      # search_word = URI.encode_www_form_component(search_word)
+      # full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}"
+      search_word_test = URI.encode_www_form_component(search_word_test)
+      search_word2 = URI.encode_www_form_component(search_word2)
+      problem_key_word = URI.encode_www_form_component(problem_key_word)
+      full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{problem_key_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
       pp full_address
     end
 
