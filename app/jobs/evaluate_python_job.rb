@@ -44,7 +44,6 @@ class EvaluatePythonJob < ActiveJob::Base
     begin
       t = Thread.new do
         1.upto(test_count) do |i|
-          pp "start #{i}"
           result = "P"
           memory = 0
           time = 0
@@ -91,10 +90,6 @@ class EvaluatePythonJob < ActiveJob::Base
             utime = f.gets.to_f
             stime = f.gets.to_f
             time = (utime + stime) * 1000
-        puts "memory = #{memory}"
-        puts "utime = #{utime}"
-        puts "stime = #{stime}"
-        puts "time = #{time}"
           end
 
           if (memory / 1024) > memory_usage_limit
