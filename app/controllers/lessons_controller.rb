@@ -87,7 +87,7 @@ class LessonsController < ApplicationController
   # source code check through internet
   def internet_check
     @result = Array.new(0,Array.new(3,0))
-    search_limit = 1
+    search_limit = 5
 
     #get data from ajax
     @question_id = params[:question_id]
@@ -112,10 +112,54 @@ class LessonsController < ApplicationController
     num = 0
     temp_keyword = ''
     temp_keyword_csv = []
-    default_google_search_check = 1
+    default_google_search_check = 3
     default_bing_search_check = 0
     keep_search_limit = search_limit
     # wordA AND ("wordB" or "wordC")
+    if default_google_search_check == 3
+      problem_keyword = "jolly jumpers problem solution"
+
+      while search_limit > 0 do
+        search_word = keywordContent[num]
+        while search_word.include?('&') do
+          search_word = search_word.sub(/&/,' ')
+        end
+        search_word =problem_keyword + "\"#{search_word}\""
+        search_word = URI.encode_www_form_component(search_word)
+
+        full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
+        pp full_address
+        temp_keyword_csv.push(full_address)
+        uri = URI.parse(full_address)
+        json = Net::HTTP.get(uri)
+        result = JSON.parse(json)
+
+        if result['searchInformation']['totalResults'] != "0"
+          result['items'].each do |item|
+            title = item['title']
+            link = item['link']
+            nSize = @result.size
+            if nSize == 0
+              @result.push([title,link,1])
+            else
+              nMark = -1
+              for n in 0..nSize-1
+                if @result[n][1]==link
+                  nMark = n
+                end
+              end
+              if nMark != -1
+                @result[nMark][2] = @result[nMark][2] + 1
+              else
+                @result.push([title,link,1])
+              end
+            end
+          end
+        end
+        search_limit = search_limit - 1
+        num = num + 1
+      end
+    end
     if default_google_search_check ==2
       old_word_google = ''
       while search_limit > 0 do
@@ -431,10 +475,6 @@ class LessonsController < ApplicationController
   end
 
   def internet_search_json(search_word, search_type)
-    # problem_key_word = 'jolly jumpers problem  ("A[abs(V[I]-V[I+1])] = 1" OR "if(!A[I]){")'
-    problem_key_word = 'jolly jumpers problem  A[abs(V[I]-V[I+1])] = 1  if(!A[I])'
-    search_word2 = 'A[abs(V[I]-V[I+1])] = 1'
-    search_word_test = 'while(scanf("%d %d",n,m)==2)'
     if search_type == 'bing search'
       user = ''
       account_key = APIKEY
@@ -455,12 +495,12 @@ class LessonsController < ApplicationController
     if search_type == 'google search'
       # search_word = URI.encode(search_word)
 
-      # search_word = URI.encode_www_form_component(search_word)
-      # full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}"
-      search_word_test = URI.encode_www_form_component(search_word_test)
-      search_word2 = URI.encode_www_form_component(search_word2)
-      problem_key_word = URI.encode_www_form_component(problem_key_word)
-      full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{problem_key_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
+      search_word = URI.encode_www_form_component(search_word)
+      full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}"
+      # search_word_test = URI.encode_www_form_component(search_word_test)
+      # search_word2 = URI.encode_www_form_component(search_word2)
+      # problem_key_word = URI.encode_www_form_component(problem_key_word)
+      # full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{problem_key_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
       pp full_address
     end
 
@@ -496,7 +536,7 @@ class LessonsController < ApplicationController
   end
 
   def write_search_results_log(full_path,results,keywords)
-    File.delete(full_path)
+    # File.delete(full_path)
     CSV.open(full_path,'w') do |out|
       out << ["title","link","times"]
       results.each do |result|
