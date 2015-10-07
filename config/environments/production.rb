@@ -81,10 +81,11 @@ Rails.application.configure do
     FileUtils.mkdir_p(DOCKER_PATH) unless FileTest.exist?(DOCKER_PATH)
     if FileTest.exist?("#{DOCKER_PATH}/.git")
       Dir.chdir(DOCKER_PATH)
-        `git pull `#https://github.com/m-oke/TKB-procon_sandbox.git `
+      `git pull`
     else
       `git clone https://github.com/m-oke/TKB-procon_sandbox.git #{DOCKER_PATH}`
     end
     `docker build -t procs/python_sandbox #{DOCKER_PATH}/python_sandbox`
+    `docker build -t procs/cpp_sandbox #{DOCKER_PATH}/cpp_sandbox`
   end
 end
