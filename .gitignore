@@ -19,3 +19,4 @@
 /uploads/*
 ,/*
 /docker/*
+/docker
