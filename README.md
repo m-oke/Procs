@@ -65,6 +65,10 @@
 3. `sudo apt-get install redis-server`
 4. `redis-server --version`
 
+### Dockerのインストール
+[Docker install](https://docs.docker.com/installation/ubuntulinux/)
+1. `curl -sSL https://get.docker.com/ | sh`
+
 
 ### Dockerコンテナ内で行っているので不要
 
