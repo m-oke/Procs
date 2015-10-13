@@ -3,20 +3,20 @@
   <% @title='問題新規作成' %>
   <h1><%= @title %></h1>
   <%= nested_form_for(@question ,:remote=>true ,:url=>{:controller=>"questions", :action=>"create"}, :multipart => true ) do |f| %>
-    <div>
-      <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>
-      <%= f.text_area :title ,:rows => 2 , :class=>"text-area-css1"  ,required: 'required' %>
-    </div>
-    <div>
-      <%= f.label :content , '内容'%><span>(<span class="inputnote">＊</span>)</span><br/>
-      <%= f.text_area :content ,:rows => 10 , :class=>"text-area-css1",required: 'required' %>
-    </div>
-    <div>
+      <div>
+        <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>
+        <%= f.text_area :title ,:rows => 2 , :class=>"text-area-css1"  ,required: 'required' %>
+      </div>
+      <div>
+        <%= f.label :content , '内容'%><span>(<span class="inputnote">＊</span>)</span><br/>
+        <%= f.text_area :content ,:rows => 10 , :class=>"text-area-css1",required: 'required' %>
+      </div>
+      <div>
         <%= f.label :input_description , '入力説明' %><br/>
         <%= f.text_area :input_description,:rows => 2 , :class=>"text-area-css1"  %>
-    </div>
-    <div>
-      <%= f.label :output_description , '出力説明'%><br/>
+      </div>
+      <div>
+        <%= f.label :output_description , '出力説明'%><br/>
         <%= f.text_area :output_description, :rows => 2 , :class=>"text-area-css1"  %>
       </div>
       <div class="field_question">
@@ -37,15 +37,13 @@
         <fieldset id="samples">
           <legend>入出力サンプル(<span class="inputnote">＊</span>)</legend>
           <%= f.fields_for :samples do |builder| %>
-
-          <%= builder.label :input,"入力" %>
-          <%= builder.text_area :input , required: 'required', style:'resize: vertical', :rows => 4 , :cols => 40  %>
-          <%= builder.label :output ,"出力" %>
-          <%= builder.text_area :output  , required: 'required' , style:'resize: vertical',  :rows => 4 , :cols => 40  %>
-          <%= builder.link_to_remove "削除" %>
-
-        <% end %>
-        <%= f.link_to_add "追加",:samples  %>
+              <%= builder.label :input,"入力" %>
+              <%= builder.text_area :input , required: 'required', style:'resize: vertical', :rows => 4 , :cols => 40  %>
+              <%= builder.label :output ,"出力" %>
+              <%= builder.text_area :output  , required: 'required' , style:'resize: vertical',  :rows => 4 , :cols => 40  %>
+              <%= builder.link_to_remove "削除" %>
+          <% end %>
+          <%= f.link_to_add "追加",:samples  %>
         </fieldset>
       </div>
 
@@ -53,14 +51,14 @@
         <fieldset id="test_data">
           <legend>解答用データ(<span class="inputnote">＊</span>)</legend>
           <%= f.fields_for :test_data do |builder| %>
-            <div class="left">
-              <%= builder.label :input, "入力" %>
-              <%= builder.file_field :input, required: 'required' %>
-            </div>
-            <div class="left">
-              <%= builder.label :output, "出力" %>
-              <%= builder.file_field :output, required: 'required' %>
-            </div>
+              <div class="left">
+                <%= builder.label :input, "入力" %>
+                <%= builder.file_field :input, required: 'required' %>
+              </div>
+              <div class="left">
+                <%= builder.label :output, "出力" %>
+                <%= builder.file_field :output, required: 'required' %>
+              </div>
               <p class="help-block">ファイルサイズは10MBまで</p>
               <%= builder.link_to_remove "削除"%>
           <% end %>

@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root :to => 'lessons#index'
 
   resources :lessons do
-    resources :questions, only: [:index, :show, :new, :create], param: :question_id, :constraints => OnlyAjaxRequest do
+    resources :questions, only: [:index, :show, :new, :create, :edit], param: :question_id, :constraints => OnlyAjaxRequest do
       member do
         get '/answers' => 'answers#index', :constraints => OnlyAjaxRequest
       end

@@ -40,6 +40,7 @@ class QuestionsController < ApplicationController
         flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
         redirect_to new_lesson_question_path(:lesson_id => @lesson_id) and return
       end
+      binding.pry
       val['input'] = "input#{i}"
       val['output'] = "output#{i}"
       test_data["#{i}"] = files
@@ -92,6 +93,18 @@ class QuestionsController < ApplicationController
     else
       @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
     end
+  end
+
+  def edit
+    lesson_id = params[:lesson_id]
+    question_id = params[:question_id]
+    @question = Question.find_by(:id =>question_id)
+
+    @question.test_data.each do |item|
+      pp item['input']
+    end
+
+
   end
 
 
