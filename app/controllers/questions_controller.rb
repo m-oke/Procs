@@ -29,32 +29,34 @@ class QuestionsController < ApplicationController
   def create
     @lesson_id = params[:lesson_id]
 
+    ##ファイルサイズは10MB以上の場合　#ajax
+    # 保存失敗時のajax用の変数
+    params[:lesson_id] = @lesson_id
+    @lesson = Lesson.find_by(:id => @lesson_id)
+    @questions = @lesson.question
+    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
     # アップロードされたテストデータを取得
     # TestDatumモデルにはファイル名を入力
     test_data = {}
     params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
       files = {}
+      if val['input'].nil?
+        next
+      end
       files['input'] = val['input']
       files['output'] = val['output']
       if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
         flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
-        redirect_to new_lesson_question_path(:lesson_id => @lesson_id) and return
+        return
       end
-      binding.pry
-      val['input'] = "input#{i}"
-      val['output'] = "output#{i}"
+      val['input'] = val['input'].original_filename
+      val['output'] = val['output'].original_filename
       test_data["#{i}"] = files
     end
 
     @question = Question.new(question_params)
     if @question.save
       flash.notice='問題を登録しました'
-
-      # ajax用の変数
-      params[:lesson_id] = @lesson_id
-      @lesson = Lesson.find_by(:id => @lesson_id)
-      @questions = @lesson.question
-      @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
 
       # テストデータのディレクトリを作成
       uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
@@ -71,6 +73,7 @@ class QuestionsController < ApplicationController
       end
 
       flash.notice = '問題を登録しました'
+
     else
       flash.notice='問題の登録に失敗しました'
     end
@@ -96,17 +99,103 @@ class QuestionsController < ApplicationController
   end
 
   def edit
-    lesson_id = params[:lesson_id]
-    question_id = params[:question_id]
-    @question = Question.find_by(:id =>question_id)
+    @lesson_id = params[:lesson_id]
+    @question_id = params[:question_id]
+    @question = Question.find_by(:id =>@question_id)
+    @keep_test_data = Array.new(@question.test_data.size).map{[]}
 
-    @question.test_data.each do |item|
-      pp item['input']
-    end
+    @keep_test_data = @question.test_data.map {|data| data}
+    # @question.test_data.each do |item|
+    #   @keep_test_data.push(item)
+    # end
 
-
+    # while @question.test_data.size > 1
+    #   temp = @question.test_data.first
+    #   @question.test_data.destroy(temp)
+    # end
+    # pp @question.test_data
   end
 
+  def update
+    @lesson_id = params[:lesson_id]
+    @question_id = params[:question_id]
+    @question = Question.find_by(:id =>@question_id)
+
+    ##ajax
+    params[:lesson_id] = @lesson_id
+    @lesson = Lesson.find_by(:id => @lesson_id)
+    @questions = @lesson.question
+    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
+
+    input_file =[]   # for original
+    output_file =[]
+    now_input_file = [] # for now all file  (difference from new_input_file)
+    now_output_file = []
+    new_input_file = []   #for add file
+    new_output_file = []
+    delete_input_file = []  #for delete file
+    delete_output_file = []
+    @question.test_data.each do |item|
+      if item['input']== nil? || item['output'] == nil?
+        next
+      end
+      input_file.push(item['input'])
+      output_file.push(item['output'])
+    end
+    test_data = {}
+    params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
+      if val['input'].nil?
+        next
+      end
+      files = {}
+      files['input'] = val['input']
+      files['output'] = val['output']
+      unless input_file.include?(val['input']) && output_file.include?(val['output'])
+        if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
+          flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
+          return
+        end
+        val['input'] = val['input'].original_filename
+        val['output'] = val['output'].original_filename
+        new_input_file.push(val['input'])
+        new_output_file.push(val['output'])
+      end
+      test_data["#{i}"] = files
+      binding.pry
+      if val['_destroy'] == 'false'
+        now_input_file.push(val['input'])
+        now_output_file.push(val['output'])
+      end
+   end
+    # @question.assign_attributes(params['question'])
+    if @question.update(params['question'])
+
+      # テストデータのディレクトリを作成
+      uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
+      FileUtils.mkdir_p(uploads_test_data_path) unless FileTest.exist?(uploads_test_data_path)
+
+      # テストデータの保存
+      test_data.each do |key, val|
+        unless input_file.include?(val['input']) && output_file.include?(val['output'])
+          File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
+            f.write(val['input'].read)
+          end
+          File.open("#{uploads_test_data_path}/output#{key}", "wb") do |f|
+            f.write(val['output'].read)
+          end
+        end
+      end
+      #delete no use file
+      delete_input_file = input_file - (now_input_file - new_input_file)
+      delete_output_file = output_file - (now_output_file - new_output_file)
+
+
+      flash.notice = '問題を更新しました'
+    else
+      flash.notice='問題の更新に失敗しました'
+    end
+
+  end
 
   private
   def question_params
