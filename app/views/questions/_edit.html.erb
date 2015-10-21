@@ -61,6 +61,8 @@
                 <%= builder.label :output, "出力" %>
                 <%= builder.text_field :output, :readonly => "readonly" %>
               </div>
+                <%= builder.hidden_field :input_storename %>
+                <%= builder.hidden_field :output_storename %>
               <%= builder.link_to_remove "削除"%>
               </div><br>
           <% end %>
@@ -77,7 +79,8 @@
                   <%= builder.label :output, "出力" %>
                   <%= builder.file_field :output, required: 'required' %>
                 </div>
-
+                  <%= builder.hidden_field :input_storename %>
+                  <%= builder.hidden_field :output_storename %>
                 <p class="help-block">ファイルサイズは10MBまで</p>
                 <%= builder.link_to_remove "削除"%>
                 <%= builder.hidden_field :id, value: nil %>

@@ -118,60 +118,31 @@ class QuestionsController < ApplicationController
     @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
 
     original_input_output_file = Hash.new  # for original
-    # now_input_output_file = {} # for now all file  (difference from new_input_output_file)
-    # new_input_output_file = {}  #for add file
     delete_input_output_file = Hash.new  #for delete file
 
     @question.test_data.each do |item|
-      original_input_output_file[item['input_storename']] = item['input']
-      original_input_output_file[item['output_storename']] = item['output']
+      original_input_output_file[item['id']] = {"input_storename"=>item['input_storename'],"output_storename"=>item['output_storename']}
     end
     start_num = 1
-    original_input_output_file.each_key do |key_name|
-      if key_name.include?("input")
-        num = key_name[5..key_name.size-1].to_i
-        if num > start_num
-          start_num = num
+    @question.test_data.each do |item|
+      unless item['input_storename'].to_s == ""
+        if item['input_storename'].to_s.include?("input")
+          len = item['input_storename'].size
+          num = item['input_storename'][5..len-1].to_i
+          if num > start_num
+            start_num = num
+          end
         end
       end
     end
     test_data = {}
-
     params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
-binding.pry
       if val['input'].nil? || val['output'].nil?
         next
       end
+
       files = {}
-      if val['input'].is_a?(Hash) || val['output'].is_a?(Hash)
-        val_input = val['input'].original_filename
-        val_output = val['output'].original_filename
-      else
-        val_input = val['input']
-        val_output = val['output']
-      end
-
-      if original_input_output_file.has_value?(val_input) && original_input_output_file.has_value?(val_output)
-
-        if val_input == val_output
-          same_key =[]
-          original_input_output_file.each_key do |key|
-            if original_input_output_file[key] == val_input
-              same_key.push(key)
-            end
-          end
-
-        else
-          original_input_output_file.each do |k,v|
-            if v == val_input
-              val['input_storename'] = k
-            end
-            if v == val_output
-              val['output_storename'] = k
-            end
-          end
-        end
-      else
+      if val["id"].to_s == ""
         files['input'] = val['input']
         files['output'] = val['output']
         if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
@@ -187,13 +158,19 @@ binding.pry
         # new_input_output_file.store(val['input_storename'], val['input'])
         # new_input_output_file.store(val['output_storename'], val['output'])
         test_data["#{start_num}"] = files
+      else
+        original_input_output_file.each do |key ,val |
+          if val['id'] == key
+            val['input_storename'] = val['id']["input_storename"]
+            val['output_storename'] = val['id']["output_storename"]
+          end
+        end
       end
-      if val['_destroy'] != 'false'
 
+      if val['_destroy'] != 'false'
         delete_input_output_file[val['input_storename']] = val['input']
         delete_input_output_file[val['output_storename']] = val['output']
       end
-
    end
     # @question.assign_attributes(params['question'])
     if @question.update(params['question'])
