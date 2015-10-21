@@ -55,11 +55,11 @@
               <div>
               <div class="left">
                 <%= builder.label :input, "入力" %>
-                <%= builder.text_field :input, :readonly => "readonly", required: 'required' %>
+                <%= builder.text_field :input, :readonly => "readonly"%>
               </div>
               <div class="left">
                 <%= builder.label :output, "出力" %>
-                <%= builder.text_field :output, :readonly => "readonly", required: 'required' %>
+                <%= builder.text_field :output, :readonly => "readonly" %>
               </div>
               <%= builder.link_to_remove "削除"%>
               </div><br>
@@ -68,7 +68,7 @@
           <% i = 0 %>
           <%= f.fields_for :test_data do |builder| %>
               <% if i < 1 %>
-              <div>
+
                 <div class="left">
                   <%= builder.label :input, "入力" %>
                   <%= builder.file_field :input, required: 'required' %>
@@ -77,15 +77,16 @@
                   <%= builder.label :output, "出力" %>
                   <%= builder.file_field :output, required: 'required' %>
                 </div>
+
                 <p class="help-block">ファイルサイズは10MBまで</p>
                 <%= builder.link_to_remove "削除"%>
                 <%= builder.hidden_field :id, value: nil %>
-              </div><br>
-                  <% i += 1 %>
-                  <% end %>
+                <br>
+                <% i += 1 %>
+              <% end %>
           <% end %>
           <%= f.link_to_add "追加",  :test_data %>
-    <% i = 0 %>
+          <% i = 0 %>
         </fieldset>
       </div>
 

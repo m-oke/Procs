@@ -51,6 +51,8 @@ class QuestionsController < ApplicationController
       end
       val['input'] = val['input'].original_filename
       val['output'] = val['output'].original_filename
+      val['input_storename'] = "input#{i}"
+      val['output_storename'] = "output#{i}"
       test_data["#{i}"] = files
     end
 
@@ -102,18 +104,6 @@ class QuestionsController < ApplicationController
     @lesson_id = params[:lesson_id]
     @question_id = params[:question_id]
     @question = Question.find_by(:id =>@question_id)
-    @keep_test_data = Array.new(@question.test_data.size).map{[]}
-
-    @keep_test_data = @question.test_data.map {|data| data}
-    # @question.test_data.each do |item|
-    #   @keep_test_data.push(item)
-    # end
-
-    # while @question.test_data.size > 1
-    #   temp = @question.test_data.first
-    #   @question.test_data.destroy(temp)
-    # end
-    # pp @question.test_data
   end
 
   def update
@@ -127,45 +117,83 @@ class QuestionsController < ApplicationController
     @questions = @lesson.question
     @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
 
-    input_file =[]   # for original
-    output_file =[]
-    now_input_file = [] # for now all file  (difference from new_input_file)
-    now_output_file = []
-    new_input_file = []   #for add file
-    new_output_file = []
-    delete_input_file = []  #for delete file
-    delete_output_file = []
+    original_input_output_file = Hash.new  # for original
+    # now_input_output_file = {} # for now all file  (difference from new_input_output_file)
+    # new_input_output_file = {}  #for add file
+    delete_input_output_file = Hash.new  #for delete file
+
     @question.test_data.each do |item|
-      if item['input']== nil? || item['output'] == nil?
-        next
+      original_input_output_file[item['input_storename']] = item['input']
+      original_input_output_file[item['output_storename']] = item['output']
+    end
+    start_num = 1
+    original_input_output_file.each_key do |key_name|
+      if key_name.include?("input")
+        num = key_name[5..key_name.size-1].to_i
+        if num > start_num
+          start_num = num
+        end
       end
-      input_file.push(item['input'])
-      output_file.push(item['output'])
     end
     test_data = {}
+
     params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
-      if val['input'].nil?
+binding.pry
+      if val['input'].nil? || val['output'].nil?
         next
       end
       files = {}
-      files['input'] = val['input']
-      files['output'] = val['output']
-      unless input_file.include?(val['input']) && output_file.include?(val['output'])
+      if val['input'].is_a?(Hash) || val['output'].is_a?(Hash)
+        val_input = val['input'].original_filename
+        val_output = val['output'].original_filename
+      else
+        val_input = val['input']
+        val_output = val['output']
+      end
+
+      if original_input_output_file.has_value?(val_input) && original_input_output_file.has_value?(val_output)
+
+        if val_input == val_output
+          same_key =[]
+          original_input_output_file.each_key do |key|
+            if original_input_output_file[key] == val_input
+              same_key.push(key)
+            end
+          end
+
+        else
+          original_input_output_file.each do |k,v|
+            if v == val_input
+              val['input_storename'] = k
+            end
+            if v == val_output
+              val['output_storename'] = k
+            end
+          end
+        end
+      else
+        files['input'] = val['input']
+        files['output'] = val['output']
         if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
           flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
           return
         end
+        start_num = start_num + 1
+
         val['input'] = val['input'].original_filename
         val['output'] = val['output'].original_filename
-        new_input_file.push(val['input'])
-        new_output_file.push(val['output'])
+        val['input_storename'] = "input#{start_num}"
+        val['output_storename'] = "output#{start_num}"
+        # new_input_output_file.store(val['input_storename'], val['input'])
+        # new_input_output_file.store(val['output_storename'], val['output'])
+        test_data["#{start_num}"] = files
       end
-      test_data["#{i}"] = files
-      binding.pry
-      if val['_destroy'] == 'false'
-        now_input_file.push(val['input'])
-        now_output_file.push(val['output'])
+      if val['_destroy'] != 'false'
+
+        delete_input_output_file[val['input_storename']] = val['input']
+        delete_input_output_file[val['output_storename']] = val['output']
       end
+
    end
     # @question.assign_attributes(params['question'])
     if @question.update(params['question'])
@@ -173,23 +201,22 @@ class QuestionsController < ApplicationController
       # テストデータのディレクトリを作成
       uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
       FileUtils.mkdir_p(uploads_test_data_path) unless FileTest.exist?(uploads_test_data_path)
-
-      # テストデータの保存
-      test_data.each do |key, val|
-        unless input_file.include?(val['input']) && output_file.include?(val['output'])
-          File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
-            f.write(val['input'].read)
-          end
-          File.open("#{uploads_test_data_path}/output#{key}", "wb") do |f|
-            f.write(val['output'].read)
-          end
+      # delete no use file
+      delete_input_output_file.each do |key,val|
+        file_name = "#{uploads_test_data_path}/" + key
+        if File.exist?(file_name)
+          File.delete(file_name)
         end
       end
-      #delete no use file
-      delete_input_file = input_file - (now_input_file - new_input_file)
-      delete_output_file = output_file - (now_output_file - new_output_file)
-
-
+      # テストデータの保存
+      test_data.each do |key, val|
+        File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
+          f.write(val['input'].read)
+        end
+        File.open("#{uploads_test_data_path}/output#{key}", "wb") do |f|
+          f.write(val['output'].read)
+        end
+      end
       flash.notice = '問題を更新しました'
     else
       flash.notice='問題の更新に失敗しました'
@@ -208,7 +235,7 @@ class QuestionsController < ApplicationController
       :memory_usage_limit,
       :cpu_usage_limit,
       samples_attributes: [:question_id, :input, :output, :_destroy],
-      test_data_attributes: [:question_id, :input, :output, :_destroy],
+      test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
       lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
     )
   end
