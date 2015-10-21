@@ -69,6 +69,9 @@
 [Docker install](https://docs.docker.com/installation/ubuntulinux/)
 
 1. `curl -sSL https://get.docker.com/ | sh`
+2. `sudo groupadd docker`
+3. `sudo gpasswd -a ${USER} docker` dockerをsudo権限なしで実行できるようにする
+4. Ubuntuの再起動
 
 
 ### Dockerコンテナ内で行っているので不要
