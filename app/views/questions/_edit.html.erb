@@ -95,6 +95,7 @@
 
 
       <div>
+        <%= f.hidden_field :version  %>
         <%= f.label :run_time_limit , '時間制限'%>（単位：ms）
         <%= f.number_field :run_time_limit, min: 1, step: 1 , size: 40 %><br/>
       </div>

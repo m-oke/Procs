@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151018083134) do
+ActiveRecord::Schema.define(version: 20151021074628) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "student_id",            limit: 4,                 null: false
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20151018083134) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.integer  "lesson_id",             limit: 4
+    t.integer  "version",               limit: 4
     t.integer  "test_passed",           limit: 4,   default: 0,   null: false
     t.integer  "test_count",            limit: 4,   default: 0,   null: false
   end
@@ -59,6 +60,7 @@ ActiveRecord::Schema.define(version: 20151018083134) do
     t.integer  "memory_usage_limit", limit: 4,     default: 512
     t.datetime "created_at",                                       null: false
     t.datetime "updated_at",                                       null: false
+    t.integer  "version",            limit: 4
   end
 
   create_table "samples", force: :cascade do |t|

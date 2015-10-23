@@ -18,6 +18,10 @@
     </tbody>
   </table>
 <div>
+  <div>
+    <div style="float:right;"><p>問題変更前の回答です</p></div>
+    <div style="float:right;"><div class="old_version_color_block"></div></div>
+  </div>
   <table class="table table-bordered table-striped">
     <tr>
       <th>問題番号</th>
@@ -39,7 +43,15 @@
               <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
                                                                           :question_id => question.id,
                                                                           :student_id => @student.id),:remote => true  %></td>
-              <td><%=  Answer::RESULT[answer.result] %></td>
+              <% if question.version == answer.version %>
+                  <td><%= RESULT[answer.result] %></td>
+              <% else %>
+                  <% if RESULT[answer.result].to_s.empty?%>
+                      <td ><%= RESULT[answer.result] %></td>
+                  <% else %>
+                      <td class = "old_version_color"><%= RESULT[answer.result] %></td>
+                  <% end %>
+              <% end %>
               <td><%= answer.run_time %></td>
               <% if answer.memory_usage / 1024 == 0 %>
                   <td><%= "#{answer.memory_usage} KB" %></td>

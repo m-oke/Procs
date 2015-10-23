@@ -55,7 +55,7 @@ class QuestionsController < ApplicationController
       val['output_storename'] = "output#{i}"
       test_data["#{i}"] = files
     end
-
+    params['question']['version'] = 1
     @question = Question.new(question_params)
     if @question.save
       flash.notice='問題を登録しました'
@@ -124,6 +124,8 @@ class QuestionsController < ApplicationController
       original_input_output_file[item['id']] = {"input_storename"=>item['input_storename'],"output_storename"=>item['output_storename']}
     end
     start_num = 1
+    version_up = 0
+    test_data = {}
     @question.test_data.each do |item|
       unless item['input_storename'].to_s == ""
         if item['input_storename'].to_s.include?("input")
@@ -135,7 +137,11 @@ class QuestionsController < ApplicationController
         end
       end
     end
-    test_data = {}
+
+    if @question.run_time_limit != params['question']['run_time_limit'].to_i || @question.memory_usage_limit != params['question']['memory_usage_limit'].to_i
+      version_up = 1
+    end
+
     params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
       if val['input'].nil? || val['output'].nil?
         next
@@ -143,6 +149,7 @@ class QuestionsController < ApplicationController
 
       files = {}
       if val["id"].to_s == ""
+        version_up = 1
         files['input'] = val['input']
         files['output'] = val['output']
         if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
@@ -168,11 +175,16 @@ class QuestionsController < ApplicationController
       end
 
       if val['_destroy'] != 'false'
+        version_up = 1
         delete_input_output_file[val['input_storename']] = val['input']
         delete_input_output_file[val['output_storename']] = val['output']
       end
    end
     # @question.assign_attributes(params['question'])
+    if version_up == 1
+      params['question']['version'] = params['question']['version'].to_i + 1
+    end
+
     if @question.update(params['question'])
 
       # テストデータのディレクトリを作成
@@ -211,6 +223,7 @@ class QuestionsController < ApplicationController
       :run_time_limit,
       :memory_usage_limit,
       :cpu_usage_limit,
+      :version,
       samples_attributes: [:question_id, :input, :output, :_destroy],
       test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
       lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
