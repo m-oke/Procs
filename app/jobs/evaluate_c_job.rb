@@ -158,7 +158,7 @@ class EvaluateCJob < ActiveJob::Base
 
     # 作業ディレクトリの削除
     Dir.chdir("..")
-    #`rm -r #{dir_name}`
+    `rm -r #{dir_name}`
     return
   end
 end
