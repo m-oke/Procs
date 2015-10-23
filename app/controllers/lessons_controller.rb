@@ -12,10 +12,6 @@ class LessonsController < ApplicationController
   PROBLEM_KEY_WORD1 = "the 3n+1 problem"
   PROBLEM_KEY_WORD2 = "jolly jumpers problem"
 
-  # #google
-  # GOOGLE_API_KEY = 'AIzaSyAPy05rFWhHMEpOXUbiJ1rgt4ygEOqJHGw'
-  # GOOGLE_ENGINE_ID = '006988608042267398432:yloxhbwl0zk'
-
 
   # get '/'
   def index
@@ -102,81 +98,46 @@ class LessonsController < ApplicationController
     fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + @answer.file_name
     csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
 
-    arrayReturn = get_keyword_from_source(fullPathName)
-    keywordContent=arrayReturn.sort do |item1,item2|
-      item2.length <=>item1.length
+    nlen = @answer.file_name.size
+    if @answer.file_name[nlen-2,nlen-1]=='.c' || @answer.file_name[nlen-4,nlen-1]=='.cpp'
+      arrayReturn = get_keyword_from_cpp_source(fullPathName)
+    elsif @answer.file_name[nlen-3,nlen-1] =='.py'
+      arrayReturn = get_keyword_from_python_source(fullPathName)
+    else
+      arrayReturn = []
     end
 
+    #sort the keyword by length
+    unless arrayReturn.empty?
+      keywordContent=arrayReturn.sort do |item1,item2|
+        item2.length <=>item1.length
+      end
+    end
+    # set the times for search
     if keywordContent.size < search_limit
       search_limit = keywordContent.size
     end
 
     num = 0
-    temp_keyword = ''
     temp_keyword_csv = []
-    default_google_search_check = 3
-    default_bing_search_check = 0
-    keep_search_limit = search_limit
-    # wordA AND ("wordB" or "wordC")
-    if default_google_search_check == 3
-      problem_keyword = "jolly jumpers problem solution"
-
-      while search_limit > 0 do
-        search_word = keywordContent[num]
-        while search_word.include?('&') do
-          search_word = search_word.sub(/&/,' ')
-        end
-        search_word =problem_keyword + "\"#{search_word}\""
-        search_word = URI.encode_www_form_component(search_word)
-
-        full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
-        pp full_address
-        temp_keyword_csv.push(full_address)
-        uri = URI.parse(full_address)
-        json = Net::HTTP.get(uri)
-        result = JSON.parse(json)
-
-        if result['searchInformation']['totalResults'] != "0"
-          result['items'].each do |item|
-            title = item['title']
-            link = item['link']
-            nSize = @result.size
-            if nSize == 0
-              @result.push([title,link,1])
-            else
-              nMark = -1
-              for n in 0..nSize-1
-                if @result[n][1]==link
-                  nMark = n
-                end
-              end
-              if nMark != -1
-                @result[nMark][2] = @result[nMark][2] + 1
-              else
-                @result.push([title,link,1])
-              end
-            end
-          end
-        end
-        search_limit = search_limit - 1
-        num = num + 1
+    old_keyword = ''
+    while search_limit > 0 do
+      search_keyword = keywordContent[num]
+      if old_keyword != ''
+        search_keyword = old_keyword + 'bing_search' +  search_keyword
       end
-    end
-    if default_google_search_check ==2
-      old_word_google = ''
-      while search_limit > 0 do
-        search_word = keywordContent[num]
-        if old_word_google != ''
-          search_word = old_word_google + 'google_search' + search_word
-        end
-        old_word_google = search_word
-        search_keyword = google_keyword_processing(search_word,'google_search')
-        temp_keyword_csv.push(search_keyword)
-        pp search_keyword
-        results_temp = GoogleCustomSearchApi.search(search_keyword)
-        results_temp["items"].each do |item|
-          title = item['title']
-          link = item['link']
+      old_keyword = search_keyword
+      search_keyword = bing_keyword_processing(search_keyword , 'bing_search')
+      bing = Bing.new(APIKEY, 10, 'Web')
+      b_results = bing.search(search_keyword)
+      pp search_keyword
+      binding.pry
+      pp b_results
+      # b_results = internet_search_json(search_keyword,'bing search')
+      unless b_results.empty?
+        b_results[0][:Web].each do |page|
+          title = page[:Title]
+          link = page[:Url]
           nSize = @result.size
           if nSize == 0
             @result.push([title,link,1])
@@ -184,7 +145,7 @@ class LessonsController < ApplicationController
             nMark = -1
             for n in 0..nSize-1
               if @result[n][1]==link
-                nMark = n
+                nMark =  n
               end
             end
             if nMark != -1
@@ -194,102 +155,16 @@ class LessonsController < ApplicationController
             end
           end
         end
-        search_limit = search_limit - 1
-        num = num + 1
+      else
+        pp 'internet check by bing is failed '
+        break
       end
+      search_limit = search_limit - 1
+      num = num + 1
     end
-    if default_google_search_check == 1
-      old_word_google = ''
-      while search_limit > 0 do
-        search_word = keywordContent[num]
-        if old_word_google != ''
-          search_word = old_word_google + 'google_search' + search_word
-        end
-        old_word_google = search_word
-        search_keyword = google_keyword_processing(search_word,'google_search')
-        temp_keyword_csv.push(search_keyword)
-        pp search_keyword
-        g_results = internet_search_json(search_keyword,'google search')
-        if g_results != 'HTTPError'
-          if g_results['searchInformation']['totalResults'] != "0"
-            g_results['items'].each do |item|
-              title = item['title']
-              link = item['link']
-              nSize = @result.size
-              if nSize == 0
-                @result.push([title,link,1])
-              else
-                nMark = -1
-                for n in 0..nSize-1
-                  if @result[n][1]==link
-                    nMark = n
-                  end
-                end
-                if nMark != -1
-                  @result[nMark][2] = @result[nMark][2] + 1
-                else
-                  @result.push([title,link,1])
-                end
-              end
-            end
-          end
-        else
-          num = 0
-          temp_keyword = ''
-          default_bing_search_check = 1
-          search_limit = keep_search_limit
-          pp 'internet check by google is failed'
-          break
-        end
-        search_limit = search_limit - 1
-        num = num + 1
-      end
-    end
-    if default_bing_search_check == 1
-      old_keyword = ''
-      while search_limit > 0 do
-        search_keyword = keywordContent[num]
-        if old_keyword != ''
-          search_keyword = old_keyword + 'bing_search' +  search_keyword
-        end
-        old_keyword = search_keyword
-        search_keyword = bing_keyword_processing(search_keyword , 'bing_search')
 
-        # bing = Bing.new(APIKEY, 10, 'Web')
-        # b_results = bing.search(search_keyword)
-        pp search_keyword
-        b_results = internet_search_json(search_keyword,'bing search')
-        if b_results!= 'HTTPError'
-          b_results[0][:Web].each do |page|
-            title = page[:Title]
-            link = page[:Url]
-            nSize = @result.size
-            if nSize == 0
-              @result.push([title,link,1])
-            else
-              nMark = -1
-              for n in 0..nSize-1
-                if @result[n][1]==link
-                  nMark =  n
-                end
-              end
-              if nMark != -1
-                @result[nMark][2] = @result[nMark][2] + 1
-              else
-                @result.push([title,link,1])
-              end
-            end
-          end
-        else
-          pp 'internet check by bing is failed '
-          break
-        end
-        search_limit = search_limit - 1
-        num = num + 1
-      end
-    end
     # sort @result by item[2]
-    if @result.size != 0
+    unless @result.empty?
       @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
@@ -328,8 +203,8 @@ class LessonsController < ApplicationController
     params.require(:lesson).permit(:name , :description)
   end
 
-  # input file_path to get search key words from source code
-  def get_keyword_from_source(pathname)
+  # input file_path to get search key words from c/c++ source code
+  def get_keyword_from_cpp_source(pathname)
     a = Array.new
     copyFullPath = pathname[0,pathname.rindex('/')] + '/temp'
     open(pathname) do |input|
@@ -339,7 +214,7 @@ class LessonsController < ApplicationController
     end
 
     # delete block comment
-    delete_block_comment(copyFullPath)
+    delete_block_comment(copyFullPath,'C/C++')
 
     File.open(copyFullPath) do |file|
       file.each do |line|
@@ -387,27 +262,82 @@ class LessonsController < ApplicationController
     return a
   end
 
+  # input file_path to get search key words from c/c++ source code
+  def get_keyword_from_python_source(pathname)
+    a = Array.new
+    copyFullPath = pathname[0,pathname.rindex('/')] + '/temp'
+    open(pathname) do |input|
+      open(copyFullPath,"w") do |output|
+        output.write(input.read)
+      end
+    end
 
-  def delete_block_comment(pathname)
+    # delete block comment
+    delete_block_comment(copyFullPath,'python')
+
+    File.open(copyFullPath) do |file|
+      file.each do |line|
+        # delete row comment  and delete left blank space
+        if line[0,1] == '#'
+          line = ''
+        elsif line.include?('#') && line[0,1] != '#'
+          line = line[0,line.index('#')].strip
+        else
+          line = line.strip
+        end
+
+        if line.size>0
+          a.push(line)
+        end
+      end
+    end
+    # File.delete(copyFullPath)
+    return a
+  end
+
+  def delete_block_comment(pathname,language)
     file = File.open(pathname)
     content = file.read
-
-    while content.index('*/')!= nil do
-      end_num  = content.index('*/')
-      start_num = content[0,end_num].rindex('/*')
-      if end_num != nil && start_num != nil
-        content = content[0,start_num]  + content[end_num+2,content.size-end_num-2]
-      else
-        break
+    if language = 'C/C++'
+      while content.index('*/')!= nil do
+        end_num  = content.index('*/')
+        start_num = content[0,end_num].rindex('/*')
+        if end_num != nil && start_num != nil
+          content = content[0,start_num]  + content[end_num+2,content.size-end_num-2]
+        else
+          break
+        end
+      end
+    end
+    if language = "python"
+      comment_mark = "\'\'\'"
+      while content.index(comment_mark)!= nil do
+        len = content.size
+        first_num  = content.index(comment_mark)
+        if first_num != nil
+          second_num = content[first_num+3,len-1].index(comment_mark)
+          if second_num != nil
+            content = content[0..first_num-1]  + content[first_num+second_num+6..len-1]
+          end
+        else
+          break
+        end
+      end
+      comment_mark = "\"\"\""
+      while content.index(comment_mark)!= nil do
+        len = content.size
+        first_num  = content.index(comment_mark)
+        second_num = content[first_num+3,len-1].index(comment_mark)
+        if first_num != nil && second_num != nil
+          content = content[0..first_num-1]  + content[first_num+second_num+6..len-1]
+        else
+          break
+        end
       end
     end
     File.write(pathname,content)
     file.close
   end
-
-
-
-
 
   def bing_keyword_processing(keyword , split_word)
     temp_keyword = ''
@@ -417,42 +347,29 @@ class LessonsController < ApplicationController
         temp_keyword = temp_keyword + "\"#{temp}\"" + ' '
       end
       # return "\"jolly jumpers problem\"" + ' ' + temp_keyword
-      return "\"#{PROBLEM_KEY_WORD1}\"" + ' ' + temp_keyword
+      return "\"#{PROBLEM_KEY_WORD2}\"" + ' ' + temp_keyword
     else
       # return "\"jolly jumpers problem\"" + ' ' + "\"#{keyword}\""
-      return "\"#{PROBLEM_KEY_WORD1}\"" + ' ' + "\"#{keyword}\""
+      return "\"#{PROBLEM_KEY_WORD2}\"" + ' ' + "\"#{keyword}\""
     end
   end
 
   def internet_search_json(search_word, search_type)
-    if search_type == 'bing search'
-      user = ''
-      account_key = APIKEY
-      # ja-JP and en-US
-      market = 'en-US'
-      num_results= 10.to_s
-      web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
-      sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
-      query_string = '&$format=json&Query='
-      query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
-      query_market_string = '&Market='
-      query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
-      params = "&$top=#{num_results}&$skip=#{0}"
+    user = ''
+    account_key = APIKEY
+    # ja-JP and en-US
+    market = 'en-US'
+    num_results= 10.to_s
+    web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
+    sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
+    query_string = '&$format=json&Query='
+    query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
+    query_market_string = '&Market='
+    query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
+    params = "&$top=#{num_results}&$skip=#{0}"
 
-      full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
-      pp full_address
-    end
-    if search_type == 'google search'
-      # search_word = URI.encode(search_word)
-
-      search_word = URI.encode_www_form_component(search_word)
-      full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}"
-      # search_word_test = URI.encode_www_form_component(search_word_test)
-      # search_word2 = URI.encode_www_form_component(search_word2)
-      # problem_key_word = URI.encode_www_form_component(problem_key_word)
-      # full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{problem_key_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
-      pp full_address
-    end
+    full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
+    pp full_address
 
     uri = URI(full_address)
     req = Net::HTTP::Get.new(uri.request_uri)
@@ -498,331 +415,5 @@ class LessonsController < ApplicationController
       end
     end
   end
-
-
-  # def internet_search_json(search_word, search_type)
-  #   if search_type == 'bing search'
-  #     user = ''
-  #     account_key = APIKEY
-  #     # ja-JP and en-US
-  #     market = 'en-US'
-  #     num_results= 10.to_s
-  #     web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
-  #     sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
-  #     query_string = '&$format=json&Query='
-  #     query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
-  #     query_market_string = '&Market='
-  #     query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
-  #     params = "&$top=#{num_results}&$skip=#{0}"
-  #
-  #     full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
-  #     pp full_address
-  #   end
-  #   if search_type == 'google search'
-  #     # search_word = URI.encode(search_word)
-  #
-  #     search_word = URI.encode_www_form_component(search_word)
-  #     full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}"
-  #     # search_word_test = URI.encode_www_form_component(search_word_test)
-  #     # search_word2 = URI.encode_www_form_component(search_word2)
-  #     # problem_key_word = URI.encode_www_form_component(problem_key_word)
-  #     # full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{problem_key_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
-  #     pp full_address
-  #   end
-  #
-  #   uri = URI(full_address)
-  #   req = Net::HTTP::Get.new(uri.request_uri)
-  #   if search_type == 'bing search'
-  #     req.basic_auth user, account_key
-  #   end
-  #   begin
-  #     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|
-  #       http.open_timeout = 3
-  #       http.read_timeout = 6
-  #       http.request(req)
-  #     }
-  #     case res
-  #       when Net::HTTPSuccess
-  #         if search_type == 'bing search'
-  #           body = JSON.parse(res.body, :symbolize_names => true)
-  #           result_set = body[:d][:results]
-  #         else
-  #           g_results = JSON.parse(res.body)
-  #
-  #         end
-  #       else
-  #         puts [uri.to_s, res.value].join(" : ")
-  #         result_set = 'HTTPError'
-  #     end
-  #   rescue => e
-  #     puts [uri.to_s, e.class, e].join(" : ")
-  #     result_set = 'HTTPError'
-  #   end
-  #
-  # end
-  # def google_get_json(url)
-  #   result = []
-  #   uri = Addressable::URI.parse(url)
-  #
-  #   begin
-  #     response = Net::HTTP.start(uri.host,use_ssl: uri.scheme == 'https') do |http|
-  #       http.open_timeout = 5
-  #       http.read_timeout = 10
-  #       http.get(uri.request_uri)
-  #     end
-  #     binding.pry
-  #     case response
-  #       when Net::HTTPSuccess
-  #         json = response.body
-  #         result = JSON.parse(json)
-  #       else
-  #         result = []
-  #     end
-  #   rescue => e
-  #     result = []
-  #   end
-  #   return result
-  # end
-  # def google_keyword_processing(keyword,split_word)
-  #   # #delete " " symbol code
-  #   # while keyword.include?('"') do
-  #   #   keyword = keyword.sub(/"/,' ')
-  #   # end
-  #   # while keyword.include?('&') do
-  #   #   keyword = keyword.sub(/&/,' ')
-  #   # end
-  #   # if keyword2 == ''
-  #   #   return PROBLEM_KEY_WORD1 + ' ' + "\"#{keyword1}\""
-  #   # else
-  #   #   # return 'jolly jumpers problem ' +keyword
-  #   #   while keyword2.include?('"') do
-  #   #     keyword2 = keyword2.sub(/"/,' ')
-  #   #   end
-  #   #   return PROBLEM_KEY_WORD1 + ' ' + "(\"#{keyword1}\" OR \"#{keyword2}\")"
-  #   # end
-  #   temp_keyword = ''
-  #   if keyword.include?(split_word)
-  #     keyword = keyword.split(split_word)
-  #     keyword.each do |temp|
-  #       # temp_keyword = temp_keyword+ temp + ' '
-  #       temp_keyword = temp_keyword+ "\"#{temp}\"" + ' '
-  #     end
-  #     # return "\"jolly jumpers problem\"" + ' ' + temp_keyword
-  #     return PROBLEM_KEY_WORD1 + ' ' + temp_keyword
-  #   else
-  #     # return "\"jolly jumpers problem\"" + ' ' + "\"#{keyword}\""
-  #     return PROBLEM_KEY_WORD1 + ' ' + keyword
-  #   end
-  # end
-  # def internet_check
-  #   @result = Array.new(0,Array.new(3,0))
-  #   search_limit = 5
-  #
-  #   #get data from ajax
-  #   @question_id = params[:question_id]
-  #   @student_id = params[:student_id]
-  #   @lesson_id = params[:lesson_id]
-  #
-  #   @question = Question.find_by(:id => @question_id)
-  #   @answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
-  #
-  #   fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + @answer.file_name
-  #   csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
-  #
-  #   arrayReturn = get_keyword_from_source(fullPathName)
-  #   keywordContent=arrayReturn.sort do |item1,item2|
-  #     item2.length <=>item1.length
-  #   end
-  #
-  #   if keywordContent.size < search_limit
-  #     search_limit = keywordContent.size
-  #   end
-  #
-  #   num = 0
-  #   temp_keyword = ''
-  #   temp_keyword_csv = []
-  #   default_google_search_check = 3
-  #   default_bing_search_check = 0
-  #   keep_search_limit = search_limit
-  #   # wordA AND ("wordB" or "wordC")
-  #   if default_google_search_check == 3
-  #     problem_keyword = "jolly jumpers problem solution"
-  #
-  #     while search_limit > 0 do
-  #       search_word = keywordContent[num]
-  #       while search_word.include?('&') do
-  #         search_word = search_word.sub(/&/,' ')
-  #       end
-  #       search_word =problem_keyword + "\"#{search_word}\""
-  #       search_word = URI.encode_www_form_component(search_word)
-  #
-  #       full_address = "https://www.googleapis.com/customsearch/v1?key=#{GOOGLE_API_KEY}&cx=#{GOOGLE_ENGINE_ID}&q=#{search_word}+%2Dfiletype%3Apdf+%2Dfiletype%3Adoc"
-  #       pp full_address
-  #       temp_keyword_csv.push(full_address)
-  #       uri = URI.parse(full_address)
-  #       json = Net::HTTP.get(uri)
-  #       result = JSON.parse(json)
-  #
-  #       if result['searchInformation']['totalResults'] != "0"
-  #         result['items'].each do |item|
-  #           title = item['title']
-  #           link = item['link']
-  #           nSize = @result.size
-  #           if nSize == 0
-  #             @result.push([title,link,1])
-  #           else
-  #             nMark = -1
-  #             for n in 0..nSize-1
-  #               if @result[n][1]==link
-  #                 nMark = n
-  #               end
-  #             end
-  #             if nMark != -1
-  #               @result[nMark][2] = @result[nMark][2] + 1
-  #             else
-  #               @result.push([title,link,1])
-  #             end
-  #           end
-  #         end
-  #       end
-  #       search_limit = search_limit - 1
-  #       num = num + 1
-  #     end
-  #   end
-  #   if default_google_search_check ==2
-  #     old_word_google = ''
-  #     while search_limit > 0 do
-  #       search_word = keywordContent[num]
-  #       if old_word_google != ''
-  #         search_word = old_word_google + 'google_search' + search_word
-  #       end
-  #       old_word_google = search_word
-  #       search_keyword = google_keyword_processing(search_word,'google_search')
-  #       temp_keyword_csv.push(search_keyword)
-  #       pp search_keyword
-  #       results_temp = GoogleCustomSearchApi.search(search_keyword)
-  #       results_temp["items"].each do |item|
-  #         title = item['title']
-  #         link = item['link']
-  #         nSize = @result.size
-  #         if nSize == 0
-  #           @result.push([title,link,1])
-  #         else
-  #           nMark = -1
-  #           for n in 0..nSize-1
-  #             if @result[n][1]==link
-  #               nMark = n
-  #             end
-  #           end
-  #           if nMark != -1
-  #             @result[nMark][2] = @result[nMark][2] + 1
-  #           else
-  #             @result.push([title,link,1])
-  #           end
-  #         end
-  #       end
-  #       search_limit = search_limit - 1
-  #       num = num + 1
-  #     end
-  #   end
-  #   if default_google_search_check == 1
-  #     old_word_google = ''
-  #     while search_limit > 0 do
-  #       search_word = keywordContent[num]
-  #       if old_word_google != ''
-  #         search_word = old_word_google + 'google_search' + search_word
-  #       end
-  #       old_word_google = search_word
-  #       search_keyword = google_keyword_processing(search_word,'google_search')
-  #       temp_keyword_csv.push(search_keyword)
-  #       pp search_keyword
-  #       g_results = internet_search_json(search_keyword,'google search')
-  #       if g_results != 'HTTPError'
-  #         if g_results['searchInformation']['totalResults'] != "0"
-  #           g_results['items'].each do |item|
-  #             title = item['title']
-  #             link = item['link']
-  #             nSize = @result.size
-  #             if nSize == 0
-  #               @result.push([title,link,1])
-  #             else
-  #               nMark = -1
-  #               for n in 0..nSize-1
-  #                 if @result[n][1]==link
-  #                   nMark = n
-  #                 end
-  #               end
-  #               if nMark != -1
-  #                 @result[nMark][2] = @result[nMark][2] + 1
-  #               else
-  #                 @result.push([title,link,1])
-  #               end
-  #             end
-  #           end
-  #         end
-  #       else
-  #         num = 0
-  #         temp_keyword = ''
-  #         default_bing_search_check = 1
-  #         search_limit = keep_search_limit
-  #         pp 'internet check by google is failed'
-  #         break
-  #       end
-  #       search_limit = search_limit - 1
-  #       num = num + 1
-  #     end
-  #   end
-  #   if default_bing_search_check == 1
-  #     old_keyword = ''
-  #     while search_limit > 0 do
-  #       search_keyword = keywordContent[num]
-  #       if old_keyword != ''
-  #         search_keyword = old_keyword + 'bing_search' +  search_keyword
-  #       end
-  #       old_keyword = search_keyword
-  #       search_keyword = bing_keyword_processing(search_keyword , 'bing_search')
-  #
-  #       # bing = Bing.new(APIKEY, 10, 'Web')
-  #       # b_results = bing.search(search_keyword)
-  #       pp search_keyword
-  #       b_results = internet_search_json(search_keyword,'bing search')
-  #       if b_results!= 'HTTPError'
-  #         b_results[0][:Web].each do |page|
-  #           title = page[:Title]
-  #           link = page[:Url]
-  #           nSize = @result.size
-  #           if nSize == 0
-  #             @result.push([title,link,1])
-  #           else
-  #             nMark = -1
-  #             for n in 0..nSize-1
-  #               if @result[n][1]==link
-  #                 nMark =  n
-  #               end
-  #             end
-  #             if nMark != -1
-  #               @result[nMark][2] = @result[nMark][2] + 1
-  #             else
-  #               @result.push([title,link,1])
-  #             end
-  #           end
-  #         end
-  #       else
-  #         pp 'internet check by bing is failed '
-  #         break
-  #       end
-  #       search_limit = search_limit - 1
-  #       num = num + 1
-  #     end
-  #   end
-  #   # sort @result by item[2]
-  #   if @result.size != 0
-  #     @result = @result.sort do |item1,item2|
-  #       item2[2]<=> item1[2]
-  #     end
-  #     write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
-  #   end
-  #
-  # end
 
 end
