@@ -23,6 +23,7 @@ class QuestionsController < ApplicationController
     @question.samples.build
     @question.test_data.build
     @question.lesson_questions.build
+    @question.question_keywords.build
     @lesson_id = params[:lesson_id].to_i
   end
 
@@ -226,6 +227,7 @@ class QuestionsController < ApplicationController
       :version,
       samples_attributes: [:question_id, :input, :output, :_destroy],
       test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
+      question_keywords_attributes: [:question_id, :keyword, :_destroy],
       lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
     )
   end

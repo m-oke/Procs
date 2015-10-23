@@ -80,6 +80,15 @@
 <div class="bg-success description">
   <%= @question.content %>
 </div>
+<h3>剽窃チェック用のキーワード</h3>
+<div>
+  <% @question.question_keywords.each.with_index(1) do |word,i| %>
+  <p>キーワード<%= i %></p>
+    <div class="bg-success description">
+      <%= word.keyword %>
+    </div>
+  <% end %>
+</div>
 <h3>入力</h3>
 <div class="bg-success description">
   <%= @question.input_description %>
