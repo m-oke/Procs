@@ -73,7 +73,7 @@ You should process all pairs of integers and for each pair determine the maximum
 You can assume that no operation overflows a 32-bit integer.",
                 :output_description => "For each pair of input integers i and j you should output i, j, and the maximum cycle length for integers between and including i and j. These three numbers should be separated by at least one space with all three numbers on one line and with one line of output for each line of input. The integers i and j must appear in the output in the same order in which they appeared in the input and should be followed by the maximum cycle length (on the same line).",
                 :version => 1,
-                :run_time_limit => 5,
+                :run_time_limit => 5000,
                 :memory_usage_limit => 256)
 
 # 現在の問題
