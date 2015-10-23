@@ -93,7 +93,7 @@ class AnswersController < ApplicationController
                             :student_id => current_user.id,
                             :run_time => 0,
                             :memory_usage => 0,
-                            :version =>@question.version)
+                            :question_version =>@question.version)
         unless answer.save
           flash[:notice] = "解答の保存に失敗しました．" and return
         end

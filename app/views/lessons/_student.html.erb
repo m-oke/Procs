@@ -43,7 +43,7 @@
               <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
                                                                           :question_id => question.id,
                                                                           :student_id => @student.id),:remote => true  %></td>
-              <% if question.version == answer.version %>
+              <% if question.version == answer.question_version %>
                   <td><%= RESULT[answer.result] %></td>
               <% else %>
                   <% if RESULT[answer.result].to_s.empty?%>

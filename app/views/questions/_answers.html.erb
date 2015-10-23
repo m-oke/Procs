@@ -35,7 +35,7 @@
       </td>
       <td><%= student.name %></td>
       <td><%= answer.created_at %> </td>
-      <% if @question.version == answer.version %>
+      <% if @question.version == answer.question_version %>
           <td><%= RESULT[answer.result] %></td>
       <% else %>
           <% if RESULT[answer.result].to_s.empty?%>

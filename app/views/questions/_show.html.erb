@@ -44,7 +44,7 @@
               <td>-</td>
               <td>-</td>
           <% else %>
-              <% if @question.version == @latest_answer.version %>
+              <% if @question.version == @latest_answer.question_version %>
                   <td><%= RESULT[@latest_answer.result] %></td>
               <% else %>
                   <% if RESULT[@latest_answer.result].to_s.empty?%>

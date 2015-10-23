@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20151021074628) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.integer  "lesson_id",             limit: 4
-    t.integer  "version",               limit: 4
+    t.integer  "question_version",      limit: 4
     t.integer  "test_passed",           limit: 4,   default: 0,   null: false
     t.integer  "test_count",            limit: 4,   default: 0,   null: false
   end

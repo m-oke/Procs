@@ -52,7 +52,7 @@
           <tr>
             <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name }, :remote => true%></td>
             <td><%= m.created_at %></td>
-            <% if @question.version == m.version %>
+            <% if @question.version == m.question_version %>
                 <td ><%=  RESULT[m.result] %></td>
             <% else %>
                 <% if RESULT[m.result].to_s.empty?%>
