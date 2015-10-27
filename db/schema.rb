@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151005063504) do
+ActiveRecord::Schema.define(version: 20151021074628) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "student_id",            limit: 4,                 null: false
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20151005063504) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.integer  "lesson_id",             limit: 4
+    t.integer  "question_version",      limit: 4
     t.integer  "test_passed",           limit: 4,   default: 0,   null: false
     t.integer  "test_count",            limit: 4,   default: 0,   null: false
   end
@@ -59,6 +60,7 @@ ActiveRecord::Schema.define(version: 20151005063504) do
     t.integer  "memory_usage_limit", limit: 4,     default: 512
     t.datetime "created_at",                                       null: false
     t.datetime "updated_at",                                       null: false
+    t.integer  "version",            limit: 4
   end
 
   create_table "samples", force: :cascade do |t|
@@ -70,11 +72,13 @@ ActiveRecord::Schema.define(version: 20151005063504) do
   end
 
   create_table "test_data", force: :cascade do |t|
-    t.integer  "question_id", limit: 4,   null: false
-    t.string   "input",       limit: 255, null: false
-    t.string   "output",      limit: 255, null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "question_id",      limit: 4
+    t.string   "input",            limit: 1024, null: false
+    t.string   "output",           limit: 1024, null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "input_storename",  limit: 255
+    t.string   "output_storename", limit: 255
   end
 
   create_table "user_lessons", force: :cascade do |t|

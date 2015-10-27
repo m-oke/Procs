@@ -7,13 +7,19 @@
 <%= render "layouts/notice" %>
 <% if params[:lesson_id] %>
     <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
+    <% if @is_teacher %>
+        <%= link_to '編集',edit_lesson_question_path(:lesson_id =>params[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
+    <% end %>
 <% else %>
     <%= link_to '問題一覧に戻る', questions_path, :class => "btn btn-default btn_top" %>
 <% end %>
 
 <h2><%= @question.title %></h2>
-
 <div class="table-responsive">
+  <div>
+    <div style="float:right;"><p>問題変更前の回答です</p></div>
+    <div style="float:right;"><div class="old_version_color_block"></div></div>
+  </div>
   <table class="table table-bordered table-striped">
     <tr>
       <th></th>
@@ -38,7 +44,15 @@
               <td>-</td>
               <td>-</td>
           <% else %>
-              <td><%= RESULT[@latest_answer.result] %></td>
+              <% if @question.version == @latest_answer.question_version %>
+                  <td><%= RESULT[@latest_answer.result] %></td>
+              <% else %>
+                  <% if RESULT[@latest_answer.result].to_s.empty?%>
+                      <td ><%= RESULT[@latest_answer.result] %></td>
+                  <% else %>
+                      <td class = "old_version_color"><%= RESULT[@latest_answer.result] %></td>
+                  <% end %>
+              <% end %>
               <td><%= @latest_answer.run_time.round %> ms</td>
               <td>
                 <% if @latest_answer.memory_usage / 1024 == 0 %>

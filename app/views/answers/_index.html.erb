@@ -26,6 +26,10 @@
     <div>
       <h3>問題<%= @question_id %></h3>
     </div>
+    <div>
+      <div style="float:right;"><p>問題変更前の回答です</p></div>
+      <div style="float:right;"><div class="old_version_color_block"></div></div>
+    </div>
     <table class="table table-bordered table-striped">
       <tr>
         <th>バージョン</th>
@@ -48,7 +52,15 @@
           <tr>
             <td><%= link_to m.file_name,  { :action => :select_version, :selected_file => m.file_name }, :remote => true%></td>
             <td><%= m.created_at %></td>
-            <td><%= RESULT[m.result] %></td>
+            <% if @question.version == m.question_version %>
+                <td ><%=  RESULT[m.result] %></td>
+            <% else %>
+                <% if RESULT[m.result].to_s.empty?%>
+                    <td ><%= RESULT[m.result] %></td>
+                <% else %>
+                    <td class = "old_version_color"><%= RESULT[m.result] %></td>
+                <% end %>
+            <% end %>
             <td><%= m.run_time %></td>
             <td>
               <% if m.memory_usage / 1024 == 0 %>

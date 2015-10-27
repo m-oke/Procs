@@ -5,11 +5,12 @@ $(document).on('nested:fieldRemoved', function(event){
     var field = event.field;
     var parent = field.parent();
     var id = parent[0].id;
-    console.log($('#' + id).find('.fields'));
-    console.log($('#' + id).find('.fields').length);
-    console.log($('#' + id).find('.fields').length == 1);
+    document.field = field;
+
+    console.log('filed = ' + id);
     if($('#' + id).find('.fields').length != 1){
-        field.remove();
+        field.find('input').attr({required: false});
+        field.find('textarea').attr({required: false});
     } else {
         field.css("display", "");
     }

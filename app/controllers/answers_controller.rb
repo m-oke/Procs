@@ -6,6 +6,7 @@ class AnswersController < ApplicationController
     @student_id = params[:student_id] || current_user.id
     @lesson_id = params[:lesson_id] || 1
     @question_id = params[:question_id]
+    @question = Question.find_by(:id => @question_id)
     if Lesson.find_by(:id => @lesson_id).nil? || Question.find_by(:id => @question_id).nil? || User.find_by(:id => @student_id).nil?
       redirect_to root_path, :alert => '該当する解答は存在しません' and return
     end
@@ -91,7 +92,8 @@ class AnswersController < ApplicationController
                             :result => "P",
                             :student_id => current_user.id,
                             :run_time => 0,
-                            :memory_usage => 0)
+                            :memory_usage => 0,
+                            :question_version =>@question.version)
         unless answer.save
           flash[:notice] = "解答の保存に失敗しました．" and return
         end

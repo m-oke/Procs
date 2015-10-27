@@ -66,10 +66,22 @@ end
 
 # 問題
 # 過去の問題
-Question.create(:title => "問題1: フィボナッチ数", :content => "与えられた数値の順番のフィボナッチ数を出力する", :input_description => "任意の自然数", :output_description => "入力の順番のフィボナッチ数",  :run_time_limit => 5, :memory_usage_limit => 256)
+Question.create(:title => "the 3n+1 problem",
+                :content => "詳しい内容はLinkのページを参照してくださいhttp://uva.onlinejudge.org/external/1/100.html　; 回答の参考はhttps://tausiq.wordpress.com/2008/12/09/uva-100-the-3n-1-problem/　です",
+                :input_description => "The input will consist of a series of pairs of integers i and j, one pair of integers per line. All integers will be less than 1,000,000 and greater than 0.
+You should process all pairs of integers and for each pair determine the maximum cycle length over all integers between and including i and j.
+You can assume that no operation overflows a 32-bit integer.",
+                :output_description => "For each pair of input integers i and j you should output i, j, and the maximum cycle length for integers between and including i and j. These three numbers should be separated by at least one space with all three numbers on one line and with one line of output for each line of input. The integers i and j must appear in the output in the same order in which they appeared in the input and should be followed by the maximum cycle length (on the same line).",
+                :version => 1,
+                :run_time_limit => 5000,
+                :memory_usage_limit => 256)
 
 # 現在の問題
-Question.create(:title => "問題2", :content => "問題2の内容", :input_description => "問題2の入力説明", :output_description => "問題2の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
+Question.create(:title => "Financial Management",
+                :content => "Larry graduated this year and finally has a job. He's making a lot of money, but somehow never seems to have enough. Larry has decided that he needs to grab hold of his financial portfolio and solve his financing problems. The first step is to figure out what's been going on with his money. Larry has his bank account statements and wants to see how much money he has. Help Larry by writing a program to take his closing balance from each of the past twelve months and calculate his average account balance.回答はhttp://blog.livedoor.jp/pcpp/archives/51190060.html",
+                :input_description => "The input will be twelve lines. Each line will contain the closing balance of his bank account for a particular month. Each number will be positive and displayed to the penny. No dollar sign will be included.",
+                :output_description => "The output will be a single number, the average (mean) of the closing balances for the twelve months. It will be rounded to the nearest penny, preceded immediately by a dollar sign, and followed by the end-of-line. There will be no other spaces or characters in the output.",
+                :run_time_limit => 50000, :memory_usage_limit => 256, :version => 1)
 
 # 未来の問題
 Question.create(:title => "問題3", :content => "問題3の内容", :input_description => "問題3の入力説明", :output_description => "問題3の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256)
@@ -82,7 +94,7 @@ Question.create(:title => "問題4", :content => "問題4の内容", :input_desc
 end
 
 #それぞれのクラス
-LessonQuestion.create(:lesson_id => 2, :question_id => 1, :start_time => (Date.today - 7).to_s, :end_time => (Date.today - 1).to_s)
+LessonQuestion.create(:lesson_id => 2, :question_id => 1, :start_time => (Date.today - 7).to_s, :end_time => (Date.today + 11).to_s)
 LessonQuestion.create(:lesson_id => 2, :question_id => 2, :start_time => (Date.today - 3).to_s, :end_time => (Date.today + 4).to_s)
 LessonQuestion.create(:lesson_id => 2, :question_id => 3, :start_time => (Date.today + 7).to_s, :end_time => (Date.today + 10).to_s)
 
@@ -90,21 +102,20 @@ LessonQuestion.create(:lesson_id => 3, :question_id => 4, :start_time => (Date.t
 
 
 # 入出力サンプル
-Sample.create(:question_id => 1, :input => "3", :output => "2")
-Sample.create(:question_id => 1, :input => "5", :output => "5")
-Sample.create(:question_id => 2, :input => "2", :output => "1")
-Sample.create(:question_id => 2, :input => "5", :output => "1")
+Sample.create(:question_id => 1, :input => "1 10", :output => "1 10 20")
+Sample.create(:question_id => 1, :input => "100 200", :output => "100 200 125")
+Sample.create(:question_id => 2,
+              :input => "100.00 489.12 12454.12 1234.10 823.05 109.20 5.27 1542.25 839.18 83.99 1295.01 1.75",
+              :output => "$1581.42")
 Sample.create(:question_id => 3, :input => "10", :output => "30")
 Sample.create(:question_id => 4, :input => "10", :output => "30")
 
 # テストデータ
-TestDatum.create(:question_id => 1, :input => "3", :output => "2")
-TestDatum.create(:question_id => 1, :input => "5", :output => "5")
-TestDatum.create(:question_id => 1, :input => "10", :output => "55")
-TestDatum.create(:question_id => 1, :input => "30", :output => "832040")
-TestDatum.create(:question_id => 2, :input => "2", :output => "1")
-TestDatum.create(:question_id => 2, :input => "5", :output => "1")
-TestDatum.create(:question_id => 2, :input => "100", :output => "1")
+TestDatum.create(:question_id => 1, :input => "intest1", :output => "outtest1", :input_storename => "input1", :output_storename => "output1")
+TestDatum.create(:question_id => 1, :input => "intest2", :output => "outtest2", :input_storename => "input1", :output_storename => "output1")
+TestDatum.create(:question_id => 1, :input => "intest3", :output => "outtest3", :input_storename => "input3", :output_storename => "output3")
+TestDatum.create(:question_id => 1, :input => "intest4", :output => "outtest4", :input_storename => "input4", :output_storename => "output4")
+TestDatum.create(:question_id => 2, :input => "input_test", :output => "output_test", :input_storename => "input1", :output_storename => "output1")
 TestDatum.create(:question_id => 3, :input => "10", :output => "30")
 TestDatum.create(:question_id => 3, :input => "2", :output => "6")
 TestDatum.create(:question_id => 3, :input => "121", :output => "363")
@@ -112,22 +123,22 @@ TestDatum.create(:question_id => 4, :input => "121", :output => "363")
 
 
 # 回答
-# 学生1
-#Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => 1, :plagiarism_percentage => 0.4)
-# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => -1, :plagiarism_percentage => 0.4)
-# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version3.txt", :language => "c", :result => 1, :run_time => 1, :memory_usage => 10, :plagiarism_percentage => 0.4)
-# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version4.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :plagiarism_percentage => 0.9)
-
-Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 2, :file_name => "version1.txt", :language => "c", :result => "A", :run_time => 0.1, :memory_usage => 5, :plagiarism_percentage => 0.1)
-
-
-# 学生2
-Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => "TLE", :plagiarism_percentage => 0.1)
-
-Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version1.txt", :language => "c", :result => "WA", :plagiarism_percentage => 0.2)
-Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version2.txt", :language => "c", :result => "A", :run_time => 1, :memory_usage => 10, :plagiarism_percentage => 0.5)
-
-# クラス1の残りの学生
-(9..14).each do |i|
-  Answer.create(:student_id => i, :lesson_id => 2, :question_id => 1, :file_name => "version1.txt", :language => "c", :result => "A", :run_time => 3, :memory_usage => 50, :plagiarism_percentage => 0.3)
-end
+# # 学生1
+# #Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => 1, :plagiarism_percentage => 0.4)
+# # Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => -1, :plagiarism_percentage => 0.4)
+# # Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version3.txt", :language => "c", :result => 1, :run_time => 1, :memory_usage => 10, :plagiarism_percentage => 0.4)
+# # Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 1, :file_name => "version4.txt", :language => "c", :result => 1, :run_time => 0.1, :memory_usage => 5, :plagiarism_percentage => 0.9)
+#
+# Answer.create(:student_id => 7, :lesson_id => 2, :question_id => 2, :file_name => "version2.txt", :language => "c", :result => "A", :run_time => 0.1, :memory_usage => 5,:question_version => 1, :plagiarism_percentage => 0.1)
+#
+#
+# # 学生2
+# Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => "WA", :question_version => 1, :plagiarism_percentage => 0.1)
+# Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 1, :file_name => "version1.c", :language => "c", :result => "A", :run_time => 0.1, :memory_usage => 5, :question_version => 1, :plagiarism_percentage => 0.1)
+# # Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version2.txt", :language => "c", :result => "WA",:question_version=> 1, :plagiarism_percentage => 0.2)
+# # Answer.create(:student_id => 8, :lesson_id => 2, :question_id => 2, :file_name => "version2.txt", :language => "c", :result => "A", :run_time => 1, :question_version => 1, :memory_usage => 10, :plagiarism_percentage => 0.5)
+#
+# # クラス1の残りの学生
+# (9..14).each do |i|
+#   Answer.create(:student_id => i, :lesson_id => 2, :question_id => 1, :file_name => "version2.txt", :language => "c", :result => "A", :run_time => 3, :memory_usage => 50, :question_version => 1, :plagiarism_percentage => 0.3)
+# end
