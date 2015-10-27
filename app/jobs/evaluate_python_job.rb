@@ -55,7 +55,11 @@ class EvaluatePythonJob < ActiveJob::Base
           container_name = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
           containers.push(container_name)
           # dockerコンテナでプログラムを実行
-          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work procs/python_sandbox"
+          # 最大プロセス数: 500
+          # 最大実行メモリ(RSS): 256 MB
+          # 最大CPU時間: 60 seconds
+          # 最大ファイルサイズ: 40 MB
+          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work --ulimit nproc=500 --ulimit rss=262144000 --ulimit cpu=60 --ulimit fsize=10240000 -t procs/python_sandbox"
 
           begin
             # 実行時間制限
@@ -143,7 +147,7 @@ class EvaluatePythonJob < ActiveJob::Base
 
     # 作業ディレクトリの削除
     Dir.chdir("..")
-    `rm -r #{dir_name}`
+#    `rm -r #{dir_name}`
     return
   end
 end
