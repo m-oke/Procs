@@ -105,6 +105,7 @@
     <% end %>
   </table>
 </div>
+<% flash[:previous] = "student" %>
 <%  @lesson_questions.each do |lesson_question| %>
 <div id="intnet_check_results_<%=lesson_question.question_id %>" class="intnet-check-results-css" >
 </div>

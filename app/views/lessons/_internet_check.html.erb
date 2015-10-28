@@ -1,7 +1,19 @@
 <div>
-  <%@result.each do |item| %>
+  <% if @check_result_count == 0 %>
+    <%@result.each do |item| %>
       <p>title: <%= item[0] %></p>
       <%= link_to item[1],"#{item[1]}", :target => ["'_blank'"] %>
       <p>times: <%= item[2] %></p>
+      <p>content:<%= item[3] %></p>
+      <p>**********************</p>
+    <% end %>
+  <% else %>
+      <% @check_result.each do |result| %>
+      <p>title:</p><%= result['title'] %>
+      <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
+      <p>times:<%= result['repeat'] %></p>
+      <p>content:<%= result['content'] %></p>
+      <p>**********************</p>
+    <% end %>
   <% end %>
 </div>

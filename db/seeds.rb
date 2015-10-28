@@ -102,7 +102,7 @@ LessonQuestion.create(:lesson_id => 2, :question_id => 2, :start_time => (Date.t
 
 # 問題のkeywordのサンプル
 QuestionKeyword.create(:question_id => 1, :keyword => "the 3n+1 problem")
-QuestionKeyword.create(:question_id => 1, :keyword => "the 3n+1 問題　解答")
+# QuestionKeyword.create(:question_id => 1, :keyword => "solution")
 QuestionKeyword.create(:question_id => 2, :keyword => "Financial Management C言語")
 
 
@@ -149,13 +149,14 @@ TestDatum.create(:question_id => 4, :input => "121", :output => "363")
 # end
 
 # internet check result
-InternetCheckResult.create(:answer_id => 1,
-                           :title => "3n+1 solution c",
-                           :link => "www.google.co.jp",
-                           :content => "You should process all pairs of integers and for each pair determine the maximum cycle length over all integers ",
-                           :repeat => 5)
-InternetCheckResult.create(:answer_id => 1,
-                           :title => "3n+1 solution c",
-                           :link => "www.solution.co.jp",
-                           :content => "all pairs of integers and for each pair determine the maximum cycle length over all integers ",
-                           :repeat => 3)
+# InternetCheckResult.create(:answer_id => 1,
+#                            :title => "3n+1 solution c",
+#                            :link => "www.google.co.jp",
+#                            :content => "You should process all pairs of integers and for each pair determine the maximum cycle length over all integers ",
+#                            :repeat => 5)
+# InternetCheckResult.create(:answer_id => 1,
+#                            :title => "3n+1 solution c",
+#                            :link => "www.solution.co.jp",
+#                            :content => "all pairs of integers and for each pair determine the maximum cycle length over all integers ",
+#                            :repeat => 3)
+# InternetCheckResult.create(:answer_id => 2, :title => "blank", :link => "blank", :content => "blank", :repeat => 0)

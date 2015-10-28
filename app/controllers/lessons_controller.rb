@@ -9,8 +9,7 @@ class LessonsController < ApplicationController
   # APIKEY = "b03khzsJqXejAfMS3U1ik0lC2Ryd5lnhKu/wZEXaOAc"
   #bing jp
   APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
-  PROBLEM_KEY_WORD1 = "the 3n+1 problem"
-  PROBLEM_KEY_WORD2 = "jolly jumpers problem"
+
 
 
   # get '/'
@@ -84,7 +83,7 @@ class LessonsController < ApplicationController
 
   # source code check through internet
   def internet_check
-    @result = Array.new(0,Array.new(3,0))
+    @result = Array.new(0,Array.new(4,0))
     search_limit = 5
 
     #get data from ajax
@@ -94,6 +93,16 @@ class LessonsController < ApplicationController
 
     @question = Question.find_by(:id => @question_id)
     @answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+    question_keyword = ""
+    question_keywords = QuestionKeyword.where(:question_id => @question_id )
+    question_keywords.each do |k|
+      question_keyword = question_keyword + " " + k['keyword']
+    end
+    @check_result = InternetCheckResult.where(:answer_id => @answer.id)
+    @check_result_count = @check_result.count
+    if @check_result_count != 0
+      return
+    end
 
     fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + @answer.file_name
     csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
@@ -127,20 +136,23 @@ class LessonsController < ApplicationController
         search_keyword = old_keyword + 'bing_search' +  search_keyword
       end
       old_keyword = search_keyword
-      search_keyword = bing_keyword_processing(search_keyword , 'bing_search')
+      search_keyword = bing_keyword_processing(question_keyword, search_keyword , 'bing_search')
       bing = Bing.new(APIKEY, 10, 'Web')
-      b_results = bing.search(search_keyword)
       pp search_keyword
-      binding.pry
+      b_results = bing.search(search_keyword)
+
+
       pp b_results
+      # binding.pry
       # b_results = internet_search_json(search_keyword,'bing search')
       unless b_results.empty?
         b_results[0][:Web].each do |page|
           title = page[:Title]
           link = page[:Url]
+          content = page[:Description]
           nSize = @result.size
           if nSize == 0
-            @result.push([title,link,1])
+            @result.push([title,link,1,content])
           else
             nMark = -1
             for n in 0..nSize-1
@@ -151,7 +163,7 @@ class LessonsController < ApplicationController
             if nMark != -1
               @result[nMark][2] = @result[nMark][2] + 1
             else
-              @result.push([title,link,1])
+              @result.push([title,link,1,content])
             end
           end
         end
@@ -169,6 +181,12 @@ class LessonsController < ApplicationController
         item2[2]<=> item1[2]
       end
       write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
+      @result.each do |r|
+        internet_check_result = InternetCheckResult.new(:answer_id => @answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3])
+        unless internet_check_result.save
+          flash[:notice] = "Internet剽窃チェック結果の保存に失敗しました．" and return
+        end
+      end
     end
 
   end
@@ -229,7 +247,7 @@ class LessonsController < ApplicationController
 
         #delete other rows which not to use
         if line.size> 0
-          #delete #include row , {rwo  }row else  continue break
+          #delete #include row , {row   }row else  continue break
           if line == '{' || line == '}' || line =='else' || line[0,8] == '#include'
             line =''
           end
@@ -241,16 +259,18 @@ class LessonsController < ApplicationController
               line = ''
             end
           end
-          #using namespace std;
+          #delete namespace if exist using namespace std
           if line[0,5]=='using' && line.include?('namespace')
             tmp = line.sub(/\s+/,' ')
             if tmp.include?('using namespace')
               line = ''
             end
           end
+          # delete line which start with for
           if line[0,3] == 'for' && line.include?('for')
             line = ''
           end
+          # delete { and } which like { a = cycle_length(n/2, ++i); return a; }
         end
 
         if line.size>0
@@ -339,7 +359,7 @@ class LessonsController < ApplicationController
     file.close
   end
 
-  def bing_keyword_processing(keyword , split_word)
+  def bing_keyword_processing(question_keyword, keyword , split_word)
     temp_keyword = ''
     if keyword.include?(split_word)
       keyword = keyword.split(split_word)
@@ -347,10 +367,10 @@ class LessonsController < ApplicationController
         temp_keyword = temp_keyword + "\"#{temp}\"" + ' '
       end
       # return "\"jolly jumpers problem\"" + ' ' + temp_keyword
-      return "\"#{PROBLEM_KEY_WORD2}\"" + ' ' + temp_keyword
+      return "\"#{question_keyword}\"" + ' ' + temp_keyword
     else
       # return "\"jolly jumpers problem\"" + ' ' + "\"#{keyword}\""
-      return "\"#{PROBLEM_KEY_WORD2}\"" + ' ' + "\"#{keyword}\""
+      return "\"#{question_keyword}\"" + ' ' + "\"#{keyword}\""
     end
   end
 
