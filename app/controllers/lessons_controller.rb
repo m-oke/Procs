@@ -181,7 +181,10 @@ class LessonsController < ApplicationController
         item2[2]<=> item1[2]
       end
       write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
-      @result.each do |r|
+      @result.each_with_index(1) do |r,i|
+        if i>5
+          break
+        end
         internet_check_result = InternetCheckResult.new(:answer_id => @answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3])
         unless internet_check_result.save
           flash[:notice] = "Internet剽窃チェック結果の保存に失敗しました．" and return

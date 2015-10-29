@@ -26,9 +26,11 @@
 .test_fancybox{
 
 }
-.intnet-check-results-css {
+.internet-check-results-css {
     display: none
 }
 .draw_fancybox{
+}
+.draw_fancybox_hidden{
     visibility: hidden;
 }

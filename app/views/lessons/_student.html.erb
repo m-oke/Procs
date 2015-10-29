@@ -79,13 +79,27 @@
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
               <td>
-                <span>
-                  <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
-                                                                  :student_id => @student.id,
-                                                                  :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
-                  <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox" href="#intnet_check_results_<%=lesson_question.question_id %>" >表示する</a>
-                </span>
+                <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
+                <% if checked_result.size > 0 %>
+                    <a class="btn btn-default draw_fancybox" href="#internet_results_checked" >表示する</a>
+                <% else %>
+                    <span>
+                      <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
+                                                                        :student_id => @student.id,
+                                                                        :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+                      <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示する</a>
+                    </span>
+                <% end %>
               </td>
+              <div id="internet_results_checked" class="internet-check-results-css" >
+                <% checked_result.each do |result| %>
+                    <p>title:</p><%= result['title'] %>
+                    <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
+                    <p>times:<%= result['repeat'] %></p>
+                    <p>content:<%= result['content'] %></p>
+                    <p>**********************</p>
+                <% end %>
+              </div>
           <% else %>
               <td><%= question.title %></td>
               <td><p>-</p></td>
@@ -103,10 +117,11 @@
           <% end %>
         </tr>
     <% end %>
+
   </table>
 </div>
 <% flash[:previous] = "student" %>
 <%  @lesson_questions.each do |lesson_question| %>
-<div id="intnet_check_results_<%=lesson_question.question_id %>" class="intnet-check-results-css" >
+<div id="internet_check_results_<%=lesson_question.question_id %>" class="internet-check-results-css" >
 </div>
 <% end %>
