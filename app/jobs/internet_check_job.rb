@@ -1,141 +1,109 @@
-# -*- coding: utf-8 -*-
-class LessonsController < ApplicationController
-  before_action :check_lesson, only: [:show, :students]
-  before_filter :authenticate_user!
-  before_action :init
-
+class InternetCheckJob < ActiveJob::Base
+  queue_as :plagiarism
   require 'addressable/uri'
   # bing  ch
   # APIKEY = "b03khzsJqXejAfMS3U1ik0lC2Ryd5lnhKu/wZEXaOAc"
   #bing jp
   APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
 
+  def perform(question_id,lesson_id,student_id,result)
 
-
-  # get '/'
-  def index
-  end
-
-  # get '/lessons/new'
-  def new
-    @lesson = Lesson.new
-
-    #教師の資格があるかどうかを確認する
-    unless(User.find_by(:id => current_user.id).has_role?(:teacher))
-      redirect_to root_path, :alert => "あなたはこの権限がありません" and return
+    search_limit = 5
+    question_keyword = ""
+    question_keywords = QuestionKeyword.where(:question_id => question_id )
+    question_keywords.each do |k|
+      question_keyword = question_keyword + " " + k['keyword']
     end
-  end
+    answer = Answer.where(:lesson_id => lesson_id, :student_id => student_id, :question_id => question_id).last
 
-  # post '/lessons'
-  # クラスの作成
-  def create
-    @lesson = Lesson.new(params_lesson)
-    @user_lesson = UserLesson.new
-    @user_lesson.user_id = current_user.id
+    fullPathName = UPLOADS_ANSWERS_PATH.join(student_id.to_s, lesson_id.to_s, question_id.to_s).to_s + '/' + answer.file_name
+    csv_file_full_path = UPLOADS_ANSWERS_PATH.join(student_id.to_s, lesson_id.to_s, question_id.to_s).to_s + '/' + 'search_result_log.csv'
 
-    #誤り検出のアルゴリズムLuhnを使って授業コードを生成する
-    lesson_code = Array.new(10) { rand(10) }.join
-    lesson_code + Luhn.checksum(lesson_code).to_s
+    nlen = answer.file_name.size
+    if answer.file_name[nlen-2,nlen-1]=='.c' || answer.file_name[nlen-4,nlen-1]=='.cpp'
+      arrayReturn = get_keyword_from_cpp_source(fullPathName)
+    elsif answer.file_name[nlen-3,nlen-1] =='.py'
+      arrayReturn = get_keyword_from_python_source(fullPathName)
+    else
+      arrayReturn = []
+    end
 
-    @lesson.lesson_code = lesson_code
+    #sort the keyword by length
+    unless arrayReturn.empty?
+      keywordContent=arrayReturn.sort do |item1,item2|
+        item2.length <=>item1.length
+      end
+    end
+    # set the times for search
+    if keywordContent.size < search_limit
+      search_limit = keywordContent.size
+    end
 
-    if @lesson.name != ''
-      if @lesson.save
+    num = 0
+    temp_keyword_csv = []
+    old_keyword = ''
+    while search_limit > 0 do
+      search_keyword = keywordContent[num]
+      if old_keyword != ''
+        search_keyword = old_keyword + 'bing_search' +  search_keyword
+      end
+      old_keyword = search_keyword
+      search_keyword = bing_keyword_processing(question_keyword, search_keyword , 'bing_search')
+      bing = Bing.new(APIKEY, 10, 'Web')
+      # pp search_keyword
+      b_results = bing.search(search_keyword)
 
-        #Teacherの情報をuser_lessonに記入する
-        @user_lesson.lesson_id = @lesson.id
-        @user_lesson.is_teacher = true
-        @user_lesson.save
 
-        flash.notice = 'クラス作成しました！'
-        redirect_to root_path
-          # redirect_to :action => "/lessons"
+      # pp b_results
+      # binding.pry
+      # b_results = internet_search_json(search_keyword,'bing search')
+      unless b_results.empty?
+        b_results[0][:Web].each do |page|
+          title = page[:Title]
+          link = page[:Url]
+          content = page[:Description]
+          nSize = result.size
+          if nSize == 0
+            result.push([title,link,1,content])
+          else
+            nMark = -1
+            for n in 0..nSize-1
+              if result[n][1]==link
+                nMark =  n
+              end
+            end
+            if nMark != -1
+              result[nMark][2] = result[nMark][2] + 1
+            else
+              result.push([title,link,1,content])
+            end
+          end
+        end
       else
-        render action: 'new'
+        pp 'internet check by bing is failed '
+        break
       end
-    else
-      render action: 'new'
-      flash.notice = 'クラス名を入力してください！'
-    end
-  end
-
-  # get '/lessons/:id'
-  def show
-    @teachers = get_teachers
-    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson.id).is_teacher
-  end
-
-  # get '/lessons/:id/students'
-  def students
-    @students = get_students
-    @lesson_id = params[:lesson_id]
-    @lesson_questions = LessonQuestion.where(:lesson_id => @lesson_id)
-    @lesson_questions_count = @lesson_questions.count
-  end
-
-  # get '/lessons/:id/students/:student_id'
-  def student
-    @lesson_id = params[:lesson_id]
-    @student_id = params[:student_id]
-    @student = User.find_by(:id => @student_id )
-    @lesson_questions = LessonQuestion.where(:lesson_id => @lesson_id)
-  end
-
-  # source code check through internet
-  def internet_check
-    @result = Array.new(0,Array.new(4,0))
-
-
-    #get data from ajax
-    @question_id = params[:question_id]
-    @student_id = params[:student_id]
-    @lesson_id = params[:lesson_id]
-
-    @question = Question.find_by(:id => @question_id)
-    @lesson = Lesson.find_by(:id => @lesson_id)
-    @answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
-    if @student_id.to_i != 0
-      @check_result = InternetCheckResult.where(:answer_id => @answer.id)
-      @check_result_count = @check_result.count
-      if @check_result_count != 0
-        return
-      end
-
-      InternetCheckJob.perform_later(@question_id,@lesson_id,@student_id,@result)
-    else
-      @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
+      search_limit = search_limit - 1
+      num = num + 1
     end
 
-  end
+    # sort result by item[2]
+    store_num = 1
+    unless result.empty?
+      result = result.sort do |item1,item2|
+        item2[2]<=> item1[2]
+      end
+      write_search_results_log(csv_file_full_path,result,temp_keyword_csv)
+      result.each do |r|
+        if store_num >5
+          break
+        end
+        internet_check_result = InternetCheckResult.new(:answer_id => answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3])
+        internet_check_result.save
+        store_num+=1
+      end
 
-  #Luhnアルゴリズムの導入
-  def init
-    require 'luhn'
-  end
-
-  private
-
-  # idまたはlesson_idから該当するLessonを検索
-  # @param [Fixnum] lesson_id
-  # @param [Fixnum] id 一部のURLでのlesson_id
-  def check_lesson
-    id = params[:lesson_id] || params[:id]
-    return unless access_lesson_check(:user_id => current_user.id, :lesson_id => id)
-    @lesson = Lesson.find_by(:id => id)
-  end
-
-  # 該当するlessonに所属するstudentを取得
-  def get_students
-    return User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
-  end
-
-  # 該当するlessonに所属するteacherを取得
-  def get_teachers
-    return User.where(:id => @lesson.user_lessons.where(:is_teacher => true).pluck(:user_id))
-  end
-
-  def params_lesson
-    params.require(:lesson).permit(:name , :description)
+    end
   end
 
   # input file_path to get search key words from c/c++ source code
@@ -352,5 +320,4 @@ class LessonsController < ApplicationController
       end
     end
   end
-
 end
