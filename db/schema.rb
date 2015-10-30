@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151021074628) do
+ActiveRecord::Schema.define(version: 20151023075116) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "student_id",            limit: 4,                 null: false
     t.integer  "question_id",           limit: 4,                 null: false
-    t.string   "file_na",             limit: 255,               null: false
+    t.string   "file_name",             limit: 255,               null: false
     t.string   "result",                limit: 255,               null: false
     t.string   "language",              limit: 255,               null: false
     t.float    "run_time",              limit: 24,  default: 0.0

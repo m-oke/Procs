@@ -81,7 +81,7 @@
               <td>
                 <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
                 <% if checked_result.size > 0 %>
-                    <a class="btn btn-default draw_fancybox" href="#internet_results_checked" >表示する</a>
+                    <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示する</a>
                 <% else %>
                     <span>
                       <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
@@ -91,7 +91,7 @@
                     </span>
                 <% end %>
               </td>
-              <div id="internet_results_checked" class="internet-check-results-css" >
+              <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
                 <p>インタネットで剽窃チェックの結果があります</p>
                 <% checked_result.each do |result| %>
                     <p>title:<%= result['title'] %></p>

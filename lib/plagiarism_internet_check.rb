@@ -55,11 +55,10 @@ class PlagiarismInternetCheck
       end
       old_keyword = search_keyword
       search_keyword = bing_keyword_processing(question_keyword, search_keyword , 'bing_search')
+      # bing = Bing.new(APIKEY, 10, 'Web',{:Market => 'ja-JP'})
       bing = Bing.new(APIKEY, 10, 'Web')
       # pp search_keyword
       b_results = bing.search(search_keyword)
-
-
       # pp b_results
       # binding.pry
       # b_results = internet_search_json(search_keyword,'bing search')
