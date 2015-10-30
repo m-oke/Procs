@@ -4,14 +4,6 @@ class LessonsController < ApplicationController
   before_filter :authenticate_user!
   before_action :init
 
-  require 'addressable/uri'
-  # bing  ch
-  # APIKEY = "b03khzsJqXejAfMS3U1ik0lC2Ryd5lnhKu/wZEXaOAc"
-  #bing jp
-  APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
-
-
-
   # get '/'
   def index
   end
@@ -84,8 +76,7 @@ class LessonsController < ApplicationController
   # source code check through internet
   def internet_check
     @result = Array.new(0,Array.new(4,0))
-
-
+    @multi_check = 0
     #get data from ajax
     @question_id = params[:question_id]
     @student_id = params[:student_id]
@@ -93,17 +84,33 @@ class LessonsController < ApplicationController
 
     @question = Question.find_by(:id => @question_id)
     @lesson = Lesson.find_by(:id => @lesson_id)
-    @answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+
     if @student_id.to_i != 0
-      @check_result = InternetCheckResult.where(:answer_id => @answer.id)
+      answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+      @check_result = InternetCheckResult.where(:answer_id => answer.id)
       @check_result_count = @check_result.count
       if @check_result_count != 0
         return
       end
-
-      InternetCheckJob.perform_later(@question_id,@lesson_id,@student_id,@result)
+      single_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, @student_id, @result)
+      single_check.check
     else
+      @multi_check = 1
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
+      @students.each do |s|
+        @result = []
+        answer = Answer.where(:lesson_id => @lesson_id, :student_id => s['id'], :question_id => @question_id).last
+        if answer == nil
+          next
+        end
+        check_result = InternetCheckResult.where(:answer_id => answer.id)
+        check_result_count = check_result.count
+        if check_result_count != 0
+          next
+        end
+        plagiarism_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, s.id, @result)
+        plagiarism_check.check
+      end
     end
 
   end

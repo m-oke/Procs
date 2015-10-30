@@ -5,22 +5,25 @@ class PlagiarismInternetCheck
   #bing jp
   APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
 
-  def initialize()
+  def initialize(question_id,lesson_id,student_id,result)
 
+    @question_id = question_id
+    @lesson_id = lesson_id
+    @student_id = student_id
+    @result = result
   end
 
-  def perform(question_id,lesson_id,student_id,result)
-
+  def check
     search_limit = 5
     question_keyword = ""
-    question_keywords = QuestionKeyword.where(:question_id => question_id )
+    question_keywords = QuestionKeyword.where(:question_id => @question_id )
     question_keywords.each do |k|
       question_keyword = question_keyword + " " + k['keyword']
     end
-    answer = Answer.where(:lesson_id => lesson_id, :student_id => student_id, :question_id => question_id).last
+    answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
 
-    fullPathName = UPLOADS_ANSWERS_PATH.join(student_id.to_s, lesson_id.to_s, question_id.to_s).to_s + '/' + answer.file_name
-    csv_file_full_path = UPLOADS_ANSWERS_PATH.join(student_id.to_s, lesson_id.to_s, question_id.to_s).to_s + '/' + 'search_result_log.csv'
+    fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + answer.file_name
+    csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
 
     nlen = answer.file_name.size
     if answer.file_name[nlen-2,nlen-1]=='.c' || answer.file_name[nlen-4,nlen-1]=='.cpp'
@@ -65,20 +68,20 @@ class PlagiarismInternetCheck
           title = page[:Title]
           link = page[:Url]
           content = page[:Description]
-          nSize = result.size
+          nSize = @result.size
           if nSize == 0
-            result.push([title,link,1,content])
+            @result.push([title,link,1,content])
           else
             nMark = -1
             for n in 0..nSize-1
-              if result[n][1]==link
+              if @result[n][1]==link
                 nMark =  n
               end
             end
             if nMark != -1
-              result[nMark][2] = result[nMark][2] + 1
+              @result[nMark][2] = @result[nMark][2] + 1
             else
-              result.push([title,link,1,content])
+              @result.push([title,link,1,content])
             end
           end
         end
@@ -90,14 +93,14 @@ class PlagiarismInternetCheck
       num = num + 1
     end
 
-    # sort result by item[2]
+    # sort @result by item[2]
     store_num = 1
-    unless result.empty?
-      result = result.sort do |item1,item2|
+    unless @result.empty?
+      @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
-      write_search_results_log(csv_file_full_path,result,temp_keyword_csv)
-      result.each do |r|
+      write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
+      @result.each do |r|
         if store_num >5
           break
         end
@@ -314,8 +317,8 @@ class PlagiarismInternetCheck
     # File.delete(full_path)
     CSV.open(full_path,'w') do |out|
       out << ["title","link","times"]
-      results.each do |result|
-        out << [result[0],result[1],result[2]]
+      results.each do |r|
+        out << [r[0],r[1],r[2]]
       end
       out << ["keyword"]
       keywords.each do |keyword|
