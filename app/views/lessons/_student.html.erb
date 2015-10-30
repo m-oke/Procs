@@ -92,8 +92,9 @@
                 <% end %>
               </td>
               <div id="internet_results_checked" class="internet-check-results-css" >
+                <p>インタネットで剽窃チェックの結果があります</p>
                 <% checked_result.each do |result| %>
-                    <p>title:</p><%= result['title'] %>
+                    <p>title:<%= result['title'] %></p>
                     <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
                     <p>times:<%= result['repeat'] %></p>
                     <p>content:<%= result['content'] %></p>
