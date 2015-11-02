@@ -160,6 +160,10 @@ class PlagiarismInternetCheck
           if line[0,3] == 'for' && line.include?('for')
             line = ''
           end
+          # delete lines which only contain break or continue
+          if line == 'break' || line == 'continue'
+            line = ''
+          end
           # delete { and } which like { a = cycle_length(n/2, ++i); return a; }
         end
 
@@ -186,6 +190,8 @@ class PlagiarismInternetCheck
     delete_block_comment(copyFullPath,'python')
 
     File.open(copyFullPath) do |file|
+      have_multi_row = 0
+      str_multi_row = ''
       file.each do |line|
         # delete row comment  and delete left blank space
         if line[0,1] == '#'
@@ -194,6 +200,69 @@ class PlagiarismInternetCheck
           line = line[0,line.index('#')].strip
         else
           line = line.strip
+        end
+
+        #delete lines which used in many all source file
+        if line.size>0
+          #delete import ***
+          # if line[0,6] == 'import' && line.include?('import')
+          # from aaa import ***
+          if line[0,7] == 'import ' || (line[0,5]== 'from ' &&line.include?('import'))
+            line = ''
+          end
+          #delete if __name__ == "__main__":
+          if line[0,3] == 'if ' && line.include?('__name__') && line.include?('"__main__"')
+            tmp = line.sub(/\s+/,'')
+            if tmp.include?('if__name__=="__main__":')
+              line = ''
+            end
+          end
+          # delete lines which only contain pass or  break or continue
+          if line =='pass' || line == 'break' || line == 'continue'
+            line = ''
+          end
+          #  delete lines whice like
+          # print "----------------------------------"
+          # print '================================='
+          # print "===== class ====="
+          # print "++++ list ++++"
+          # use squeeze
+          if line[0,6] == 'print '
+            tmp = line.sub(/\s+/,' ')
+            if (tmp.include?('-') && tmp.length-tmp.squeeze('-').length > 6) ||
+                (tmp.include?('+') && tmp.length-tmp.squeeze('+').length > 6) ||
+                (tmp.include?('=') && tmp.length-tmp.squeeze('=').length > 6) ||
+                (tmp.include?('*') && tmp.length-tmp.squeeze('*').length > 6) ||
+                (tmp.include?('/') && tmp.length-tmp.squeeze('/').length > 6)
+              line = ''
+            end
+          end
+          # delete try: except: finally:
+          if line == 'try:' || line == 'except:' || line == 'finally:'
+            line = ''
+          end
+        end
+
+        # to deal with  """ used in string
+        #  test_str =  """
+        #              test1
+        #              test2
+        #              test3
+        #              """
+        if line.count('"""') == 1 && have_multi_row == 0
+          have_multi_row = 1
+          str_multi_row += (' '+ line)
+          next
+        end
+        if have_multi_row == 1 && line.count('"""') == 0
+          str_multi_row += (' '+ line)
+          next
+        end
+        if have_multi_row == 1 && line.count('"""') == 1
+          have_multi_row = 0
+          str_multi_row += (' ' + line)
+          line = str_multi_row
+          str_multi_row = ''
         end
 
         if line.size>0
@@ -233,17 +302,17 @@ class PlagiarismInternetCheck
           break
         end
       end
-      comment_mark = "\"\"\""
-      while content.index(comment_mark)!= nil do
-        len = content.size
-        first_num  = content.index(comment_mark)
-        second_num = content[first_num+3,len-1].index(comment_mark)
-        if first_num != nil && second_num != nil
-          content = content[0..first_num-1]  + content[first_num+second_num+6..len-1]
-        else
-          break
-        end
-      end
+      # comment_mark = "\"\"\""
+      # while content.index(comment_mark)!= nil do
+      #   len = content.size
+      #   first_num  = content.index(comment_mark)
+      #   second_num = content[first_num+3,len-1].index(comment_mark)
+      #   if first_num != nil && second_num != nil
+      #     content = content[0..first_num-1]  + content[first_num+second_num+6..len-1]
+      #   else
+      #     break
+      #   end
+      # end
     end
     File.write(pathname,content)
     file.close
