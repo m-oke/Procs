@@ -92,14 +92,27 @@
                 <% end %>
               </td>
               <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
-                <p>インタネットで剽窃チェックの結果があります</p>
-                <% checked_result.each do |result| %>
-                    <p>title:<%= result['title'] %></p>
-                    <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
-                    <p>times:<%= result['repeat'] %></p>
-                    <p>content:<%= result['content'] %></p>
-                    <p>**********************</p>
+                <p>学生：<%= @student.name %></p>
+                <p>問題：<%= question.title %></p>
+                <% max_time = 0 %>
+                <% checked_result.each do |r|%>
+                    <% if r['repeat']>1 %>
+                        <% max_time=r['repeat'] %>
+                        <% break %>
+                    <% end %>
                 <% end %>
+                <% if max_time > 1 %>
+                    <p>WEB剽窃チェックの結果：類似度が高いページを発見しました</p>
+                    <% checked_result.each do |result| %>
+                        <p>title:<%= result['title'] %></p>
+                        <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
+                        <p>times:<%= result['repeat'] %></p>
+                        <p>content:<%= result['content'] %></p>
+                        <p>**********************</p>
+                    <% end %>
+                <%else %>
+                    <p>WEB剽窃チェックの結果：類似度が高いページを発見しません</p>
+                <%end %>
               </div>
           <% else %>
               <td><%= question.title %></td>

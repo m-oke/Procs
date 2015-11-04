@@ -15,9 +15,19 @@
     });
 </script>
 <h3 id="answer">解答状況</h3>
-<%= button_to "全体チェック", lessons_internet_check_path(:lesson_id => @lesson.id,
-                                                  :student_id => 0,
-                                                  :question_id => params[:question_id]), {:remote => true , :method => "post",:class=>"btn btn-default" }%>
+
+<div>
+  <div style="float:left;">
+    <%= button_to "全体WEB剽窃チェック", lessons_internet_check_path(:lesson_id => @lesson.id,
+                                                                                :student_id => 0,
+                                                                                :question_id => params[:question_id]), {:remote => true , :method => "post",:class=>"btn btn-default", :id => "multi_check_internet" }%>
+  </div>
+  <div style="float:left;">
+    <p class ="text_align_user", id='check_message_internet'>ページを更新してからWEB剽窃チェックの結果を確認してください</p>
+  </div>
+  <div style="clear:both"></div>
+</div>
+
 <div class="table-responsive">
 <div>
   <div style="float:right;"><p>問題変更前の回答です</p></div>
@@ -71,24 +81,39 @@
         <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
         <% if checked_result.size > 0 %>
             <a class="btn btn-default draw_fancybox" href="#internet_results_checked_question_<%=student.id%>" >表示する</a>
-        <% else %>
+        <% elsif RESULT[answer.result].to_s.present? %>
             <span>
               <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson.id,
                                                                 :student_id => student.id,
                                                                 :question_id => params[:question_id]), {:remote => true , :method => "post", :id => "question_ajax_link_#{student.id}",:class=>"btn btn-default" }%>
               <a id="question_display_<%=student.id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=student.id %>" >表示する</a>
             </span>
+        <% else %>
         <% end %>
       </td>
       <div id="internet_results_checked_question_<%=student.id%>" class="internet-check-results-css" >
-        <p>インタネットで剽窃チェックの結果があります</p>
-        <% checked_result.each do |result| %>
-            <p>title:<%= result['title'] %></p>
-            <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
-            <p>times:<%= result['repeat'] %></p>
-            <p>content:<%= result['content'] %></p>
-            <p>**********************</p>
+
+        <p>学生：<%= student.name %></p>
+        <p>問題：<%= @question.title %></p>
+        <% max_time = 0 %>
+        <% checked_result.each do |r|%>
+            <% if r['repeat']>1 %>
+                <% max_time=r['repeat'] %>
+                <% break %>
+            <% end %>
         <% end %>
+        <% if max_time > 1 %>
+            <p>WEB剽窃チェックの結果：類似度が高いページを発見しました</p>
+            <% checked_result.each do |result| %>
+                <p>title:<%= result['title'] %></p>
+                <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
+                <p>times:<%= result['repeat'] %></p>
+                <p>content:<%= result['content'] %></p>
+                <p>**********************</p>
+            <% end %>
+        <%else %>
+            <p>WEB剽窃チェックの結果：類似度が高いページを発見しません</p>
+        <%end %>
       </div>
     </tr>
   <% end %>

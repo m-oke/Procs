@@ -59,7 +59,7 @@ class PlagiarismInternetCheck
       bing = Bing.new(APIKEY, 10, 'Web')
       # pp search_keyword
       b_results = bing.search(search_keyword)
-      # pp b_results
+      pp b_results
       # binding.pry
       # b_results = internet_search_json(search_keyword,'bing search')
       unless b_results.empty?
@@ -277,7 +277,7 @@ class PlagiarismInternetCheck
   def delete_block_comment(pathname,language)
     file = File.open(pathname)
     content = file.read
-    if language = 'C/C++'
+    if language == 'C/C++'
       while content.index('*/')!= nil do
         end_num  = content.index('*/')
         start_num = content[0,end_num].rindex('/*')
@@ -288,7 +288,7 @@ class PlagiarismInternetCheck
         end
       end
     end
-    if language = "python"
+    if language == "python"
       comment_mark = "\'\'\'"
       while content.index(comment_mark)!= nil do
         len = content.size

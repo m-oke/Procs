@@ -34,3 +34,8 @@
 .draw_fancybox_hidden{
     visibility: hidden;
 }
+.text_align_user{
+    margin:4px;
+    text-align: center;
+    visibility: hidden;
+}

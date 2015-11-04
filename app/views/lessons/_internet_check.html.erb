@@ -1,20 +1,46 @@
 <div>
-  <p>インタネットで剽窃チェックの結果があります</p>
+  <p>学生：<%= @student.name %></p>
+  <p>問題：<%= @question.title %></p>
+  <% max_time = 0 %>
   <% if @check_result_count == 0 %>
-    <%@result.each do |item| %>
-      <p>title: <%= item[0] %></p>
-      <%= link_to item[1],"#{item[1]}", :target => ["'_blank'"] %>
-      <p>times: <%= item[2] %></p>
-      <p>content:<%= item[3] %></p>
-      <p>**********************</p>
+    <% @result.each do |r|%>
+      <% if r['repeat']>1 %>
+          <% max_time=r['repeat'] %>
+          <% break %>
+      <% end %>
     <% end %>
+    <% if max_time > 1 %>
+      <p>WEB剽窃チェックの結果：類似度が高いページを発見しました</p>
+      <%@result.each do |item| %>
+        <p>title: <%= item[0] %></p>
+        <%= link_to item[1],"#{item[1]}", :target => ["'_blank'"] %>
+        <p>times: <%= item[2] %></p>
+        <p>content:<%= item[3] %></p>
+        <p>**********************</p>
+      <% end %>
+    <% else %>
+      <p>WEB剽窃チェックの結果：類似度が高いページを発見しません</p>
+    <% end %>
+
   <% else %>
-      <% @check_result.each do |result| %>
-      <p>title:<%= result['title'] %></p>
-      <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
-      <p>times:<%= result['repeat'] %></p>
-      <p>content:<%= result['content'] %></p>
-      <p>**********************</p>
+    <% @check_result.each do |r|%>
+      <% if r['repeat']>1 %>
+          <% max_time=r['repeat'] %>
+          <% break %>
+      <% end %>
     <% end %>
+    <% if max_time > 1 %>
+      <p>WEB剽窃チェックの結果：類似度が高いページを発見しました</p>
+      <% @check_result.each do |result| %>
+        <p>title:<%= result['title'] %></p>
+        <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
+        <p>times:<%= result['repeat'] %></p>
+        <p>content:<%= result['content'] %></p>
+        <p>**********************</p>
+      <% end %>
+    <% else %>
+      <p>WEB剽窃チェックの結果：類似度が高いページを発見しません</p>
+    <% end %>
+
   <% end %>
 </div>

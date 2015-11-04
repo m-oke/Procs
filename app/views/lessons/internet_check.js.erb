@@ -11,4 +11,10 @@
     $('#question_display_<%= @student_id %>').css('visibility' ,'visible');
 <% else %>
     $("#students_plagiarism_check").html("<%= escape_javascript(render(:partial => 'questions/answers')) %>");
+    $('#multi_check_internet').addClass('disabled',true)
+    $('#check_message_internet').css('visibility','visible')
+    <% @students.each do |s| %>
+        $('#question_ajax_link_<%= s.id %>').val('チェック中');
+        $('#question_ajax_link_<%= s.id %>').addClass('disabled',true);
+    <% end %>
 <% end %>
