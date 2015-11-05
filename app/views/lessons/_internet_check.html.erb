@@ -3,9 +3,9 @@
   <p>問題：<%= @question.title %></p>
   <% max_time = 0 %>
   <% if @check_result_count == 0 %>
-    <% @result.each do |r|%>
-      <% if r['repeat'].to_i > 1 %>
-          <% max_time=r['repeat'].to_i %>
+    <% @result.each do |item|%>
+      <% if item[2] > 1 %>
+          <% max_time=item[2] %>
           <% break %>
       <% end %>
     <% end %>
@@ -25,8 +25,8 @@
 
   <% else %>
     <% @check_result.each do |r|%>
-      <% if r['repeat'].to_i > 1 %>
-          <% max_time=r['repeat'].to_i %>
+      <% if r['repeat'] > 1 %>
+          <% max_time=r['repeat'] %>
           <% break %>
       <% end %>
     <% end %>

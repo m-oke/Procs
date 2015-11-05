@@ -18,9 +18,14 @@
 
 <div>
   <div style="float:left;">
-    <%= button_to "全員のWEB剽窃チェック", lessons_internet_check_path(:lesson_id => @lesson.id,
+    <% if @multi_check_enable == 1 %>
+        <%= button_to "全員のWEB剽窃チェック", lessons_internet_check_path(:lesson_id => @lesson.id,
                                                                                 :student_id => 0,
                                                                                 :question_id => params[:question_id]), {:remote => true , :method => "post",:class=>"btn btn-default", :id => "multi_check_internet" }%>
+    <% else %>
+        <a class="btn btn-default disabled" >全員のWEB剽窃チェック</a>
+    <% end %>
+
   </div>
   <div style="float:left;">
     <p class ="text_align_user", id='check_message_internet'>WEB剽窃チェックの結果を確認するために、ページを更新してください</p>
@@ -80,16 +85,19 @@
       <td>
         <% title_nil_exist = 0 %>
         <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
-        <% checked_result.each do |r| %>
-            <% if r['title'].nil? %>
-                <% title_nil_exist = 1 %>
-                <% break %>
+        <% nil_title = InternetCheckResult.where(:answer_id =>answer.id, :title => nil)%>
+        <% if nil_title.present? %>
+            <% nil_title.each do |r| %>
+                <% if r['answer_id'] == answer.id %>
+                    <% title_nil_exist = 1 %>
+                    <% break %>
+                <% end %>
             <% end %>
         <% end %>
         <% if checked_result.size > 0 && title_nil_exist == 0 %>
             <a class="btn btn-default draw_fancybox" href="#internet_results_checked_question_<%=student.id%>" >表示</a>
         <% elsif title_nil_exist == 1  %>
-            <a class="btn btn-default disabled_btn" >チェック中</a>
+            <a class="btn btn-default disabled" >チェック中</a>
         <% elsif RESULT[answer.result].to_s.present? %>
             <span>
               <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson.id,

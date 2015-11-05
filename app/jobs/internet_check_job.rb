@@ -12,7 +12,6 @@ class InternetCheckJob < ActiveJob::Base
         next
       end
       pre_store_result = InternetCheckResult.where(:answer_id => answer.id, :title => nil)
-      pp pre_store_result
       pre_store_result_count = pre_store_result.count
       if pre_store_result_count == 1
         plagiarism_check = PlagiarismInternetCheck.new(question_id, lesson_id, s['id'], result)
