@@ -93,11 +93,25 @@ class LessonsController < ApplicationController
       if @check_result_count != 0
         return
       end
+      init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0 )
+      init_result.save
       single_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, @student_id, @result)
       single_check.check
     else
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @multi_check = 1
+      @students.each do |s|
+        answer = Answer.where(:lesson_id => @lesson_id, :student_id => s['id'], :question_id => @question_id).last
+
+        unless answer.nil?
+          check_result = InternetCheckResult.where(:answer_id => answer.id)
+          check_result_count = check_result.count
+          if check_result_count == 0
+            init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0 )
+            init_result.save
+          end
+        end
+      end
       InternetCheckJob.perform_later(@question_id,@lesson_id)
     end
 

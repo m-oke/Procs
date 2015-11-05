@@ -81,13 +81,13 @@
               <td>
                 <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
                 <% if checked_result.size > 0 %>
-                    <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示する</a>
+                    <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
                 <% else %>
                     <span>
                       <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                         :student_id => @student.id,
                                                                         :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
-                      <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示する</a>
+                      <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
                     </span>
                 <% end %>
               </td>
@@ -96,13 +96,14 @@
                 <p>問題：<%= question.title %></p>
                 <% max_time = 0 %>
                 <% checked_result.each do |r|%>
-                    <% if r['repeat']>1 %>
-                        <% max_time=r['repeat'] %>
+                    <% if r['repeat'].to_i > 1 %>
+                        <% max_time=r['repeat'].to_i %>
                         <% break %>
                     <% end %>
                 <% end %>
                 <% if max_time > 1 %>
-                    <p>WEB剽窃チェックの結果：類似度が高いページを発見しました</p>
+                    <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
+                    <p>******************************************************</p>
                     <% checked_result.each do |result| %>
                         <p>title:<%= result['title'] %></p>
                         <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
@@ -111,7 +112,7 @@
                         <p>**********************</p>
                     <% end %>
                 <%else %>
-                    <p>WEB剽窃チェックの結果：類似度が高いページを発見しません</p>
+                    <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
                 <%end %>
               </div>
           <% else %>

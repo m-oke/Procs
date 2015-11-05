@@ -46,6 +46,7 @@ class PlagiarismInternetCheck
     end
 
     num = 0
+    web_total_zero = 0
     temp_keyword_csv = []
     old_keyword = ''
     while search_limit > 0 do
@@ -61,28 +62,32 @@ class PlagiarismInternetCheck
       b_results = bing.search(search_keyword)
       pp b_results
       # binding.pry
-      # b_results = internet_search_json(search_keyword,'bing search')
       unless b_results.empty?
-        b_results[0][:Web].each do |page|
-          title = page[:Title]
-          link = page[:Url]
-          content = page[:Description]
-          nSize = @result.size
-          if nSize == 0
-            @result.push([title,link,1,content])
-          else
-            nMark = -1
-            for n in 0..nSize-1
-              if @result[n][1]==link
-                nMark =  n
+        if b_results[0][:WebTotal].to_i != 0
+
+          b_results[0][:Web].each do |page|
+            title = page[:Title]
+            link = page[:Url]
+            content = page[:Description]
+            nSize = @result.size
+            if nSize == 0
+              @result.push([title,link,1,content])
+            else
+              nMark = -1
+              for n in 0..nSize-1
+                if @result[n][1]==link
+                  nMark =  n
+                end
+              end
+              if nMark != -1
+                @result[nMark][2] = @result[nMark][2] + 1
+              else
+                @result.push([title,link,1,content])
               end
             end
-            if nMark != -1
-              @result[nMark][2] = @result[nMark][2] + 1
-            else
-              @result.push([title,link,1,content])
-            end
           end
+        else
+          web_total_zero += 1
         end
       else
         pp 'internet check by bing is failed '
@@ -92,22 +97,38 @@ class PlagiarismInternetCheck
       num = num + 1
     end
 
+    pre_store_result = InternetCheckResult.where(:answer_id => answer.id, :title => nil)
+    if pre_store_result.present?
+      pre_store_result.each do |item|
+        item.destroy
+      end
+    end
     # sort @result by item[2]
     store_num = 1
     unless @result.empty?
       @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
-      write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
-      @result.each do |r|
-        if store_num >5
-          break
+      # write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
+      first_elem = @result.first
+      # search_limit = 5
+      # 5回の検索、毎回の検索結果はありません=>else ;　各LINK一回だけの場合　titleに’’を与える =>else
+      if first_elem[2] > 1 && web_total_zero != 5
+        @result.each do |r|
+          if store_num >5
+            break
+          end
+          internet_check_result = InternetCheckResult.new(:answer_id => answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3])
+          internet_check_result.save
+          store_num+=1
         end
-        internet_check_result = InternetCheckResult.new(:answer_id => answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3])
-        internet_check_result.save
-        store_num+=1
+      else
+        no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1 )
+        no_good_result.save
       end
-
+    else
+      no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1 )
+      no_good_result.save
     end
   end
 
@@ -333,65 +354,65 @@ class PlagiarismInternetCheck
     end
   end
 
-  def internet_search_json(search_word, search_type)
-    user = ''
-    account_key = APIKEY
-    # ja-JP and en-US
-    market = 'en-US'
-    num_results= 10.to_s
-    web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
-    sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
-    query_string = '&$format=json&Query='
-    query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
-    query_market_string = '&Market='
-    query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
-    params = "&$top=#{num_results}&$skip=#{0}"
+  # def internet_search_json(search_word, search_type)
+  #   user = ''
+  #   account_key = APIKEY
+  #   # ja-JP and en-US
+  #   market = 'en-US'
+  #   num_results= 10.to_s
+  #   web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
+  #   sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
+  #   query_string = '&$format=json&Query='
+  #   query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
+  #   query_market_string = '&Market='
+  #   query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
+  #   params = "&$top=#{num_results}&$skip=#{0}"
+  #
+  #   full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
+  #   pp full_address
+  #
+  #   uri = URI(full_address)
+  #   req = Net::HTTP::Get.new(uri.request_uri)
+  #   if search_type == 'bing search'
+  #     req.basic_auth user, account_key
+  #   end
+  #   begin
+  #     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|
+  #       http.open_timeout = 3
+  #       http.read_timeout = 6
+  #       http.request(req)
+  #     }
+  #     case res
+  #       when Net::HTTPSuccess
+  #         if search_type == 'bing search'
+  #           body = JSON.parse(res.body, :symbolize_names => true)
+  #           result_set = body[:d][:results]
+  #         else
+  #           g_results = JSON.parse(res.body)
+  #
+  #         end
+  #       else
+  #         puts [uri.to_s, res.value].join(" : ")
+  #         result_set = 'HTTPError'
+  #     end
+  #   rescue => e
+  #     puts [uri.to_s, e.class, e].join(" : ")
+  #     result_set = 'HTTPError'
+  #   end
+  #
+  # end
 
-    full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
-    pp full_address
-
-    uri = URI(full_address)
-    req = Net::HTTP::Get.new(uri.request_uri)
-    if search_type == 'bing search'
-      req.basic_auth user, account_key
-    end
-    begin
-      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|
-        http.open_timeout = 3
-        http.read_timeout = 6
-        http.request(req)
-      }
-      case res
-        when Net::HTTPSuccess
-          if search_type == 'bing search'
-            body = JSON.parse(res.body, :symbolize_names => true)
-            result_set = body[:d][:results]
-          else
-            g_results = JSON.parse(res.body)
-
-          end
-        else
-          puts [uri.to_s, res.value].join(" : ")
-          result_set = 'HTTPError'
-      end
-    rescue => e
-      puts [uri.to_s, e.class, e].join(" : ")
-      result_set = 'HTTPError'
-    end
-
-  end
-
-  def write_search_results_log(full_path,results,keywords)
-    # File.delete(full_path)
-    CSV.open(full_path,'w') do |out|
-      out << ["title","link","times"]
-      results.each do |r|
-        out << [r[0],r[1],r[2]]
-      end
-      out << ["keyword"]
-      keywords.each do |keyword|
-        out << [keyword]
-      end
-    end
-  end
+  # def write_search_results_log(full_path,results,keywords)
+  #   # File.delete(full_path)
+  #   CSV.open(full_path,'w') do |out|
+  #     out << ["title","link","times"]
+  #     results.each do |r|
+  #       out << [r[0],r[1],r[2]]
+  #     end
+  #     out << ["keyword"]
+  #     keywords.each do |keyword|
+  #       out << [keyword]
+  #     end
+  #   end
+  # end
 end

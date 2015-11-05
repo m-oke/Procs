@@ -11,13 +11,13 @@ class InternetCheckJob < ActiveJob::Base
       if answer == nil
         next
       end
-      check_result = InternetCheckResult.where(:answer_id => answer.id)
-      check_result_count = check_result.count
-      if check_result_count != 0
-        next
+      pre_store_result = InternetCheckResult.where(:answer_id => answer.id, :title => nil)
+      pp pre_store_result
+      pre_store_result_count = pre_store_result.count
+      if pre_store_result_count == 1
+        plagiarism_check = PlagiarismInternetCheck.new(question_id, lesson_id, s['id'], result)
+        plagiarism_check.check
       end
-      plagiarism_check = PlagiarismInternetCheck.new(question_id, lesson_id, s['id'], result)
-      plagiarism_check.check
     end
   end
 

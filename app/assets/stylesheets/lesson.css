@@ -34,6 +34,10 @@
 .draw_fancybox_hidden{
     visibility: hidden;
 }
+.disabled_btn{
+    disabled: true;
+}
+
 .text_align_user{
     margin:4px;
     text-align: center;
