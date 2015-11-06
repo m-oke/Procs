@@ -121,14 +121,15 @@
         <% end %>
         <% if max_time > 1 %>
             <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
-            <p>************************************************</p>
-            <% checked_result.each do |result| %>
-                <p>title:<%= result['title'] %></p>
-                <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
-                <p>times:<%= result['repeat'] %></p>
-                <p>content:<%= result['content'] %></p>
-                <p>**********************</p>
-            <% end %>
+
+              <% checked_result.each do |result| %>
+                <div class="hero-unit2">
+                    <p>関連タイトル：<%= result['title'] %></p>
+                    <p>関連リンク：<%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %></p>
+                    <p>回数：<%= result['repeat'] %></p>
+                    <p>内容：<%= result['content'] %></p>
+                </div>
+              <% end %>
         <%else %>
             <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
         <%end %>

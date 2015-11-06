@@ -11,14 +11,20 @@
     <% end %>
     <% if max_time > 1 %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
-      <p>******************************************************</p>
+      <% index=1 %>
       <%@result.each do |item| %>
-        <p>title: <%= item[0] %></p>
-        <%= link_to item[1],"#{item[1]}", :target => ["'_blank'"] %>
-        <p>times: <%= item[2] %></p>
-        <p>content:<%= item[3] %></p>
-        <p>**********************</p>
+          <% if index >5 %>
+              <% break %>
+          <% end %>
+          <div class="hero-unit2">
+            <p>関連タイトル：<%= item[0] %></p>
+            <p>関連リンク：<%= link_to item[1],"#{item[1]}", :target => ["'_blank'"] %></p>
+            <p>回数：<%= item[2] %></p>
+            <p>内容：<%= item[3] %></p>
+          </div>
+          <% index +=1 %>
       <% end %>
+
     <% else %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
     <% end %>
@@ -31,14 +37,15 @@
       <% end %>
     <% end %>
     <% if max_time > 1 %>
+          <%= @check_result.count %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
-      <p>******************************************************</p>
       <% @check_result.each do |result| %>
-        <p>title:<%= result['title'] %></p>
-        <%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
-        <p>times:<%= result['repeat'] %></p>
-        <p>content:<%= result['content'] %></p>
-        <p>**********************</p>
+          <div class="hero-unit2">
+            <p>関連タイトル：<%= result['title'] %></p>
+            <p>関連リンク：<%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %></p>
+            <p>回数：<%= result['repeat'] %></p>
+            <p>内容：<%= result['content'] %></p>
+          </div>
       <% end %>
     <% else %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
