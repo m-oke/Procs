@@ -13,7 +13,7 @@ class EvaluatePythonJob < ActiveJob::Base
     dir_name = EVALUATE_WORK_DIR.to_s + "/" + Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
 
     question = Question.find_by(:id => question_id)
-    run_time_limit = question.run_time_limit.to_f / 1000
+    run_time_limit = question.run_time_limit / 1000
     memory_usage_limit = question.memory_usage_limit
     answer = Answer.where(:student_id => user_id,
                           :lesson_id => lesson_id,
@@ -55,11 +55,15 @@ class EvaluatePythonJob < ActiveJob::Base
           container_name = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
           containers.push(container_name)
           # dockerコンテナでプログラムを実行
-          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/test_user/work procs/python_sandbox"
+          # 最大プロセス数: 500
+          # 最大実行メモリ(RSS): 256 MB
+          # 最大ファイルサイズ: 40 MB
+          rss = MEMORY_LIMIT * 1024 * 1000
+          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/python_user/work --ulimit nproc=500 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --net=none -t procs/python_sandbox"
 
           begin
             # 実行時間制限
-            Timeout.timeout(run_time_limit) do
+            Timeout.timeout(TIMEOUT_LIMIT) do
               # 入力用ファイルを入力し，結果をファイル出力
               @exec = IO.popen(exec_cmd)
               Process.waitpid2(@exec.pid)
@@ -69,13 +73,50 @@ class EvaluatePythonJob < ActiveJob::Base
           rescue Timeout::Error
             `docker kill #{container_name}`
             puts "Kill timeout container #{container_name}"
-            puts "Time Limit Exceeded"
-            spec[i][:result] = "TLE"
+            puts "Wall-Clock Time Limit Exceeded"
+            spec[i][:result] = "TIMEOUT"
             next
           end
 
           # 結果と出力用ファイルのdiff
           diff = `diff output#{i} result#{i}`
+
+          signal = nil
+          # 実行時間とメモリ使用量を記録
+          File.open("spec#{i}", "r") do |f|
+              first = f.gets
+            if first.include?("signal")
+              signal = first
+              memory = f.gets.to_i
+            else
+              memory = first.to_i
+            end
+            utime = f.gets.to_f
+            stime = f.gets.to_f
+            time = (utime + stime) * 1000
+          end
+
+          spec[i][:memory] = memory
+          spec[i][:time] = time
+
+
+          unless signal.nil?
+            if signal.include?("11")
+              puts "Runtime Error"
+              spec[i][:result] = "RE"
+              next
+            elsif signal.include?("9")
+              if time.ceil >= run_time_limit
+                puts "Time Limit Exceeded"
+                spec[i][:result] = "TLE"
+                next
+              elsif (memory / 1024) >= memory_usage_limit
+                puts "Memory Limit Exceeded"
+                spec[i][:result] = "MLE"
+                next
+              end
+            end
+          end
 
           # diff結果が異なればそこでテスト失敗
           unless diff.empty?
@@ -84,23 +125,8 @@ class EvaluatePythonJob < ActiveJob::Base
             next
           end
 
-          # 実行時間とメモリ使用量を記録
-          File.open("spec#{i}", "r") do |f|
-            memory = f.gets.to_i
-            utime = f.gets.to_f
-            stime = f.gets.to_f
-            time = (utime + stime) * 1000
-          end
-
-          if (memory / 1024) > memory_usage_limit
-            puts "Memory Limit Exceeded"
-            spec[i][:result] = "MLE"
-            next
-          end
-
+          # どれにも当てはまらなかったらAccept
           spec[i][:result] = "A"
-          spec[i][:memory] = memory
-          spec[i][:time] = time
         end
       end
       t.join
@@ -114,21 +140,24 @@ class EvaluatePythonJob < ActiveJob::Base
     memories = spec.inject([]){|prev, (key, val)| prev.push val[:memory]}
 
     # resultを求める
-    # 優先度: WA > MLE > TLE > A
-    passed = 0
-    res = "A"
-    results.each do |result|
-      case result
-      when "A"
-        passed += 1
-      when "WA"
-        res = result
-      when "MLE"
-        res = result if res != "WA"
-      when "TLE"
-        res = result if res != "WA" && res != "MLE"
+    # 優先度: TERM > TIMEOUT > WA > MLE > TLE > A
+    passed = results.count("A")
+    if test_count == passed
+      res = "A"
+    else
+      if results.include?("RE")
+        res = "RE"
+      elsif results.include?("TIMEOUT")
+        res = "TIMEOUT"
+      elsif results.include?("MLE")
+        res = "MLE"
+      elsif results.include?("TLE")
+        res = "TLE"
+      elsif results.include?("WA")
+        ers = "WA"
       end
     end
+
 
     # 実行結果を記録
     answer.result = res
