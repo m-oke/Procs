@@ -18,5 +18,6 @@
 //= require jquery.remotipart
 //= require jquery.timepicker.js
 //= require jquery-ui-timepicker-addon.js
+//= require fancybox
 //= require_tree .
 //= require_directory .

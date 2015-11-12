@@ -31,6 +31,14 @@ gem  'jquery-turbolinks'
 gem  'nested_form'
 gem  'remotipart'
 
+# Use Microsoft search engine
+gem 'searchbing', '~> 0.2.4'
+gem 'fancybox2-rails', '~> 0.2.8'
+gem 'addressable'
+gem 'json', '~> 1.8.3'
+gem 'net-http-persistent', '~> 2.9.4'
+gem 'google_custom_search_api'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

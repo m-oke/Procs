@@ -23,6 +23,7 @@ class QuestionsController < ApplicationController
     @question.samples.build
     @question.test_data.build
     @question.lesson_questions.build
+    @question.question_keywords.build
     @lesson_id = params[:lesson_id].to_i
   end
 
@@ -94,7 +95,17 @@ class QuestionsController < ApplicationController
                                           :lesson_id => lesson_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
+      @multi_check_enable = 0
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
+      @students.each do |s|
+        answer = Answer.latest_answer(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id)
+        if answer.present?
+          checked_result = InternetCheckResult.where(:answer_id =>answer.id)
+          if checked_result.count == 0
+            @multi_check_enable = 1
+          end
+        end
+      end
     else
       @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
     end
@@ -226,6 +237,7 @@ class QuestionsController < ApplicationController
       :version,
       samples_attributes: [:question_id, :input, :output, :_destroy],
       test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
+      question_keywords_attributes: [:question_id, :keyword, :_destroy],
       lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
     )
   end

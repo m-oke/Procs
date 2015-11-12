@@ -36,6 +36,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    addressable (2.3.8)
     ansi (1.5.0)
     arel (6.0.2)
     autoprefixer-rails (5.2.1.1)
@@ -82,10 +83,15 @@ GEM
     factory_girl_rails (4.5.0)
       factory_girl (~> 4.5.0)
       railties (>= 3.0.0)
+    fancybox2-rails (0.2.8)
+      railties (>= 3.1.0, < 5.0)
     font-awesome-rails (4.3.0.0)
       railties (>= 3.2, < 5.0)
     globalid (0.3.5)
       activesupport (>= 4.1.0)
+    google_custom_search_api (1.0.0)
+      addressable
+      httparty
     haml (4.0.6)
       tilt
     hirb (0.7.3)
@@ -93,6 +99,9 @@ GEM
       hirb (~> 0.5)
       unicode-display_width (~> 0.1.1)
     hitimes (1.2.2)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     i18n (0.7.0)
     jbuilder (2.3.1)
       activesupport (>= 3.0.0, < 5)
@@ -136,8 +145,10 @@ GEM
       rails (~> 4.1)
     minitest-stub_any_instance (1.0.1)
     multi_json (1.11.2)
+    multi_xml (0.5.5)
     mysql2 (0.3.18)
     nested_form (0.3.2)
+    net-http-persistent (2.9.4)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     orm_adapter (0.5.0)
@@ -222,6 +233,7 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    searchbing (0.2.4)
     sidekiq (3.4.2)
       celluloid (~> 0.16.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -269,6 +281,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable
   bootstrap-sass (~> 3.3.4)
   byebug
   cancan
@@ -276,12 +289,15 @@ DEPENDENCIES
   devise
   dotenv-rails
   factory_girl_rails
+  fancybox2-rails (~> 0.2.8)
+  google_custom_search_api
   hirb
   hirb-unicode
   jbuilder (~> 2.0)
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
+  json (~> 1.8.3)
   luhn-ruby
   minitest
   minitest-ar-assertions
@@ -293,6 +309,7 @@ DEPENDENCIES
   minitest-stub_any_instance
   mysql2
   nested_form
+  net-http-persistent (~> 2.9.4)
   pry
   pry-nav
   pry-rails
@@ -304,6 +321,7 @@ DEPENDENCIES
   remotipart
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
+  searchbing (~> 0.2.4)
   sidekiq
   sinatra
   spring

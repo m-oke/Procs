@@ -1,0 +1,16 @@
+<% if @multi_check == 0 %>
+    $('#internet_check_results_<%= @question_id %>').html(
+            "<%= escape_javascript(render 'internet_check') %>"
+    );
+    $('#internet_check_results_<%= @student_id %>').html(
+            "<%= escape_javascript(render 'internet_check') %>"
+    );
+    $('#ajax_link_<%= @question_id %>').addClass('disabled','true');
+    $('#display_<%= @question_id %>').css('visibility' ,'visible');
+    $('#question_ajax_link_<%= @student_id %>').addClass('disabled','true');
+    $('#question_display_<%= @student_id %>').css('visibility' ,'visible');
+<% else %>
+    $("#students_plagiarism_check").html("<%= escape_javascript(render(:partial => 'questions/answers')) %>");
+    $('#multi_check_internet').addClass('disabled',true)
+    $('#check_message_internet').css('visibility','visible')
+<% end %>
