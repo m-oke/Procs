@@ -168,7 +168,7 @@ class EvaluateCJob < ActiveJob::Base
       elsif results.include?("TLE")
         res = "TLE"
       elsif results.include?("WA")
-        ers = "WA"
+        res = "WA"
       end
     end
 
