@@ -17,6 +17,10 @@ class LessonsController < ApplicationController
     unless(User.find_by(:id => current_user.id).has_role?(:teacher))
       redirect_to root_path, :alert => "あなたはこの権限がありません" and return
     end
+    #@c_check = local_check_c
+    #open( 'exammm.txt' ,'w+' ).write( open( 'test.txt' ).readlines.join.sub( /\d+/m ,'' ) )
+    #open( 'exannn.txt' ,'w+' ).write( open( 'test.txt' ).readlines.join.sub( /\[\d+\]/m ,'' ) )
+
   end
 
   # post '/lessons'
