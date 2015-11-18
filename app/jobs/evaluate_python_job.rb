@@ -40,10 +40,12 @@ class EvaluatePythonJob < ActiveJob::Base
     spec = Hash.new { |h,k| h[k] = {} }
     containers = []
 
+    i = 0
     # テストデータの数だけ繰り返し
     begin
       t = Thread.new do
-        1.upto(test_count) do |i|
+        test_data.each do |test|
+          i += 1
           result = "P"
           memory = 0
           time = 0
@@ -59,7 +61,9 @@ class EvaluatePythonJob < ActiveJob::Base
           # 最大実行メモリ(RSS): 256 MB
           # 最大ファイルサイズ: 40 MB
           rss = MEMORY_LIMIT * 1024 * 1000
-          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e EXE=#{exe_file} -v #{dir_name}:/home/python_user/work --ulimit nproc=500 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --net=none -t procs/python_sandbox"
+          test_inputname = test.input_storename
+          test_outputname = test.output_storename
+          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e OUTPUT=#{test_outputname} -e EXE=#{exe_file} -v #{dir_name}:/home/python_user/work --ulimit nproc=500 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --net=none -t procs/python_sandbox"
 
           begin
             # 実行時間制限
@@ -79,7 +83,7 @@ class EvaluatePythonJob < ActiveJob::Base
           end
 
           # 結果と出力用ファイルのdiff
-          diff = `diff output#{i} result#{i}`
+          diff = `diff #{test_outputname} result#{i}`
 
           signal = nil
           # 実行時間とメモリ使用量を記録
