@@ -50,22 +50,39 @@ class PlagiarismInternetCheck
     end
 
     num = 0
-    web_total_zero = 0
+    web_total_zero = 0       #検索の結果でデータがない場合を集計する　５回データがない場合、検索結果は、
+    pre_search_total = 1     #前回の検索の結果でデータがある場合、１を与える；前回の検索の結果がなかった場合、０を与える
     temp_keyword_csv = []
     old_keyword = ''
     while search_limit > 0 do
       search_keyword = keywordContent[num]
+
+      # 前回検索結果がない場合、検索用キーワードの設定
+      # question_keyword sourcecode1 sourcecode2 => question_keyword sourcecode1 sourcecode3
+      if pre_search_total == 0 && old_keyword.present?
+        if old_keyword.include?('bing_search')
+          old_keyword = old_keyword[0..(old_keyword.rindex('bing_search')-1)]
+        else
+          old_keyword = ''
+        end
+        pre_search_total = 1
+      end
+
       if old_keyword != ''
         search_keyword = old_keyword + 'bing_search' +  search_keyword
       end
       old_keyword = search_keyword
+
       search_keyword = bing_keyword_processing(question_keyword, search_keyword , 'bing_search')
+
+
       # bing = Bing.new(APIKEY, 10, 'Web',{:Market => 'ja-JP'})
       bing = Bing.new(APIKEY, 10, 'Web')
-      # pp search_keyword
+      pp search_keyword
+      binding.pry
       b_results = bing.search(search_keyword)
       pp b_results
-      # binding.pry
+
       unless b_results.empty?
         if b_results[0][:WebTotal].to_i != 0
 
@@ -96,6 +113,7 @@ class PlagiarismInternetCheck
             end
           end
         else
+          pre_search_total = 0
           web_total_zero += 1
         end
       else
