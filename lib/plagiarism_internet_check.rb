@@ -15,6 +15,7 @@ class PlagiarismInternetCheck
 
   def check
     search_limit = 5
+    http_error = 0
     question_keyword = ""
     question_keywords = QuestionKeyword.where(:question_id => @question_id )
     question_keywords.each do |k|
@@ -77,13 +78,17 @@ class PlagiarismInternetCheck
 
 
       # bing = Bing.new(APIKEY, 10, 'Web',{:Market => 'ja-JP'})
-      bing = Bing.new(APIKEY, 10, 'Web')
-      pp search_keyword
-      binding.pry
-      b_results = bing.search(search_keyword)
-      pp b_results
+      # bing = Bing.new(APIKEY, 10, 'Web')
+      # pp search_keyword
+      # binding.pry
+      # b_results = bing.search(search_keyword)
 
-      unless b_results.empty?
+      b_results = internet_search_json(search_keyword)
+      # pp b_results
+      # binding.pry
+
+      # unless b_results.empty?
+      unless b_results.nil?
         if b_results[0][:WebTotal].to_i != 0
 
           b_results[0][:Web].each do |page|
@@ -118,6 +123,7 @@ class PlagiarismInternetCheck
         end
       else
         pp 'internet check by bing is failed '
+        http_error = 1
         break
       end
       search_limit = search_limit - 1
@@ -129,6 +135,15 @@ class PlagiarismInternetCheck
       pre_store_result.each do |item|
         item.destroy
       end
+    end
+
+    #通信エラー
+    #:title => nil , :link => '', :content => ''
+    if http_error == 1
+      http_error_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil , :link => '', :content => '', :repeat => 1 )
+      http_error_result.save
+      @result.push(['http_error','http_error',1,'http_error'])
+      return
     end
     # sort @result by item[2]
     store_num = 1
@@ -381,6 +396,47 @@ class PlagiarismInternetCheck
     end
   end
 
+  def internet_search_json(search_word)
+    result_set = ''
+    user = ''
+    account_key = APIKEY
+    # ja-JP and en-US
+    market = 'en-US'
+    num_results= 10.to_s
+    web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
+    sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
+    query_string = '&$format=json&Query='
+    query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
+    query_market_string = '&Market='
+    query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
+    params = "&$top=#{num_results}&$skip=#{0}"
+
+    full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
+    pp full_address
+
+    uri = URI(full_address)
+    req = Net::HTTP::Get.new(uri.request_uri)
+    req.basic_auth user, account_key
+    begin
+      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|
+        http.open_timeout = 3
+        http.read_timeout = 6
+        http.request(req)
+      }
+      case res
+        when Net::HTTPSuccess
+          body = JSON.parse(res.body, :symbolize_names => true)
+          result_set = body[:d][:results]
+        else
+          puts [uri.to_s, res.value].join(" : ")
+          result_set = nil
+      end
+    rescue => e
+      puts [uri.to_s, e.class, e].join(" : ")
+      result_set = nil
+    end
+    return result_set
+  end
   # def internet_search_json(search_word, search_type)
   #   user = ''
   #   account_key = APIKEY

@@ -137,14 +137,27 @@ class LessonsController < ApplicationController
     @question = Question.find_by(:id => @question_id)
     @lesson = Lesson.find_by(:id => @lesson_id)
 
+
+
     if @student_id.to_i != 0
       @student = User.find_by(:id => @student_id)
       answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+      #Http error , Api 使用できなくなる
+      http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )
+      if http_error.present?
+        http_error.each do |r|
+          if r['answer_id'] == answer.id
+            r.destroy
+          end
+        end
+      end
+      # 既に検索結果あり
       @check_result = InternetCheckResult.where(:answer_id => answer.id)
       @check_result_count = @check_result.count
       if @check_result_count != 0
         return
       end
+
       init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0 )
       init_result.save
       single_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, @student_id, @result)
@@ -159,6 +172,8 @@ class LessonsController < ApplicationController
           check_result = InternetCheckResult.where(:answer_id => answer.id)
           check_result_count = check_result.count
           if check_result_count == 0
+            #チェック中を表示するため
+            #:title => nil, :link => nil, :content => nil,
             init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0 )
             init_result.save
           end
