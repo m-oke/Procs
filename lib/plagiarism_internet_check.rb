@@ -102,7 +102,7 @@ class PlagiarismInternetCheck
 
             nSize = @result.size
             if nSize == 0
-              @result.push([title,link,1,content])
+              @result.push([title,link,1,content,question_keyword])
             else
               nMark = -1
               for n in 0..nSize-1
@@ -113,7 +113,7 @@ class PlagiarismInternetCheck
               if nMark != -1
                 @result[nMark][2] = @result[nMark][2] + 1
               else
-                @result.push([title,link,1,content])
+                @result.push([title,link,1,content,question_keyword])
               end
             end
           end
@@ -140,9 +140,9 @@ class PlagiarismInternetCheck
     #通信エラー
     #:title => nil , :link => '', :content => ''
     if http_error == 1
-      http_error_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil , :link => '', :content => '', :repeat => 1 )
+      http_error_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil , :link => '', :content => '', :repeat => 1, :key_word => question_keyword )
       http_error_result.save
-      @result.push(['http_error','http_error',1,'http_error'])
+      @result.push(['http_error','http_error',1,'http_error','http_error'])
       return
     end
     # sort @result by item[2]
@@ -160,16 +160,16 @@ class PlagiarismInternetCheck
           if store_num >5
             break
           end
-          internet_check_result = InternetCheckResult.new(:answer_id => answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3])
+          internet_check_result = InternetCheckResult.new(:answer_id => answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3], :key_word => r[4])
           internet_check_result.save
           store_num+=1
         end
       else
-        no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1 )
+        no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1, :key_word => question_keyword)
         no_good_result.save
       end
     else
-      no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1 )
+      no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1, :key_word => question_keyword )
       no_good_result.save
     end
   end

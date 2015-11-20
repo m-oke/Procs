@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20151204074642) do
     t.string   "link",       limit: 255
     t.text     "content",    limit: 65535
     t.integer  "repeat",     limit: 4
+    t.string   "key_word",   limit: 255
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end

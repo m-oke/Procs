@@ -127,7 +127,7 @@ class LessonsController < ApplicationController
 
   # source code check through internet
   def internet_check
-    @result = Array.new(0,Array.new(4,0))
+    @result = Array.new(0,Array.new(5,0))
     @multi_check = 0
     #get data from ajax
     @question_id = params[:question_id]
@@ -137,12 +137,18 @@ class LessonsController < ApplicationController
     @question = Question.find_by(:id => @question_id)
     @lesson = Lesson.find_by(:id => @lesson_id)
 
+    question_keyword =''
+    question_keywords = QuestionKeyword.where(:question_id => @question_id )
+    question_keywords.each do |k|
+      question_keyword = question_keyword + " " + k['keyword']
+    end
 
 
     if @student_id.to_i != 0
+
       @student = User.find_by(:id => @student_id)
       answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
-      #Http error , Api 使用できなくなる
+      #「Http error , Api 使用できない」原因で保存した　臨時データを削除
       http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )
       if http_error.present?
         http_error.each do |r|
@@ -151,14 +157,24 @@ class LessonsController < ApplicationController
           end
         end
       end
-      # 既に検索結果あり
+
       @check_result = InternetCheckResult.where(:answer_id => answer.id)
+      #key word の変更したかどうかを確認する
+      #変更した場合、前回の結果を削除する
+      @check_result.each do |r|
+        if r['key_word'] != question_keyword
+          r.destroy
+        end
+      end
+
       @check_result_count = @check_result.count
-      if @check_result_count != 0
+
+      if @check_result_count != 0   # 既に検索結果あり,keyword変更なし
         return
       end
 
-      init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0 )
+
+      init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0, :key_word => "" )
       init_result.save
       single_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, @student_id, @result)
       single_check.check
@@ -170,11 +186,18 @@ class LessonsController < ApplicationController
 
         unless answer.nil?
           check_result = InternetCheckResult.where(:answer_id => answer.id)
+          #key word の変更したかどうかを確認する
+          #変更した場合、前回の結果を削除する
+          check_result.each do |r|
+            if r['key_word'] != question_keyword
+              r.destroy
+            end
+          end
           check_result_count = check_result.count
           if check_result_count == 0
             #チェック中を表示するため
             #:title => nil, :link => nil, :content => nil,
-            init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0 )
+            init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0, :key_word => "" )
             init_result.save
           end
         end

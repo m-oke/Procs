@@ -138,25 +138,33 @@ class QuestionsController < ApplicationController
 
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
-      @have_submit_answer = false #非公開と削除を区別する
-      @multi_check_enable = false #クラス全体剽窃チェック用
+      @multi_check_todo = 0     #0の場合、既に検索完了
+      @key_word_change = 0        # 1の場合、再検索するので、
+      @have_accepted_answer = 0   #1の場合、全員チェックボタンを有効になる
+      @question_keyword =''
 
+      question_keywords = QuestionKeyword.where(:question_id => @question['id'])
+      question_keywords.each do |k|
+        @question_keyword = @question_keyword + " " + k['keyword']
+      end
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @students.each do |s|
-        answer = Answer.latest_answer(:student_id => s.id,
-                                      :question_id => @question.id,
-                                      :lesson_id => @lesson.id,
-                                      :lesson_question_id => lesson_question_id)
-        if @have_submit_answer == false
-          have_answer = Answer.where(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id, :lesson_question_id => lesson_question_id)
-          if have_answer.count> 0
-            @have_submit_answer = true
+        answer = Answer.latest_answer(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id, :lesson_question_id => lesson_question_id)
+
+        if answer.present?
+          if answer['result'] == 'A'
+            @have_accepted_answer = 1
           end
-        end
-        if @multi_check_enable == false && answer.present?
           checked_result = InternetCheckResult.where(:answer_id =>answer.id)
           if checked_result.count == 0
-            @multi_check_enable = true
+            @multi_check_todo = 1
+          else
+            checked_result.each do |r|
+              if r['key_word']!= @question_keyword
+                @key_word_change = 1
+              end
+              break
+            end
           end
         end
         if @multi_check_enable == true && @have_submit_answer == true

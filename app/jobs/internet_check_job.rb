@@ -2,7 +2,7 @@ class InternetCheckJob < ActiveJob::Base
   queue_as :plagiarism
 
   def perform(question_id,lesson_id)
-    result = Array.new(0,Array.new(4,0))
+    result = Array.new(0,Array.new(5,0))
     lesson = Lesson.find_by(:id => lesson_id)
     students = User.where(:id => lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
     students.each do |s|
