@@ -30,6 +30,7 @@ class EvaluatePythonJob < ActiveJob::Base
 
     # 作業ディレクトリの作成
     FileUtils.mkdir_p(dir_name) unless FileTest.exist?(dir_name)
+    `chmod o+w #{dir_name}`
     # 作業ディレクトリへ移動
     Dir.chdir(dir_name)
 
@@ -63,7 +64,7 @@ class EvaluatePythonJob < ActiveJob::Base
           rss = MEMORY_LIMIT * 1024 * 1000
           test_inputname = test.input_storename
           test_outputname = test.output_storename
-          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e OUTPUT=#{test_outputname} -e EXE=#{exe_file} -v #{dir_name}:/home/python_user/work --ulimit nproc=500 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --net=none -t procs/python_sandbox"
+          exec_cmd = "docker run --rm -u exec_user --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e EXE=#{exe_file} -v #{dir_name}:/home/exec_user/work --ulimit nproc=10 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --net=none procs/python_sandbox"
 
           begin
             # 実行時間制限
@@ -171,12 +172,12 @@ class EvaluatePythonJob < ActiveJob::Base
     answer.test_count = test_count
     answer.save
 
-    # コンテナの削除
+    # 念のためにコンテナの削除
     containers.each {|c| `docker rm #{c}`}
 
     # 作業ディレクトリの削除
     Dir.chdir("..")
-    `rm -r #{dir_name}`
+    `rm -fr #{dir_name}`
     return
   end
 end
