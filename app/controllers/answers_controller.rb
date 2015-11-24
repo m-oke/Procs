@@ -149,10 +149,10 @@ class AnswersController < ApplicationController
 
   private
   def show_diff(original_file, new_file)
-    file = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s) + ".txt"
-    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./tmp/#{file}`
-    diff = File.open("./tmp/#{file}", 'r:utf-8')
-    `rm ./tmp/#{file}`
+    file = "./tmp/" + Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s) + ".txt"
+    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > #{file}`
+    diff = File.open("#{file}", 'r:utf-8')
+    `rm #{file}`
     return diff
   end
 end
