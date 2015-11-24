@@ -141,6 +141,7 @@ class AnswersController < ApplicationController
 
     @select_diff_name = flash[:directory].to_s + @select_diff_file
     @select_raw_name = flash[:directory].to_s + @select_raw_file
+
     @diff = show_diff(@select_raw_name, @select_diff_name)
     flash[:directory] = flash[:directory]
   end
@@ -148,8 +149,10 @@ class AnswersController < ApplicationController
 
   private
   def show_diff(original_file, new_file)
-    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./tmp/diff.txt`
-    diff = File.open('./tmp/diff.txt', 'r:utf-8')
+    file = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s) + ".txt"
+    output = `diff -t --new-line-format='+%L' --old-line-format='-%L' --unchanged-line-format=' %L' #{original_file} #{new_file} > ./tmp/#{file}`
+    diff = File.open("./tmp/#{file}", 'r:utf-8')
+    `rm ./tmp/#{file}`
     return diff
   end
 end
