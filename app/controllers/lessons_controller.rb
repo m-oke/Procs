@@ -17,40 +17,6 @@ class LessonsController < ApplicationController
     unless(User.find_by(:id => current_user.id).has_role?(:teacher))
       redirect_to root_path, :alert => "あなたはこの権限がありません" and return
     end
-
-    target_name = "3n.cpp"
-    target_path = "localcheck/test/ctest/cpptest/"
-    compare_name ="3n2.cpp"
-    compare_path = "localcheck/test/ctest/cpptest/"
-    @target_line = ""
-    @check_token = 0
-
-    @c_check = local_check_c
-    #open( 'exammm.txt' ,'w+' ).write( open( 'test.txt' ).readlines.join.sub( /\d+/m ,'' ) )
-    #open( 'exannn.txt' ,'w+' ).write( open( 'test.txt' ).readlines.join.sub( /\[\d+\]/m ,'' ) )
-    @c_check.each_with_index do |line,i|
-      if i == 0
-        # Take the target file s token in first line
-        target_token_left = line.rindex(target_name + ":") + target_name.size + 1
-        target_token_right = line.rindex("tokens") - 1
-        @target_token = line.strip[target_token_left..target_token_right]
-      end
-      if line.include?("|" + compare_path + compare_name)
-        # Take the line No. in target file which is checked
-        target_line_left = target_path.size + target_name.size + 7
-        target_line_right = line.rindex("|" + compare_path + compare_name) - 1
-        @target_line << line.strip[target_line_left..target_line_right] + ";"
-
-        # Take the token be checked with target file and compare file
-        check_token_left = line.rindex("[") + 1
-        check_token_right = line.rindex("]") - 1
-        @check_token += line[check_token_left..check_token_right].to_i
-      end
-    end
-    # [目標ファイルtoken数,比較ファイル名,目標類似行,類似token数]の配列を作る
-    @local_result = Array.new(0,Array.new(4,0)) #[] [[0,0,0,0]]
-    @local_result.push([@target_token,compare_name,@target_line,@check_token])
-
   end
 
   # post '/lessons'
@@ -283,9 +249,4 @@ class LessonsController < ApplicationController
     params.require(:lesson).permit(:name , :description)
   end
 
-  def local_check_c
-    `sim_c localcheck/test/ctest/cpptest/3n.cpp / localcheck/test/ctest/cpptest/3n2.cpp > ./localcheck/test.txt`
-    check = File.open('./localcheck/test.txt', 'r:utf-8')
-     return check
-  end
 end

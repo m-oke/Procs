@@ -64,6 +64,16 @@ ActiveRecord::Schema.define(version: 20151204074642) do
     t.string   "lesson_code", limit: 255,   null: false
   end
 
+  create_table "local_check_results", force: :cascade do |t|
+    t.integer  "answer_id",    limit: 4,                 null: false
+    t.float    "check_result", limit: 24,  default: 0.0
+    t.string   "check_file",   limit: 255
+    t.string   "target_line",  limit: 255
+    t.string   "compare_line", limit: 255
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
   create_table "question_keywords", force: :cascade do |t|
     t.integer  "question_id", limit: 4,                   null: false
     t.string   "keyword",     limit: 255

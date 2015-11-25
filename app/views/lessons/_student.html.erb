@@ -48,6 +48,7 @@
       <th>メモリ使用量(MB/KB)</th>
       <th>終了時間</th>
       <th>提出</th>
+      <th>学生類似度</th>
       <% unless ENV['BING_APIKEY'].nil? %>
       <th>WEB剽窃チェック</th>
       <% end %>
@@ -85,6 +86,17 @@
               <% end %>
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
+              <!-- ローカル類似度表示 -->
+              <td>
+                <span>
+                  <% result = 0.0 %>
+                  <a class="draw_fancybox" href="#local_checked_results_<%=lesson_question.question_id %>" ><%= result %></a>
+                </span>
+              </td>
+              <!-- Localウィンドウ表示内容-->
+              <div id="local_checked_results_<%=lesson_question.question_id %>" class="internet-check-results-css" >
+                <p>test</p>
+              </div>
               <% unless ENV['BING_APIKEY'].nil? %>
                 <td>
 
