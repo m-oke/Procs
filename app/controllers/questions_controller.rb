@@ -214,6 +214,13 @@ class QuestionsController < ApplicationController
     # result_temp = LocalCheckResult.new(:answer_id => 2, :check_result => (@check_token.to_f/@target_token.to_f*100) , :check_file => (@compare_path + @compare_name), :target_line => @target_line, :compare_line => @compare_line )
     # result_temp.save
 
+    # Mark the check line
+    @target_check_count = @target_line.count(";")
+    @compare_check_count = @compare_line.count(";")
+    t_line = @target_line.scan(/\d+/)
+    c_line = @compare_line.scan(/\d+/)
+    @t_line = t_line.map(&:to_i).sort
+    @c_line = c_line.map(&:to_i).sort
     # FOR TEST
 
 
