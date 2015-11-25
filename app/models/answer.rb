@@ -6,6 +6,7 @@ class Answer < ActiveRecord::Base
   belongs_to :lesson_question, :foreign_key => :lesson_question_id
 
   has_many :internet_check_results, :foreign_key => :answer_id
+  has_many :local_check_results, :foreign_key => :answer_id
   # 最新の解答を取得
   # @param [Fixnum] student_id
   # @param [Fixnum] lesson_id

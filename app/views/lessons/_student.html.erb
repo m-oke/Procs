@@ -48,6 +48,7 @@
       <th>メモリ使用量(MB/KB)</th>
       <th>終了時間</th>
       <th>提出</th>
+      <th>学生類似度</th>
       <th>Internet Copy Check</th>
     </tr>
     <% num = 0 %>
@@ -83,6 +84,13 @@
               <% end %>
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
+              <!-- ローカル類似度表示 -->
+              <td>
+                <span>
+                  <% result = 0.0 %>
+                  <a class="draw_fancybox" href="#local_checked_results_<%=lesson_question.question_id %>" ><%= result %></a>
+                </span>
+              </td>
               <td>
                 <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
                 <% if checked_result.size > 0 %>
@@ -96,6 +104,10 @@
                     </span>
                 <% end %>
               </td>
+              <!-- Localウィンドウ表示内容-->
+              <div id="local_checked_results_<%=lesson_question.question_id %>" class="internet-check-results-css" >
+                <p>test</p>
+              </div>
               <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
                 <p>学生：<%= @student.name %></p>
                 <p>問題：<%= question.title %></p>
@@ -129,6 +141,7 @@
               <td><%= %></td>
               <td><%= lesson_question.end_time %></td>
               <td><%= %>
+              <td></td>
               <td>
                 <span>
                   <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
