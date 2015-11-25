@@ -96,7 +96,16 @@
           <p>ソースコード：</p>
           <div class="hero-unit3">
             <% @target_code.each_with_index do |line, i| %>
+              <% for j in 0..@target_check_count-1 %>
+                <% if i >= @t_line[j*2] && i <= @t_line[j*2+1] %>
+                    <p class="red"> <%= line %> </p>
+                <% elsif i < @t_line[j*2] && i > @t_line[j*2-1] %>
+                    <p> <%= line %> </p>
+                <% end %>
+              <% end %>
+              <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
                 <p> <%= line %> </p>
+              <% end %>
             <% end %>
           </div>
 
@@ -104,10 +113,18 @@
           <p>ソースコード：</p>
           <div class="hero-unit3">
             <% @compare_code.each_with_index do |line, i| %>
-                <p> <%= line %> </p>
+                <% for j in 0..@compare_check_count-1 %>
+                    <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
+                        <p class="red"> <%= line %> </p>
+                    <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
+                        <p> <%= line %> </p>
+                    <% end %>
+                <% end %>
+                <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
+                    <p> <%= line %> </p>
+                <% end %>
             <% end %>
           </div>
-
         </div>
       <% unless ENV['BING_APIKEY'].nil? %>
       <td>
