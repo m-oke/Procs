@@ -28,6 +28,7 @@ class EvaluateCJob < ActiveJob::Base
 
     # 作業ディレクトリの作成
     FileUtils.mkdir_p(dir_name) unless FileTest.exist?(dir_name)
+    `chmod o+w #{dir_name}`
     # 作業ディレクトリへ移動
     Dir.chdir(dir_name)
 
@@ -73,13 +74,13 @@ class EvaluateCJob < ActiveJob::Base
           containers.push(container_name)
 
           # dockerコンテナでプログラムを実行
-          # 最大プロセス数: 500
+          # 最大プロセス数: 10
           # 最大実行メモリ(RSS): 256 MB
           # 最大ファイルサイズ: 40 MB
           rss = MEMORY_LIMIT * 1024 * 1000
           test_inputname = test.input_storename
           test_outputname = test.output_storename
-          exec_cmd = "docker run --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e OUTPUT=#{test_outputname} -e EXE=#{exe_file} -v #{dir_name}:/home/cpp_user/work --ulimit nproc=500 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --net=none -t procs/cpp_sandbox"
+          exec_cmd = "docker run --rm -u exec_user --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e EXE=#{exe_file} -v #{dir_name}:/home/exec_user/work --ulimit nproc=5 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --net=none -t procs/cpp_sandbox"
 
           begin
             # 実行時間制限
@@ -189,7 +190,7 @@ class EvaluateCJob < ActiveJob::Base
 
     # 作業ディレクトリの削除
     Dir.chdir("..")
-    `rm -r #{dir_name}`
+    `rm -fr #{dir_name}`
     return
   end
 end
