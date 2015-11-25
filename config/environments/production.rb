@@ -89,8 +89,7 @@ Rails.application.configure do
     end
     puts "Download ended."
     puts "Building Procs images."
-    `docker build -t procs/python_sandbox #{DOCKER_PATH}/python_sandbox`
-    `docker build -t procs/cpp_sandbox #{DOCKER_PATH}/cpp_sandbox`
+    `docker build -t procs/python_sandbox #{DOCKER_PATH}/python_sandbox & docker build -t procs/cpp_sandbox #{DOCKER_PATH}/cpp_sandbox`
     puts "Build ended."
   end
 
