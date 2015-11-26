@@ -139,7 +139,7 @@ class QuestionsController < ApplicationController
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
       @multi_check_todo = 0     #0の場合、既に検索完了
-      @key_word_change = 0        # 1の場合、再検索するので、
+      @key_word_change = 0        # 1の場合、キーワードの変更があり、 再検索を行う
       @have_accepted_answer = 0   #1の場合、全員チェックボタンを有効になる
       @question_keyword =''
 
@@ -163,7 +163,9 @@ class QuestionsController < ApplicationController
               if r['key_word']!= @question_keyword
                 @key_word_change = 1
               end
-              break
+              if r['title']==nil && r['link']=='' && r['content']==''
+                @multi_check_todo = 1
+              end
             end
           end
         end

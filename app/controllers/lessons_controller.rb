@@ -183,6 +183,17 @@ class LessonsController < ApplicationController
       @multi_check = 1
       @students.each do |s|
         answer = Answer.where(:lesson_id => @lesson_id, :student_id => s['id'], :question_id => @question_id).last
+        #「Http error , Api 使用できない」原因で保存した　臨時データを削除
+        if answer.present?
+        http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )
+        if http_error.present?
+          http_error.each do |r|
+            if r['answer_id'] == answer.id
+              r.destroy
+            end
+          end
+        end
+        end
 
         unless answer.nil?
           check_result = InternetCheckResult.where(:answer_id => answer.id)

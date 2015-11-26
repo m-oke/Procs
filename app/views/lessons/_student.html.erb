@@ -2,7 +2,7 @@
 
     jQuery(document).ready(function(){
         jQuery(".draw_fancybox").fancybox({
-            maxWidth    : 800,
+            maxWidth    : 1200,
             maxHeight   : 600,
             fitToView   : false,
             width       : '70%',
@@ -113,8 +113,8 @@
                 <% if key_word_change == 0 %>
                     <% if checked_result.size > 0 && http_error_exist == 0 %>
                         <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
-                    <%# elsif checked_result.size == 0 && answer.result== 'A' %>
-                    <% elsif checked_result.size == 0 %>
+                    <% elsif checked_result.size == 0 && answer.result== 'A' %>
+                    <%# elsif checked_result.size == 0 %>
                         <span>
                           <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                             :student_id => @student.id,
@@ -173,7 +173,6 @@
                     <p>(1)インターネットの接続に問題がありませんか。</p>
                     <p>(2)検索回数の上限を超えてませんか。</p>
                     <p>設定を確認したら、再チェックを行なってください。</p>
-                    <p>ページを更新した後、最新の検索の結果を表示します。</p>
                 <%else %>
                     <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
                 <%end %>

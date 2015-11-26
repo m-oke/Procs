@@ -130,7 +130,7 @@ class PlagiarismInternetCheck
       num = num + 1
     end
 
-    pre_store_result = InternetCheckResult.where(:answer_id => answer.id, :title => nil)
+    pre_store_result = InternetCheckResult.where(:answer_id => answer.id, :title => nil, :link => nil, :content => nil)
     if pre_store_result.present?
       pre_store_result.each do |item|
         item.destroy
