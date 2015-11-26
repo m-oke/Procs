@@ -1,7 +1,7 @@
 <div id="question_new">
   <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => params[:lesson_id]),:remote => true ,:class=>"btn btn-default btn_top"  %>
   <% @title='問題編集' %>
-  <h1><%= @title %></h1>
+  <h1>問題編集</h1>
   <%= nested_form_for(@question ,:remote=>true ,:url =>lesson_question_path(:lesson_id => @lesson_id,:question_id =>@question_id)) do |f| %>
       <div>
         <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>

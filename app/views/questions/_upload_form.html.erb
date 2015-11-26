@@ -1,5 +1,5 @@
 <h3 id="answer">投稿</h3>
-<%= form_tag({:controller => "answers", :action =>  "create"}, :remote=> (@lesson.id!=1), :authenticity_token => true, :multipart => true) do |f| %>
+<%= form_tag({:controller => "answers", :action =>  "create"}, :remote=> (@lesson.id!=1), :authenticity_token => true, :multipart => true) do %>
   <div class="answer form-group" name="answer">
     <div class="answer form-group" name="language">
       <%= label_tag :language, '使用言語' %>
