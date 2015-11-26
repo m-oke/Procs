@@ -106,24 +106,26 @@ You can assume that no operation overflows a 32-bit integer.",
                 :output_description => "For each pair of input integers i and j you should output i, j, and the maximum cycle length for integers between and including i and j. These three numbers should be separated by at least one space with all three numbers on one line and with one line of output for each line of input. The integers i and j must appear in the output in the same order in which they appeared in the input and should be followed by the maximum cycle length (on the same line).",
                 :version => 1,
                 :run_time_limit => 5000,
-                :memory_usage_limit => 256, :author => 4)
+                :memory_usage_limit => 256,
+                :author => 4,
+                :is_public => true)
 
 # 現在の問題
 Question.create(:title => "Financial Management",
                 :content => "Larry graduated this year and finally has a job. He's making a lot of money, but somehow never seems to have enough. Larry has decided that he needs to grab hold of his financial portfolio and solve his financing problems. The first step is to figure out what's been going on with his money. Larry has his bank account statements and wants to see how much money he has. Help Larry by writing a program to take his closing balance from each of the past twelve months and calculate his average account balance.回答はhttp://blog.livedoor.jp/pcpp/archives/51190060.html",
                 :input_description => "The input will be twelve lines. Each line will contain the closing balance of his bank account for a particular month. Each number will be positive and displayed to the penny. No dollar sign will be included.",
                 :output_description => "The output will be a single number, the average (mean) of the closing balances for the twelve months. It will be rounded to the nearest penny, preceded immediately by a dollar sign, and followed by the end-of-line. There will be no other spaces or characters in the output.",
-                :run_time_limit => 50000, :memory_usage_limit => 256, :version => 1, :author => 4)
+                :run_time_limit => 50000, :memory_usage_limit => 256, :version => 1, :author => 4, :is_public => false)
 
 # 未来の問題
-Question.create(:title => "問題3", :content => "問題3の内容", :input_description => "問題3の入力説明", :output_description => "問題3の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :author => 4)
+Question.create(:title => "問題3", :content => "問題3の内容", :input_description => "問題3の入力説明", :output_description => "問題3の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :author => 4, :is_public => false)
 
 # 現在の問題
-Question.create(:title => "問題4", :content => "問題4の内容", :input_description => "問題4の入力説明", :output_description => "問題4の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :author => 4)
+Question.create(:title => "問題4", :content => "問題4の内容", :input_description => "問題4の入力説明", :output_description => "問題4の出力説明",  :run_time_limit => 5, :memory_usage_limit => 256, :author => 4, :is_public => true)
 
-4.times do |i|
-  LessonQuestion.create(:lesson_id => 1, :question_id => i + 1)
-end
+LessonQuestion.create(:lesson_id => 1, :question_id => 1)
+LessonQuestion.create(:lesson_id => 1, :question_id => 4)
+
 
 #それぞれのクラス
 LessonQuestion.create(:lesson_id => 2, :question_id => 1, :start_time => (Date.today - 7).to_s, :end_time => (Date.today + 11).to_s)

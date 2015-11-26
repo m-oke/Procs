@@ -58,8 +58,13 @@ class QuestionsController < ApplicationController
     end
     params['question']['version'] = 1
 
+    if params['question']['is_public'] != "false"
+      params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
+    end
+
     @question = Question.new(question_params)
     @question.author = current_user.id
+
     if @question.save
       flash.notice='問題を登録しました'
 
@@ -194,7 +199,7 @@ class QuestionsController < ApplicationController
         delete_input_output_file[val['output_storename']] = val['output']
       end
    end
-    # @question.assign_attributes(params['question'])
+
     if version_up == 1
       params['question']['version'] = params['question']['version'].to_i + 1
     end
@@ -239,6 +244,7 @@ class QuestionsController < ApplicationController
                                      :cpu_usage_limit,
                                      :version,
                                      :author,
+                                     :is_public,
                                      samples_attributes: [:question_id, :input, :output, :_destroy],
                                      test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
                                      question_keywords_attributes: [:question_id, :keyword, :_destroy],
