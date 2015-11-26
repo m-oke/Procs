@@ -57,7 +57,9 @@ class QuestionsController < ApplicationController
       test_data["#{i}"] = files
     end
     params['question']['version'] = 1
+
     @question = Question.new(question_params)
+    @question.author = current_user.id
     if @question.save
       flash.notice='問題を登録しました'
 
@@ -227,19 +229,20 @@ class QuestionsController < ApplicationController
   private
   def question_params
     params.require(:question).permit(
-      :title,
-      :content,
-      :input_description,
-      :output_description,
-      :run_time_limit,
-      :memory_usage_limit,
-      :cpu_usage_limit,
-      :version,
-      samples_attributes: [:question_id, :input, :output, :_destroy],
-      test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
-      question_keywords_attributes: [:question_id, :keyword, :_destroy],
-      lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
-    )
+                                     :title,
+                                     :content,
+                                     :input_description,
+                                     :output_description,
+                                     :run_time_limit,
+                                     :memory_usage_limit,
+                                     :cpu_usage_limit,
+                                     :version,
+                                     :author,
+                                     samples_attributes: [:question_id, :input, :output, :_destroy],
+                                     test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
+                                     question_keywords_attributes: [:question_id, :keyword, :_destroy],
+                                     lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
+                                     )
   end
 
   # 該当する問題が存在するかどうか
