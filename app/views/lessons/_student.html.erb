@@ -62,7 +62,7 @@
           <% answer = Answer.where(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id => lesson_question.question_id, :lesson_question_id => lesson_question.id).last %>
           <td><%= num  %></td>
           <% unless answer.nil? %>
-              <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
+              <td class="table-question-title-css"><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
                                                                           :question_id => question.id,
                                                                           :student_id => @student.id,
                                                                           :lesson_question_id => lesson_question.id),:remote => true  %></td>
@@ -178,7 +178,7 @@
                 <%end %>
               </div>
           <% else %>
-              <td><%= question.title %></td>
+              <td class="table-question-title-css"><%= question.title %></td>
               <td><p>-</p></td>
               <td><%= %></td>
               <td><%= %></td>

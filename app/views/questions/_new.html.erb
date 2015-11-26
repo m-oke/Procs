@@ -8,7 +8,7 @@
   <%= nested_form_for(@question ,:remote=>true ,:url=>{:controller=>"questions", :action=>"create"}, :multipart => true ) do |f| %>
     <div>
       <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>
-      <%= f.text_area :title ,:rows => 2 , :class=>"text-area-css1"  ,required: 'required' %>
+      <%= f.text_field :title ,:cols => 150 , :maxlength => 200, :class=>"text-area-css1"  ,required: 'required' %>
     </div>
     <div>
       <%= f.label :content , '内容'%><span>(<span class="inputnote">＊</span>)</span><br/>
