@@ -28,14 +28,14 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @lesson_id = params[:lesson_id]
+    lesson_id = params[:lesson_id] || session[:lesson_id]
 
     ##ファイルサイズは10MB以上の場合　#ajax
     # 保存失敗時のajax用の変数
-    params[:lesson_id] = @lesson_id
-    @lesson = Lesson.find_by(:id => @lesson_id)
+    params[:lesson_id] = lesson_id
+    @lesson = Lesson.find_by(:id => lesson_id)
     @questions = @lesson.question
-    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
+    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     # アップロードされたテストデータを取得
     # TestDatumモデルにはファイル名を入力
     test_data = {}
@@ -89,11 +89,12 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def show
+    quesion_id = params[:question_id] || session[:question_id]
     @question = Question.find_by(:id => params[:question_id])
-    lesson_id = params[:lesson_id] || 1
+    lesson_id = params[:lesson_id] || session[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => lesson_id)
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                          :question_id => params[:question_id],
+                                          :question_id => quesion_id,
                                           :lesson_id => lesson_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
@@ -120,8 +121,8 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    @lesson_id = params[:lesson_id]
-    @question_id = params[:question_id]
+    @lesson_id = params[:lesson_id] || session[:lesson_id]
+    @question_id = params[:question_id] || session[:question_id]
     @question = Question.find_by(:id =>@question_id)
 
     ##ajax
