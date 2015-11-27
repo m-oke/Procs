@@ -9,11 +9,11 @@
     <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => session[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
     <% if @is_teacher && (@question.author == current_user.id) %>
       <%= link_to '編集',edit_lesson_question_path(:lesson_id => session[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
+      <button class="btn btn-danger btn_top", id="question_delete">削除</button><span id="question_delete_attach", style="visibility: hidden;"><text ><%= params[:lesson_id]+';'+params[:question_id] %></text></span>
     <% end %>
 <% else %>
     <%= link_to '問題一覧に戻る', questions_path, :class => "btn btn-default btn_top" %>
 <% end %>
-
 <h2><%= @question.title %></h2>
 <div class="table-responsive">
   <div>
@@ -127,3 +127,24 @@
   <% end %>
 </div>
 <% flash[:previous] = "question" %>
+<script>
+  $('#question_delete').click(function(){
+
+      var str = $("#question_delete_attach").text().split(';')
+      var str_lesson_id = str[0]
+      var str_question_id = str[1]
+      var str_url = "/lessons/"+str_lesson_id+"/questions/"+str_question_id
+      if(!confirm('この問題を削除しますか？')){
+          return false
+      }else{
+          $.ajax({
+              url: str_url,
+              type: "DELETE",
+              data:{
+                  lesson_id:str_lesson_id,
+                  question_id:str_question_id
+              }
+          });
+      }
+  })
+</script>

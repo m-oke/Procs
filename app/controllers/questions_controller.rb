@@ -253,7 +253,24 @@ class QuestionsController < ApplicationController
     session[:question_id] = question_id
     @question = Question.find_by(:id => question_id)
     my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
-    @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
+    @exist_questi on = my_questions.map{|q| [q.title, q.id]}.to_h
+  end
+
+  def destroy
+    @lesson_id = params[:lesson_id]
+    @question_id = params[:question_id]
+    @question = Question.find_by(:id =>@question_id)
+
+    ##ajax
+    params[:lesson_id] = @lesson_id
+    @lesson = Lesson.find_by(:id => @lesson_id)
+    @questions = @lesson.question
+    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
+
+    select_lesson_question = LessonQuestion.where(:lesson_id=>@lesson_id,:question_id=>@question_id).last
+    select_lesson_question['is_deleted'] = 1
+    select_lesson_question.save
+
   end
 
   private
