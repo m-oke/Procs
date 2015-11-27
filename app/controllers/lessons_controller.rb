@@ -51,6 +51,25 @@ class LessonsController < ApplicationController
     end
   end
 
+  def edit
+    lesson_id = params[:id]
+    @lesson = Lesson.find(lesson_id)
+  end
+
+  def update
+    lesson_id = params[:id]
+    lesson = Lesson.find(lesson_id)
+    lesson['name'] = params[:lesson]['name']
+    lesson['description'] = params[:lesson]['description']
+    if lesson.save
+      flash.notice = '授業を更新しました'
+    else
+      flash.notice = '授業の更新に失敗しました'
+    end
+    redirect_to  root_path
+
+  end
+
   # get '/lessons/:id'
   def show
     @teachers = get_teachers
