@@ -221,12 +221,25 @@ class PlagiarismInternetCheck
           end
           # delete line which start with for
           if line[0,3] == 'for' && line.include?('for')
+            tmp = line.sub(/\s+/,' ')
+            if tmp.include?('for(') || tmp.include?('for (')
             line = ''
           end
           # delete lines which only contain break or continue
           if line == 'break' || line == 'continue'
             line = ''
           end
+          # delete printf scanf and cin cout
+          if line[0,6] == 'printf'  || line[0,5] == 'scanf' || line[0,3] == 'cin' || line[0,4] == 'cout'
+            tmp = line.sub(/\s+/,' ')
+            if (tmp.include?('printf(') || tmp.include?('printf (')) ||
+                (tmp.include?('scanf(') || tmp.include?('scanf (')) ||
+                (tmp.include?('cin>>') || tmp.include?('cin >>')) ||
+                (tmp.include?('cout<<') || tmp.include?('cout <<'))
+              line = ''
+            end
+          end
+
           # delete { and } which like { a = cycle_length(n/2, ++i); return a; }
         end
 
@@ -292,12 +305,15 @@ class PlagiarismInternetCheck
           # use squeeze
           if line[0,6] == 'print '
             tmp = line.sub(/\s+/,' ')
-            if (tmp.include?('-') && tmp.length-tmp.squeeze('-').length > 6) ||
-                (tmp.include?('+') && tmp.length-tmp.squeeze('+').length > 6) ||
-                (tmp.include?('=') && tmp.length-tmp.squeeze('=').length > 6) ||
-                (tmp.include?('*') && tmp.length-tmp.squeeze('*').length > 6) ||
-                (tmp.include?('/') && tmp.length-tmp.squeeze('/').length > 6)
-              line = ''
+            # if (tmp.include?('-') && tmp.length-tmp.squeeze('-').length > 6) ||
+            #     (tmp.include?('+') && tmp.length-tmp.squeeze('+').length > 6) ||
+            #     (tmp.include?('=') && tmp.length-tmp.squeeze('=').length > 6) ||
+            #     (tmp.include?('*') && tmp.length-tmp.squeeze('*').length > 6) ||
+            #     (tmp.include?('/') && tmp.length-tmp.squeeze('/').length > 6)
+            #   line = ''
+            # end
+            if tmp.include?('print(') || tmp.include?('print (')
+              line =''
             end
           end
           # delete try: except: finally:
