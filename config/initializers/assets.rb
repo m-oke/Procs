@@ -4,6 +4,7 @@
 Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.precompile += %w(questions/question_timepicker.js)
 Rails.application.config.assets.precompile += %w( answers/answers.js )
+Rails.application.config.assets.precompile += %w( questions/get_exist_question.js )
 
 # Add additional assets to the asset load path
 # Rails.application.config.assets.paths << Emoji.images_path

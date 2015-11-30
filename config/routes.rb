@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     get 'answers/select_version' => 'answers#select_version'
     post 'answers/diff_select' => 'answers#diff_select'
     post 'lessons/internet_check' =>'lessons#internet_check'
+    post 'questions/get_exist_question' => 'questions#get_exist_question'
   end
 
   resources :questions, only: [:index, :show], param: :question_id do

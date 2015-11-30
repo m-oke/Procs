@@ -4,17 +4,16 @@ class QuestionsController < ApplicationController
   before_action :check_lesson, only: [:index, :new]
   before_filter :authenticate_user!
 
-  # get '/quesions' || get '/lessons/:lesson_id/questions'
+  # get '/questions' || get '/lessons/:lesson_id/questions'
   # 問題一覧を表示
   # @param [Fixnum] lesson_id
-  # @param [Fixnum] id Quesionのid
+  # @param [Fixnum] id Questionのid
   def index
     id = params[:lesson_id] || 1
     params[:lesson_id] = id
     @lesson = Lesson.find_by(:id => id)
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
     @questions = @lesson.question
-
   end
 
   def new
@@ -25,6 +24,8 @@ class QuestionsController < ApplicationController
     @question.lesson_questions.build
     @question.question_keywords.build
     @lesson_id = params[:lesson_id].to_i
+    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
+    @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
   end
 
   def create
@@ -101,12 +102,12 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def show
-    quesion_id = params[:question_id] || session[:question_id]
+    question_id = params[:question_id] || session[:question_id]
     @question = Question.find_by(:id => params[:question_id])
     lesson_id = params[:lesson_id] || session[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => lesson_id)
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                          :question_id => quesion_id,
+                                          :question_id => question_id,
                                           :lesson_id => lesson_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
@@ -245,6 +246,15 @@ class QuestionsController < ApplicationController
 
   end
 
+  def get_exist_question
+    question_id = params[:question_id]
+    @question = Question.find_by(:id => question_id)
+    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
+    @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
+
+    flash[:lesson_id] = flash[:lesson_id]
+  end
+
   private
   def question_params
     params.require(:question).permit(
@@ -272,7 +282,7 @@ class QuestionsController < ApplicationController
     lesson_id = params[:lesson_id] || 1
     question_id = params[:question_id]
     return unless access_question_check(:user_id => current_user.id, :lesson_id => lesson_id, :question_id => question_id)
-    @quesions = Question.find_by(:id => question_id)
+    @questions = Question.find_by(:id => question_id)
   end
 
   # 該当する授業が存在するかどうか
