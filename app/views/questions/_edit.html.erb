@@ -116,10 +116,10 @@
   </div>
   <br>
   <div>
-    <% if :is_public %>
+    <% if @is_public %>
       <%= f.label :is_public, 'この問題は既に公開されています．非公開にする場合は管理者に問い合わせてください．' %>
     <% else %>
-      <%= f.check_box :is_public, {:onclick => 'publicCheck(this)', :disabled => :is_public}, 'true', 'false' %>
+      <%= f.check_box :is_public, {:onclick => 'publicCheck(this)', :disabled => @is_public}, 'true', 'false' %>
             <%= f.label :is_public, 'この問題を一般に公開する場合はチェックしてください．' %>
           <% end %>
     </div>

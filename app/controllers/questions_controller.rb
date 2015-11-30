@@ -41,15 +41,21 @@ class QuestionsController < ApplicationController
     test_data = {}
     params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
       files = {}
+
+      # データが無い項目は無視
       if val['input'].nil?
         next
       end
+
+      # ファイルの取得
       files['input'] = val['input']
       files['output'] = val['output']
       if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
         flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
         return
       end
+
+      # ファイルの入っていた項目にファイル名などを保存
       val['input'] = val['input'].original_filename
       val['output'] = val['output'].original_filename
       val['input_storename'] = "input#{i}"
@@ -58,6 +64,7 @@ class QuestionsController < ApplicationController
     end
     params['question']['version'] = 1
 
+    # パブリック化の有無
     if params['question']['is_public'] != "false"
       params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
     end
@@ -123,6 +130,7 @@ class QuestionsController < ApplicationController
     @lesson_id = params[:lesson_id]
     @question_id = params[:question_id]
     @question = Question.find_by(:id =>@question_id)
+    @is_public = @question.is_public
   end
 
   def update
@@ -202,6 +210,11 @@ class QuestionsController < ApplicationController
 
     if version_up == 1
       params['question']['version'] = params['question']['version'].to_i + 1
+    end
+
+    # パブリック化の有無
+    if params['question']['is_public'] != "false"
+      params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
     end
 
     if @question.update(params['question'])
