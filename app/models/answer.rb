@@ -35,8 +35,8 @@ class Answer < ActiveRecord::Base
   # 該当する授業と学生の成績を取得
   # @param [Fixnum] student_id
   # @param [Fixnum] lesson_id
-  def self.records(student_id:, lesson_id:)
-    lesson_questions = LessonQuestion.where(:lesson_id => lesson_id)
+  def self.records(student_id:, lesson_id:, lesson_questions:nil)
+    lesson_questions = lesson_questions ? lesson_questions : LessonQuestion.where(:lesson_id => lesson_id)
     accept_count = 0
 
     lesson_questions.each do |lesson_question|

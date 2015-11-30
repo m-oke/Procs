@@ -137,15 +137,17 @@ class AnswersController < ApplicationController
   end
 
   def diff_select
-
+    flash[:directory] = flash[:directory]
     @select_diff_file = params[:diff_selected_file]
     @select_raw_file = params[:raw_selected_file]
 
-    @select_diff_name = flash[:directory].to_s + @select_diff_file
     @select_raw_name = flash[:directory].to_s + @select_raw_file
+    if @select_diff_file == "なし"
+      return
+    end
 
-    @diff = show_diff(@select_raw_name, @select_diff_name)
-    flash[:directory] = flash[:directory]
+    select_diff_name = flash[:directory].to_s + @select_diff_file
+    @diff = show_diff(@select_raw_name, select_diff_name)
   end
 
 
