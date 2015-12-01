@@ -213,7 +213,7 @@ class QuestionsController < ApplicationController
     end
 
     # パブリック化の有無
-    if params['question']['is_public'] != "false"
+    if (params['question']['is_public'] != "false") && (@question.is_public != true)
       params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
     end
 
