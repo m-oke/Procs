@@ -14,6 +14,7 @@
   <div class="tab-pane active" id="tab1">
     <%= link_to "授業一覧に戻る" ,lessons_path , :class => "btn btn-default btn_top "%>
     <%= link_to "編集" ,edit_lesson_path , :class => "btn btn-default btn_top " %>
+    <button class="btn btn-danger btn_top", id="lesson_delete">削除</button><span id="lesson_delete_attach", style="visibility: hidden;"><text ><%= @lesson.id %></text></span>
     <h1>授業基本情報</h1>
     <table class="student">
       <tbody>
@@ -46,3 +47,22 @@
   <div class="tab-pane" id="tab2">
   </div>
 </div>
+<script>
+    $('#lesson_delete').click(function(){
+
+        var str = $("#lesson_delete_attach").text()
+
+        var str_url = "/lessons/"+str
+        if(!confirm('この授業を削除しますか？')){
+            return false
+        }else{
+            $.ajax({
+                url: str_url,
+                type: "DELETE",
+                data:{
+                    lesson_id:str
+                }
+            });
+        }
+    })
+</script>

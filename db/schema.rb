@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201070846) do
+ActiveRecord::Schema.define(version: 20151127090009) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "student_id",            limit: 4,                 null: false
@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(version: 20151201070846) do
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
     t.boolean  "is_teacher", limit: 1, default: false, null: false
+    t.integer  "is_deleted", limit: 4, default: 0
   end
 
   create_table "users", force: :cascade do |t|

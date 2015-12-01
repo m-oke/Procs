@@ -70,6 +70,12 @@ class LessonsController < ApplicationController
 
   end
 
+  def destroy
+    lesson_id = params[:lesson_id]
+    deleted_lesson = UserLesson.where(:lesson_id =>lesson_id)
+    deleted_lesson.update_all(:is_deleted => 1)
+  end
+
   # get '/lessons/:id'
   def show
     @teachers = get_teachers
