@@ -4,9 +4,9 @@ class AnswersController < ApplicationController
 
   def index
     @student_id = params[:student_id] || current_user.id
-    @lesson_id = params[:lesson_id] || 1
-    @question_id = params[:question_id]
-    @question = Question.find_by(:id => @question_id)
+    @lesson_id = params[:lesson_id] || session[:lesson_id] || 1
+    @question_id = params[:question_id] || session[:question_id]
+      @question = Question.find_by(:id => @question_id)
     if Lesson.find_by(:id => @lesson_id).nil? || Question.find_by(:id => @question_id).nil? || User.find_by(:id => @student_id).nil?
       redirect_to root_path, :alert => '該当する解答は存在しません' and return
     end
@@ -45,8 +45,10 @@ class AnswersController < ApplicationController
   # @param [Fixnum] id Questionのid
   def create
     file = params[:upload_file]
-    question_id = params[:question_id]
-    lesson_id = params[:lesson_id].present? ? params[:lesson_id] : 1
+    question_id = session[:question_id]
+    lesson_id = session[:lesson_id].present? ? session[:lesson_id] : 1
+    logger.debug("question = #{question_id}")
+    logger.debug("lesson = #{lesson_id}")
 
     # ajax用の変数
     @lesson = Lesson.find_by(:id => lesson_id)

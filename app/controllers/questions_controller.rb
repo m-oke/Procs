@@ -28,28 +28,34 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @lesson_id = params[:lesson_id]
+    lesson_id = params[:lesson_id] || session[:lesson_id]
 
     ##ファイルサイズは10MB以上の場合　#ajax
     # 保存失敗時のajax用の変数
-    params[:lesson_id] = @lesson_id
-    @lesson = Lesson.find_by(:id => @lesson_id)
+    params[:lesson_id] = lesson_id
+    @lesson = Lesson.find_by(:id => lesson_id)
     @questions = @lesson.question
-    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
+    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     # アップロードされたテストデータを取得
     # TestDatumモデルにはファイル名を入力
     test_data = {}
     params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
       files = {}
+
+      # データが無い項目は無視
       if val['input'].nil?
         next
       end
+
+      # ファイルの取得
       files['input'] = val['input']
       files['output'] = val['output']
       if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
         flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
         return
       end
+
+      # ファイルの入っていた項目にファイル名などを保存
       val['input'] = val['input'].original_filename
       val['output'] = val['output'].original_filename
       val['input_storename'] = "input#{i}"
@@ -57,7 +63,15 @@ class QuestionsController < ApplicationController
       test_data["#{i}"] = files
     end
     params['question']['version'] = 1
+
+    # パブリック化の有無
+    if params['question']['is_public'] != "false"
+      params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
+    end
+
     @question = Question.new(question_params)
+    @question.author = current_user.id
+
     if @question.save
       flash.notice='問題を登録しました'
 
@@ -87,11 +101,12 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def show
+    quesion_id = params[:question_id] || session[:question_id]
     @question = Question.find_by(:id => params[:question_id])
-    lesson_id = params[:lesson_id] || 1
+    lesson_id = params[:lesson_id] || session[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => lesson_id)
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                          :question_id => params[:question_id],
+                                          :question_id => quesion_id,
                                           :lesson_id => lesson_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
@@ -115,11 +130,12 @@ class QuestionsController < ApplicationController
     @lesson_id = params[:lesson_id]
     @question_id = params[:question_id]
     @question = Question.find_by(:id =>@question_id)
+    @is_public = @question.is_public
   end
 
   def update
-    @lesson_id = params[:lesson_id]
-    @question_id = params[:question_id]
+    @lesson_id = params[:lesson_id] || session[:lesson_id]
+    @question_id = params[:question_id] || session[:question_id]
     @question = Question.find_by(:id =>@question_id)
 
     ##ajax
@@ -191,9 +207,14 @@ class QuestionsController < ApplicationController
         delete_input_output_file[val['output_storename']] = val['output']
       end
    end
-    # @question.assign_attributes(params['question'])
+
     if version_up == 1
       params['question']['version'] = params['question']['version'].to_i + 1
+    end
+
+    # パブリック化の有無
+    if (params['question']['is_public'] != "false") && (@question.is_public != true)
+      params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
     end
 
     if @question.update(params['question'])
@@ -227,19 +248,21 @@ class QuestionsController < ApplicationController
   private
   def question_params
     params.require(:question).permit(
-      :title,
-      :content,
-      :input_description,
-      :output_description,
-      :run_time_limit,
-      :memory_usage_limit,
-      :cpu_usage_limit,
-      :version,
-      samples_attributes: [:question_id, :input, :output, :_destroy],
-      test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
-      question_keywords_attributes: [:question_id, :keyword, :_destroy],
-      lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
-    )
+                                     :title,
+                                     :content,
+                                     :input_description,
+                                     :output_description,
+                                     :run_time_limit,
+                                     :memory_usage_limit,
+                                     :cpu_usage_limit,
+                                     :version,
+                                     :author,
+                                     :is_public,
+                                     samples_attributes: [:question_id, :input, :output, :_destroy],
+                                     test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
+                                     question_keywords_attributes: [:question_id, :keyword, :_destroy],
+                                     lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
+                                     )
   end
 
   # 該当する問題が存在するかどうか
