@@ -34,7 +34,7 @@
         <% deleted_lessons = UserLesson.where(:user_id => current_user.id , :is_deleted => 1) %>
         <% if deleted_lessons.count > 0 %>
             <div class = "lesson-new">
-            <h3 sytle="color:red">非公開授業リスト</h3>
+            <h3><FONT color="#ff0000">非公開授業リスト</FONT></h3>
             <% deleted_lessons.each do |d| %>
                 <% next if d.lesson_id == 1%>
                 <% lesson = Lesson.find(d.lesson_id) %>
