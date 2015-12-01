@@ -73,7 +73,7 @@ class LessonsController < ApplicationController
   def destroy
     lesson_id = params[:lesson_id]
     deleted_lesson = UserLesson.where(:lesson_id =>lesson_id)
-    deleted_lesson.update_all(:is_deleted => 1)
+    deleted_lesson.update_all(:is_deleted => true)
   end
 
   # get '/lessons/:id'

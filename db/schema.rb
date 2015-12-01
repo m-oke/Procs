@@ -107,7 +107,7 @@ ActiveRecord::Schema.define(version: 20151127090009) do
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
     t.boolean  "is_teacher", limit: 1, default: false, null: false
-    t.integer  "is_deleted", limit: 4, default: 0
+    t.boolean  "is_deleted", limit: 1, default: false, null: false
   end
 
   create_table "users", force: :cascade do |t|

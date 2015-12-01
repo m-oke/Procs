@@ -16,7 +16,7 @@
         <%= link_to '授業参加', {:controller => :user_lessons, :action => :create}, class: 'btn btn-primary' %>
       </p>
     </div>
-    <% user_lesson = UserLesson.where(:user_id => current_user.id, :is_deleted => 0 ) %>
+    <% user_lesson = UserLesson.where(:user_id => current_user.id, :is_deleted => false ) %>
     <% unless user_lesson.empty? %>
         <% user_lesson.each do |lesson_select_user| %>
           <% next if lesson_select_user.lesson_id == 1 %>
@@ -31,7 +31,7 @@
     <% end %>
 
     <% if current_user.has_role?(:teacher)%>
-        <% deleted_lessons = UserLesson.where(:user_id => current_user.id , :is_deleted => 1) %>
+        <% deleted_lessons = UserLesson.where(:user_id => current_user.id , :is_deleted => true) %>
         <% if deleted_lessons.count > 0 %>
             <div class = "lesson-new">
             <h3><FONT color="#ff0000">非公開授業リスト</FONT></h3>
