@@ -8,7 +8,7 @@ class EvaluatePythonJob < ActiveJob::Base
   # @param [Fixnum] user_id ユーザID
   # @param [Fixnum] lesson_id 授業ID
   # @param [Fixnum] question_id 問題ID
-  def perform(user_id:, lesson_id:, question_id:)
+  def perform(user_id:, lesson_id:, question_id:, lesson_question_id:)
     # 作業ディレクトリ名を乱数で生成
     dir_name = EVALUATE_WORK_DIR.to_s + "/" + Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
 
@@ -17,14 +17,15 @@ class EvaluatePythonJob < ActiveJob::Base
     memory_usage_limit = question.memory_usage_limit
     answer = Answer.where(:student_id => user_id,
                           :lesson_id => lesson_id,
-                          :question_id => question_id).last
+                          :question_id => question_id,
+                          :lesson_question_id => lesson_question_id).last
     ext = EXT[answer.language]
     test_data = TestDatum.where(:question_id => question_id)
     test_count = test_data.size
     test_data_dir = UPLOADS_QUESTIONS_PATH.join(question_id.to_s)
 
     # アップロードされたファイル
-    original_file = UPLOADS_ANSWERS_PATH.join(user_id.to_s, lesson_id.to_s, question_id.to_s, answer.file_name)
+    original_file = UPLOADS_ANSWERS_PATH.join(user_id.to_s, lesson_question_id.to_s, answer.file_name)
 
     exe_file = "python#{ext}" # 追記後の実行ファイル
 

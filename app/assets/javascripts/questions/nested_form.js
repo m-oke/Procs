@@ -7,7 +7,6 @@ $(document).on('nested:fieldRemoved', function(event){
     var id = parent[0].id;
     document.field = field;
 
-    console.log('filed = ' + id);
     if($('#' + id).find('.fields').length != 1){
         field.find('input').attr({required: false});
         field.find('textarea').attr({required: false});

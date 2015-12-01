@@ -1,3 +1,5 @@
+<%= "id= #{ session[:lesson_id]}" %>
+<%= params %>
 <div>
   <% if @lesson_id.to_i == 1 %>
     <% if flash[:previous] == "question" %>
