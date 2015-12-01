@@ -55,12 +55,13 @@
         <tr>
           <% num = num + 1 %>
           <% question = Question.find_by(:id => lesson_question.question_id) %>
-          <% answer = Answer.where(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id =>lesson_question.question_id).last %>
+          <% answer = Answer.where(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id => lesson_question.question_id, :lesson_question_id => lesson_question.id).last %>
           <td><%= num  %></td>
           <% unless answer.nil? %>
               <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
                                                                           :question_id => question.id,
-                                                                          :student_id => @student.id),:remote => true  %></td>
+                                                                          :student_id => @student.id,
+                                                                          :lesson_question_id => lesson_question.id),:remote => true  %></td>
               <% if question.version == answer.question_version %>
                   <td><%= RESULT[answer.result] %></td>
               <% else %>

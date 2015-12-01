@@ -30,6 +30,7 @@ class QuestionsController < ApplicationController
 
   def create
     lesson_id = params[:lesson_id] || session[:lesson_id]
+    question_id = params[:question_id] || session[:question_id]
 
     ##ファイルサイズは10MB以上の場合　#ajax
     # 保存失敗時のajax用の変数
@@ -39,8 +40,8 @@ class QuestionsController < ApplicationController
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
 
     if flash[:is_refer]
-      lesson_question = LessonQuestion.new(:question_id => params[:question_id],
-                                           :lesson_id => params[:lesson_id],
+      lesson_question = LessonQuestion.new(:question_id => question_id,
+                                           :lesson_id => lesson_id,
                                            :start_time => params[:start_time],
                                            :end_time => params[:end_time])
       if lesson_question.save
