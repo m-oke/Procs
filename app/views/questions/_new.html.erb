@@ -24,11 +24,11 @@
       <%= f.text_area :output_description, :rows => 2 , :class=>"text-area-css1"  %>
     </div>
     <div class="field_question">
-      <fieldset id="question_keywords">
-        <legend>剽窃チェック用のキーワード(<span class="inputnote">＊</span>)</legend>
+        <fieldset id="question_keywords">
+        <legend>剽窃チェック用のキーワード</legend>
         <%= f.fields_for :question_keywords do |builder| %>
-          <%= builder.label :keyword,"キーワード:" %>
-          <%= builder.text_field :keyword , :size => 100, required: 'required'  %>
+          <%= builder.label :keyword,"キーワード" %>
+          <%= builder.text_field :keyword , :size => 100 %>
           <%= builder.link_to_remove "削除" %>
         <% end %>
         <%= f.link_to_add "追加",:question_keywords  %>

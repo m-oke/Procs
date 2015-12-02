@@ -110,18 +110,19 @@
                         <% end %>
                     <% end %>
                 <% end %>
-                <% if key_word_change == 0 %>
-                    <% if checked_result.size > 0 && http_error_exist == 0 %>
-                        <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
-                    <% elsif checked_result.size == 0 && answer.result== 'A' %>
-                    <%# elsif checked_result.size == 0 %>
-                        <span>
+                <% if question_keyword !='' %>
+                    <% if key_word_change == 0 %>
+                        <% if checked_result.size > 0 && http_error_exist == 0 %>
+                            <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
+                        <% elsif checked_result.size == 0 && answer.result== 'A' %>
+                            <%# elsif checked_result.size == 0 %>
+                            <span>
                           <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                             :student_id => @student.id,
                                                                             :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
-                          <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
+                              <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
                         </span>
-                    <% elsif checked_result.size > 0 && http_error_exist == 1%>
+                        <% elsif checked_result.size > 0 && http_error_exist == 1%>
                         <span>
                           <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                             :student_id => @student.id,
@@ -129,21 +130,23 @@
                           <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
                         </span>
 
-                    <% else %>
+                        <% else %>
                         <span>
                           <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                             :student_id => @student.id,
                                                                             :question_id => lesson_question.question_id ), :remote => true , :disabled => "true", :id => "ajax_link_#{lesson_question.question_id}", :method => "post", :class=>"btn btn-default" %>
                         </span>
-                    <% end %>
-                <% else %>
+                        <% end %>
+                    <% else %>
                     <span>
                       <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                         :student_id => @student.id,
                                                                         :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
-                                     <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
+                      <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
                     </span>
+                    <% end %>
                 <% end %>
+
               </td>
               <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
                 <p>学生：<%= @student.name %></p>

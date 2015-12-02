@@ -138,6 +138,7 @@ class QuestionsController < ApplicationController
 
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
+      @plagiarism_have_keyword = 0
       @multi_check_todo = 0     #0の場合、既に検索完了
       @key_word_change = 0        # 1の場合、キーワードの変更があり、 再検索を行う
       @have_accepted_answer = 0   #1の場合、全員チェックボタンを有効になる
@@ -145,6 +146,7 @@ class QuestionsController < ApplicationController
 
       question_keywords = QuestionKeyword.where(:question_id => @question['id'])
       question_keywords.each do |k|
+        @plagiarism_have_keyword = 1
         @question_keyword = @question_keyword + " " + k['keyword']
       end
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
