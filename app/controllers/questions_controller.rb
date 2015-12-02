@@ -269,10 +269,10 @@ class QuestionsController < ApplicationController
 
   def get_exist_question
     question_id = params[:question_id]
+    session[:question_id] = question_id
     @question = Question.find_by(:id => question_id)
     my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
     @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
-    flash[:lesson_id] = flash[:lesson_id]
   end
 
   private

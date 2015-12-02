@@ -7,7 +7,7 @@
 <%= render "layouts/notice" %>
 <% if session[:lesson_id] != 1 %>
     <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => session[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
-    <% if @is_teacher && (@question.author == current_user.id) && %>
+    <% if @is_teacher && (@question.author == current_user.id) %>
       <%= link_to '編集',edit_lesson_question_path(:lesson_id => session[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
     <% end %>
 <% else %>

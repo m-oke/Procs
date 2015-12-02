@@ -1,13 +1,12 @@
 <div id="question_new">
-  <% flash.keep %>
   <% flash[:is_refer] = true %>
-  <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => flash[:lesson_id]),:remote => true ,:class=>"btn btn-default btn_top"  %>
+  <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => session[:lesson_id]),:remote => true ,:class=>"btn btn-default btn_top"  %>
   <h1>問題新規作成</h1>
-  <p> 引用 </p>
+
   <h4>問題の参照</h4>
   <%= select_tag :exist_question, options_for_select(@exist_question), :class => 'form-control', :style => 'width:220px', :id => 'get_exist_question', :prompt => "他の問題を参照する" %>
 
-  <%= nested_form_for(@question, :remote => true, :method => "POST", :url=> lesson_questions_path(:lesson_id => flash[:lesson_id], :question_id => flash[:question_id])) do |f| %>
+  <%= nested_form_for(@question, :remote => true, :method => "POST", :url=> lesson_questions_path(:lesson_id => session[:lesson_id], :question_id => session[:question_id])) do |f| %>
     <div>
       <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>
       <%= f.text_area :title , :rows => 2 , :class => "text-area-css1", :disabled => true %>

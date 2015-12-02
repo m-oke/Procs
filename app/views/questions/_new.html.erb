@@ -1,5 +1,4 @@
 <div id="question_new">
-  <% flash[:lesson_id] = params[:lesson_id] %>
   <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => params[:lesson_id]),:remote => true ,:class=>"btn btn-default btn_top"  %>
   <h1>問題新規作成</h1>
 
