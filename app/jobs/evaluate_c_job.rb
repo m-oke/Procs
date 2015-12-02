@@ -168,7 +168,8 @@ class EvaluateCJob < ActiveJob::Base
       # C言語ローカル剽窃チェックスクリプトをメッセージキューに入れる
       LocalCheckCJob.perform_later(:user_id => user_id,
                                    :lesson_id => lesson_id,
-                                   :question_id => question_id)
+                                   :question_id => question_id,
+                                   :lesson_question_id => lesson_question_id)
     else
       if results.include?("RE")
         res = "RE"

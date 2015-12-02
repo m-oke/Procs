@@ -84,7 +84,7 @@
       <td><%= answer.language.capitalize unless answer.language.nil? %></td>
       <!-- ローカル類似度の表示 -->
       <td>
-        <a class="draw_fancybox" href="#local_checked_results_<%=student.id %>" ><%= answer.plagiarism_percentage %></a>
+        <a class="draw_fancybox" href="#local_checked_results_<%=student.id %>" ><%= answer.plagiarism_percentage %>%</a>
       </td>
       <td>
         <% title_nil_exist = 0 %>
@@ -114,40 +114,44 @@
       </td>
       <!-- Localウィンドウ表示内容-->
       <div id="local_checked_results_<%=student.id %>" class="internet-check-results-css" >
-        <p>学生：<%= student.name %></p>
-        <p>問題：<%= @question.title %></p>
-        <p>ソースコード：</p>
-        <div class="hero-unit3">
-            <% @target_code.each_with_index do |line, i| %>
-              <% for j in 0..@target_check_count-1 %>
-                <% if i >= @t_line[j*2] && i <= @t_line[j*2+1] %>
-                    <p class="red"> <%= line %> </p>
-                <% elsif i < @t_line[j*2] && i > @t_line[j*2-1] %>
+            <p>学生：<%= student.name %></p>
+            <p>問題：<%= @question.title %></p>
+        <% unless answer.plagiarism_percentage == 0.0 %>
+            <p>ソースコード：</p>
+            <div class="hero-unit3">
+                <% @target_code.each_with_index do |line, i| %>
+                  <% for j in 0..@target_check_count-1 %>
+                    <% if i >= @t_line[j*2] && i <= @t_line[j*2+1] %>
+                        <p class="red"> <%= line %> </p>
+                    <% elsif i < @t_line[j*2] && i > @t_line[j*2-1] %>
+                        <p> <%= line %> </p>
+                    <% end %>
+                  <% end %>
+                  <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
                     <p> <%= line %> </p>
+                  <% end %>
                 <% end %>
-              <% end %>
-              <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
-                <p> <%= line %> </p>
-              <% end %>
-            <% end %>
-        </div>
+            </div>
 
-        <p>類似ファイルのパス：<%= @compare_path %></p>
-        <p>ソースコード：</p>
-        <div class="hero-unit3">
-          <% @compare_code.each_with_index do |line, i| %>
-              <% for j in 0..@compare_check_count-1 %>
-                  <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
-                      <p class="red"> <%= line %> </p>
-                  <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
+            <p>類似ファイルのパス：<%= @compare_path %></p>
+            <p>ソースコード：</p>
+            <div class="hero-unit3">
+              <% @compare_code.each_with_index do |line, i| %>
+                  <% for j in 0..@compare_check_count-1 %>
+                      <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
+                          <p class="red"> <%= line %> </p>
+                      <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
+                          <p> <%= line %> </p>
+                      <% end %>
+                  <% end %>
+                  <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
                       <p> <%= line %> </p>
                   <% end %>
               <% end %>
-              <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
-                  <p> <%= line %> </p>
-              <% end %>
-          <% end %>
-        </div>
+            </div>
+        <% else %>
+            <p>類似ファイルは存在しません</p>
+        <% end %>
 
       </div>
       <div id="internet_results_checked_question_<%=student.id%>" class="internet-check-results-css" >
