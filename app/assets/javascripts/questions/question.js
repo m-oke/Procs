@@ -1,6 +1,22 @@
-/**
- * Created by lin on 15/07/12.
- */
+function publicCheck(self){
+    if(self.checked)
+        alert("一度公開すると管理者以外は非公開にできません．");
+}
+
+$(function(){
+    $("#get_exist_question").change(function(){
+        var question_id = this.value;
+        window.q = this;
+
+        $.ajax({
+            url: "/ajax/questions/get_exist_question",
+            type: "POST",
+            data: {question_id:question_id}
+        });
+    });
+
+});
+
 
 $(function(){
     var startDateTextBox = $('.datepicker1');
@@ -66,4 +82,3 @@ $(function(){
     $('.datepicker2').datetimepicker(new_evnet2);
 
 });
-

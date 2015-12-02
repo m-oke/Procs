@@ -1,62 +1,56 @@
 <div id="question_new">
-  <% flash[:lesson_id] = params[:lesson_id] %>
-  <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => params[:lesson_id]),:remote => true ,:class=>"btn btn-default btn_top"  %>
+  <% flash.keep %>
+  <% flash[:is_refer] = true %>
+  <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => flash[:lesson_id]),:remote => true ,:class=>"btn btn-default btn_top"  %>
   <h1>問題新規作成</h1>
-
+  <p> 引用 </p>
   <h4>問題の参照</h4>
   <%= select_tag :exist_question, options_for_select(@exist_question), :class => 'form-control', :style => 'width:220px', :id => 'get_exist_question', :prompt => "他の問題を参照する" %>
 
-  <%= nested_form_for(@question ,:remote=>true ,:url=>{:controller=>"questions", :action=>"create"}, :multipart => true ) do |f| %>
+  <%= nested_form_for(@question, :remote => true, :method => "POST", :url=> lesson_questions_path(:lesson_id => flash[:lesson_id], :question_id => flash[:question_id])) do |f| %>
     <div>
       <%= f.label :title , 'タイトル' %><span>(<span class="inputnote">＊</span>)</span><br/>
-      <%= f.text_area :title ,:rows => 2 , :class=>"text-area-css1"  ,required: 'required' %>
+      <%= f.text_area :title , :rows => 2 , :class => "text-area-css1", :disabled => true %>
     </div>
     <div>
       <%= f.label :content , '内容'%><span>(<span class="inputnote">＊</span>)</span><br/>
-      <%= f.text_area :content ,:rows => 10 , :class=>"text-area-css1",required: 'required' %>
+      <%= f.text_area :content, :rows => 10, :class => "text-area-css1", :disabled => true %>
     </div>
 
     <div>
       <%= f.label :input_description , '入力説明' %><br/>
-      <%= f.text_area :input_description,:rows => 2 , :class=>"text-area-css1"  %>
+      <%= f.text_area :input_description, :rows => 2, :class => "text-area-css1", :disabled => true  %>
     </div>
     <div>
       <%= f.label :output_description , '出力説明'%><br/>
-      <%= f.text_area :output_description, :rows => 2 , :class=>"text-area-css1"  %>
+      <%= f.text_area :output_description, :rows => 2, :class => "text-area-css1", :disabled => true  %>
     </div>
     <div class="field_question">
       <fieldset id="question_keywords">
         <legend>剽窃チェック用のキーワード(<span class="inputnote">＊</span>)</legend>
         <%= f.fields_for :question_keywords do |builder| %>
           <%= builder.label :keyword,"キーワード" %>
-          <%= builder.text_field :keyword , :size => 100, required: 'required'  %>
-          <%= builder.link_to_remove "削除" %>
+          <%= builder.text_field :keyword , :size => 100, :disabled => true  %>
         <% end %>
-        <%= f.link_to_add "追加",:question_keywords  %>
       </fieldset>
     </div>
     <div class="field_question">
-      <%= f.label :lesson_questions,"開始と終了時間" %><br/>
-      <%= f.fields_for :lesson_questions do |builder| %>
-        <%= builder.hidden_field :lesson_id , :value => @lesson_id %>
-        <%= builder.label :start_time, '開始時間' %>
-        <%= builder.text_field :start_time, :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker1'  %>
-        <%= builder.label :end_time, '終了時間' %>
-        <%= builder.text_field :end_time, :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker2' %>
-      <% end %>
+      <%= label_tag :lesson_questions,"開始と終了時間" %><br/>
+      <%= label_tag :start_time, '開始時間' %>
+      <%= text_field_tag :start_time, '', :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker1' %>
+      <%= label_tag :end_time, '終了時間' %>
+      <%= text_field_tag :end_time, '', :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker2' %>
     </div>
 
     <div class="field_question">
       <fieldset id="samples">
         <legend>入出力サンプル(<span class="inputnote">＊</span>)</legend>
         <%= f.fields_for :samples do |builder| %>
-
           <%= builder.label :input,"入力" %>
-          <%= builder.text_area :input , required: 'required', style:'resize: vertical', :rows => 4 , :cols => 40  %>
+          <%= builder.text_area :input, style:'resize: vertical', :rows => 4 , :cols => 40, :disabled => true %>
           <%= builder.label :output ,"出力" %>
-          <%= builder.text_area :output  , required: 'required' , style:'resize: vertical',  :rows => 4 , :cols => 40  %>
+          <%= builder.text_area :output, style:'resize: vertical',  :rows => 4 , :cols => 40, :disabled => true %>
           <%= builder.link_to_remove "削除" %>
-
         <% end %>
         <%= f.link_to_add "追加",:samples  %>
       </fieldset>
@@ -68,33 +62,26 @@
         <%= f.fields_for :test_data do |builder| %>
           <div class="left">
             <%= builder.label :input, "入力" %>
-            <%= builder.file_field :input, required: 'required' %>
+            <%= builder.text_field :input, :disabled => true %>
           </div>
           <div class="left">
             <%= builder.label :output, "出力" %>
-            <%= builder.file_field :output, required: 'required' %>
+            <%= builder.text_field :output, :disabled => true %>
           </div>
           <p class="help-block">ファイルサイズは10MBまで</p>
-          <%= builder.link_to_remove "削除"%>
         <% end %>
-        <%= f.link_to_add "追加",  :test_data %>
       </fieldset>
     </div>
 
-
     <div>
       <%= f.label :run_time_limit , '時間制限'%>（単位：ms）
-      <%= f.number_field :run_time_limit, min: 1, step: 1 , size: 40 %><br/>
+      <%= f.number_field :run_time_limit, min: 1, step: 1 , size: 40, :disabled => true %><br/>
     </div>
     <div>
       <%= f.label :memory_usage_limit , 'メモリ制限'%>（単位：MB）
-      <%= f.number_field :memory_usage_limit,  min: 1, step: 1 ,size: 40  %><br/>
+      <%= f.number_field :memory_usage_limit,  min: 1, step: 1 ,size: 40, :disabled => true  %><br/>
     </div>
     <br>
-    <div>
-      <%= f.check_box :is_public, {:onclick => 'publicCheck(this)'}, 'true', 'false'%>
-      <%= f.label :is_public, 'この問題を一般に公開する場合はチェックしてください．' %>
-    </div>
     <div class="btn_submit">
       <%= f.submit '登録',:class=>'btn btn-primary' %>
     </div>

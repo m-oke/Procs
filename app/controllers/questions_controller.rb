@@ -4,17 +4,16 @@ class QuestionsController < ApplicationController
   before_action :check_lesson, only: [:index, :new]
   before_filter :authenticate_user!
 
-  # get '/quesions' || get '/lessons/:lesson_id/questions'
+  # get '/questions' || get '/lessons/:lesson_id/questions'
   # 問題一覧を表示
   # @param [Fixnum] lesson_id
-  # @param [Fixnum] id Quesionのid
+  # @param [Fixnum] id Questionのid
   def index
-    id = params[:lesson_id] || 1
-    params[:lesson_id] = id
+    id = params[:lesson_id] || session[:lessson_id] || 1
+    session[:lesson_id] = id
     @lesson = Lesson.find_by(:id => id)
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
-    @questions = @lesson.question
-
+    @questions = @lesson.lesson_questions
   end
 
   def new
@@ -24,18 +23,35 @@ class QuestionsController < ApplicationController
     @question.test_data.build
     @question.lesson_questions.build
     @question.question_keywords.build
-    @lesson_id = params[:lesson_id].to_i
+    @lesson_id = params[:lesson_id].to_i || session[:lesson_id]
+    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
+    @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
   end
 
   def create
     lesson_id = params[:lesson_id] || session[:lesson_id]
+    question_id = params[:question_id] || session[:question_id]
 
     ##ファイルサイズは10MB以上の場合　#ajax
     # 保存失敗時のajax用の変数
     params[:lesson_id] = lesson_id
     @lesson = Lesson.find_by(:id => lesson_id)
-    @questions = @lesson.question
+    @questions = @lesson.lesson_questions
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
+
+    if flash[:is_refer]
+      lesson_question = LessonQuestion.new(:question_id => question_id,
+                                           :lesson_id => lesson_id,
+                                           :start_time => params[:start_time],
+                                           :end_time => params[:end_time])
+      if lesson_question.save
+        flash.notice = '問題を登録しました'
+      else
+        flash.notice = '問題を登録に失敗しました'
+      end
+      return
+    end
+
     # アップロードされたテストデータを取得
     # TestDatumモデルにはファイル名を入力
     test_data = {}
@@ -100,20 +116,28 @@ class QuestionsController < ApplicationController
   # 問題詳細を表示
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
+  # @param [Fixnum] lesson_question_id
   def show
-    quesion_id = params[:question_id] || session[:question_id]
+    session[:lesson_question_id] = params[:lesson_question_id].present? ? params[:lesson_question_id] : session[:lesson_question_id]
+    session[:question_id] = params[:question_id]
+    lesson_question_id = session[:lesson_question_id]
+    question_id = session[:question_id]
     @question = Question.find_by(:id => params[:question_id])
-    lesson_id = params[:lesson_id] || session[:lesson_id] || 1
+    lesson_id = session[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => lesson_id)
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
-                                          :question_id => quesion_id,
-                                          :lesson_id => lesson_id) || nil
+                                          :question_id => question_id,
+                                          :lesson_id => lesson_id,
+                                          :lesson_question_id => lesson_question_id) || nil
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
       @multi_check_enable = 0
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @students.each do |s|
-        answer = Answer.latest_answer(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id)
+        answer = Answer.latest_answer(:student_id => s.id,
+                                      :question_id => @question.id,
+                                      :lesson_id => @lesson.id,
+                                      :lesson_question_id => lesson_question_id)
         if answer.present?
           checked_result = InternetCheckResult.where(:answer_id =>answer.id)
           if checked_result.count == 0
@@ -141,7 +165,7 @@ class QuestionsController < ApplicationController
     ##ajax
     params[:lesson_id] = @lesson_id
     @lesson = Lesson.find_by(:id => @lesson_id)
-    @questions = @lesson.question
+    @questions = @lesson.lesson_questions
     @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
 
     original_input_output_file = Hash.new  # for original
@@ -189,8 +213,6 @@ class QuestionsController < ApplicationController
         val['output'] = val['output'].original_filename
         val['input_storename'] = "input#{start_num}"
         val['output_storename'] = "output#{start_num}"
-        # new_input_output_file.store(val['input_storename'], val['input'])
-        # new_input_output_file.store(val['output_storename'], val['output'])
         test_data["#{start_num}"] = files
       else
         original_input_output_file.each do |key ,val |
@@ -245,6 +267,14 @@ class QuestionsController < ApplicationController
 
   end
 
+  def get_exist_question
+    question_id = params[:question_id]
+    @question = Question.find_by(:id => question_id)
+    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
+    @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
+    flash[:lesson_id] = flash[:lesson_id]
+  end
+
   private
   def question_params
     params.require(:question).permit(
@@ -272,7 +302,7 @@ class QuestionsController < ApplicationController
     lesson_id = params[:lesson_id] || 1
     question_id = params[:question_id]
     return unless access_question_check(:user_id => current_user.id, :lesson_id => lesson_id, :question_id => question_id)
-    @quesions = Question.find_by(:id => question_id)
+    @questions = Question.find_by(:id => question_id)
   end
 
   # 該当する授業が存在するかどうか

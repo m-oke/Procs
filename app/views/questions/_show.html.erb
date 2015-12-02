@@ -5,10 +5,10 @@
 
 </style>
 <%= render "layouts/notice" %>
-<% if params[:lesson_id] %>
-    <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
-    <% if @is_teacher %>
-        <%= link_to '編集',edit_lesson_question_path(:lesson_id =>params[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
+<% if session[:lesson_id] != 1 %>
+    <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => session[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
+    <% if @is_teacher && (@question.author == current_user.id) && %>
+      <%= link_to '編集',edit_lesson_question_path(:lesson_id => session[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
     <% end %>
 <% else %>
     <%= link_to '問題一覧に戻る', questions_path, :class => "btn btn-default btn_top" %>
@@ -119,7 +119,7 @@
       <%= render "questions/answers" %>
   <% else %>
       <!--現在時間と開始時間・終了時間を比較し、時間内かどうかを確認する-->
-      <% lesson_question = @lesson.lesson_questions.find_by(:question_id => @question.id) %>
+      <% lesson_question = LessonQuestion.find_by(:id => session[:lesson_question_id]) %>
       <% if (lesson_question.start_time.nil? || lesson_question.start_time.to_time < Time.now) &&
              (lesson_question.end_time.nil? || Time.now < lesson_question.end_time.to_time) %>
           <%= render "questions/upload_form" %>

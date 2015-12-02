@@ -6,7 +6,8 @@ class AnswersController < ApplicationController
     @student_id = params[:student_id] || current_user.id
     @lesson_id = params[:lesson_id] || session[:lesson_id] || 1
     @question_id = params[:question_id] || session[:question_id]
-      @question = Question.find_by(:id => @question_id)
+    lesson_question_id = params[:lesson_question_id] || session[:lesson_question_id]
+    @question = Question.find_by(:id => @question_id)
     if Lesson.find_by(:id => @lesson_id).nil? || Question.find_by(:id => @question_id).nil? || User.find_by(:id => @student_id).nil?
       redirect_to root_path, :alert => '該当する解答は存在しません' and return
     end
@@ -24,15 +25,15 @@ class AnswersController < ApplicationController
     end
 
     @answer_all_version= Answer.where(:question_id => @question_id,
-                                        :lesson_id=> @lesson_id,
-                                        :student_id=> @student_id )
-    @dead_date_question = LessonQuestion.find_by(lesson_id: @lesson_id, question_id: @question_id )
+                                      :lesson_id=> @lesson_id,
+                                      :lesson_question_id => lesson_question_id,
+                                      :student_id=> @student_id )
 
-    @raw_display_file  = Answer.where(:question_id => @question_id,
-                               :lesson_id=> @lesson_id,
-                               :student_id=> @student_id ).last.file_name
+    @dead_date_question = LessonQuestion.find_by(:id => lesson_question_id)
 
-    @path_directory = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + "/"
+    @raw_display_file  = @answer_all_version.last.file_name
+
+    @path_directory = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, lesson_question_id.to_s).to_s + "/"
     flash[:directory]= @path_directory
 
     @new_raw_path = @path_directory + @raw_display_file
@@ -45,10 +46,9 @@ class AnswersController < ApplicationController
   # @param [Fixnum] id Questionのid
   def create
     file = params[:upload_file]
+    lesson_question_id = session[:lesson_question_id]
     question_id = session[:question_id]
     lesson_id = session[:lesson_id].present? ? session[:lesson_id] : 1
-    logger.debug("question = #{question_id}")
-    logger.debug("lesson = #{lesson_id}")
 
     # ajax用の変数
     @lesson = Lesson.find_by(:id => lesson_id)
@@ -69,13 +69,14 @@ class AnswersController < ApplicationController
       else
 
         # 保存ディレクトリの作成
-        uploads_answers_path = UPLOADS_ANSWERS_PATH.join(current_user.id.to_s, lesson_id.to_s, question_id)
+        uploads_answers_path = UPLOADS_ANSWERS_PATH.join(current_user.id.to_s, lesson_question_id.to_s)
         FileUtils.mkdir_p(uploads_answers_path) unless FileTest.exist?(uploads_answers_path)
 
         # 最後の解答のファイル名の取得
         old_file = Answer.where(:lesson_id => lesson_id,
-                               :student_id => current_user.id,
-                               :question_id => question_id).last
+                                :student_id => current_user.id,
+                                :lesson_question_id => lesson_question_id,
+                                :question_id => question_id).last
         /\d+/ =~ old_file.file_name unless old_file.nil?
         version = $&.to_i
         next_version = (version + 1).to_s
@@ -90,6 +91,7 @@ class AnswersController < ApplicationController
         answer = Answer.new(:language => params[:language],
                             :question_id => question_id,
                             :lesson_id => lesson_id,
+                            :lesson_question_id => lesson_question_id,
                             :file_name => next_name,
                             :result => "P",
                             :student_id => current_user.id,
@@ -107,19 +109,22 @@ class AnswersController < ApplicationController
         when 'python'
           EvaluatePythonJob.perform_later(:user_id => current_user.id,
                                           :lesson_id => lesson_id,
-                                          :question_id => question_id)
+                                          :question_id => question_id,
+                                          :lesson_question_id => lesson_question_id)
         when 'c'
           EvaluateCJob.perform_later(:user_id => current_user.id,
-                                          :lesson_id => lesson_id,
-                                          :question_id => question_id)
+                                     :lesson_id => lesson_id,
+                                     :question_id => question_id,
+                                     :lesson_question_id => lesson_question_id)
         end
       end
 
-    # ファイルが選択されていなかった場合
+      # ファイルが選択されていなかった場合
     else
       @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                             :question_id => question_id,
-                                            :lesson_id => lesson_id) || nil
+                                            :lesson_id => lesson_id,
+                                            :lesson_question_id => lesson_question_id) || nil
       flash[:alert] = 'ファイルが選択されていません。'
     end
 
@@ -137,15 +142,17 @@ class AnswersController < ApplicationController
   end
 
   def diff_select
-
+    flash[:directory] = flash[:directory]
     @select_diff_file = params[:diff_selected_file]
     @select_raw_file = params[:raw_selected_file]
 
-    @select_diff_name = flash[:directory].to_s + @select_diff_file
     @select_raw_name = flash[:directory].to_s + @select_raw_file
+    if @select_diff_file == "なし"
+      return
+    end
 
-    @diff = show_diff(@select_raw_name, @select_diff_name)
-    flash[:directory] = flash[:directory]
+    select_diff_name = flash[:directory].to_s + @select_diff_file
+    @diff = show_diff(@select_raw_name, select_diff_name)
   end
 
 

@@ -39,7 +39,7 @@ class LessonsController < ApplicationController
         @user_lesson.is_teacher = true
         @user_lesson.save
 
-        flash.notice = 'クラス作成しました！'
+        flash.notice = 'クラスを作成しました！'
         redirect_to root_path
           # redirect_to :action => "/lessons"
       else
@@ -55,14 +55,13 @@ class LessonsController < ApplicationController
   def show
     @teachers = get_teachers
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson.id).is_teacher
+    session[:lesson_id] = params[:id] || session[:lesson_id]
   end
 
   # get '/lessons/:id/students'
   def students
     @students = get_students
-    @lesson_id = params[:lesson_id]
-    @lesson_questions = LessonQuestion.where(:lesson_id => @lesson_id)
-    @lesson_questions_count = @lesson_questions.count
+    @lesson_questions_count = @lesson.lesson_questions.count
   end
 
   # get '/lessons/:id/students/:student_id'

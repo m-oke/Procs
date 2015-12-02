@@ -7,7 +7,7 @@ $(function(){
 
         $.ajax({
             url: "/ajax/answers/diff_select",
-            type: "GET",
+            type: "POST",
             data: {diff_selected_file:diff_selected ,
                 raw_selected_file:raw_selected,
                 diff_selected_directory:path
