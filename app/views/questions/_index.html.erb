@@ -8,7 +8,7 @@
   <% deleted_question_protected=[] %>
   <% deleted_question_hidden=[] %>
   <% if @lesson.id> 1  %>
-      <% lesson_all_question = LessonQuestion.where(:lesson_id => @lesson.id,:is_deleted =>1 ) %>
+      <% lesson_all_question = LessonQuestion.where(:lesson_id => @lesson.id,:is_deleted =>true ) %>
       <% lesson_all_question.each do |q| %>
           <% answers = Answer.where(:lesson_id=>@lesson.id, :question_id =>q['question_id'])%>
           <% if answers.count>0%>

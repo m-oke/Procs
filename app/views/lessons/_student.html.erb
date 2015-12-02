@@ -53,6 +53,10 @@
     <% num = 0 %>
     <% @lesson_questions.each do |lesson_question| %>
         <tr>
+          <% if lesson_question['is_deleted'] == true  %>
+              <% next %>
+          <% end %>
+
           <% num = num + 1 %>
           <% question = Question.find_by(:id => lesson_question.question_id) %>
           <% answer = Answer.where(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id => lesson_question.question_id, :lesson_question_id => lesson_question.id).last %>

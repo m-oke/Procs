@@ -268,7 +268,7 @@ class QuestionsController < ApplicationController
     @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
 
     select_lesson_question = LessonQuestion.where(:lesson_id=>@lesson_id,:question_id=>@question_id).last
-    select_lesson_question['is_deleted'] = 1
+    select_lesson_question['is_deleted'] = true
     select_lesson_question.save
 
   end

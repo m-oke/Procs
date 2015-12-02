@@ -43,13 +43,13 @@ ActiveRecord::Schema.define(version: 20151202104052) do
   end
 
   create_table "lesson_questions", force: :cascade do |t|
-    t.integer  "lesson_id",   limit: 4,             null: false
-    t.integer  "question_id", limit: 4,             null: false
+    t.integer  "lesson_id",   limit: 4,                 null: false
+    t.integer  "question_id", limit: 4,                 null: false
     t.datetime "start_time"
     t.datetime "end_time"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
-    t.integer  "is_deleted",  limit: 4, default: 0
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.boolean  "is_deleted",  limit: 1, default: false
   end
 
   create_table "lessons", force: :cascade do |t|
