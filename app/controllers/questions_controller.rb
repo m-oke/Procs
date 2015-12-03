@@ -122,6 +122,7 @@ class QuestionsController < ApplicationController
     session[:question_id] = params[:question_id]
     lesson_question_id = session[:lesson_question_id]
     question_id = session[:question_id]
+    @have_submit_answer = 0
     @question = Question.find_by(:id => params[:question_id])
     lesson_id = session[:lesson_id] || 1
     @lesson = Lesson.find_by(:id => lesson_id)
@@ -138,6 +139,13 @@ class QuestionsController < ApplicationController
                                       :question_id => @question.id,
                                       :lesson_id => @lesson.id,
                                       :lesson_question_id => lesson_question_id)
+        if @have_submit_answer == 0
+          have_answer = Answer.where(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id)
+        end
+        if have_answer.count> 0
+          @have_submit_answer = 1
+        end
+        answer = Answer.latest_answer(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id)
         if answer.present?
           checked_result = InternetCheckResult.where(:answer_id =>answer.id)
           if checked_result.count == 0

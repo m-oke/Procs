@@ -128,9 +128,8 @@
     </table>
   </div>
   <% if @is_teacher && @lesson.id != 1 && deleted_question_protected.size > 0 %>
-  <h2>非公開問題一覧</h2>
-  <p>削除した問題は既に解答があるので、解答データを安全管理するため、問題を非公開に移動します</p>
-  <p>非公開から公開に変更したい場合、管理者と連絡してください</p>
+  <h2><font color="red">非公開問題一覧</font></h2>
+  <p>非公開問題は学生に表示されません．再公開したい場合はシステム管理者に連絡してください.</p>
   <div class="table-responsive">
     <table class="table table-bordered table-striped">
       <tr>
