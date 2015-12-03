@@ -16,7 +16,8 @@ class ApplicationController < ActionController::Base
   # @return [Boolean]
   def access_lesson_check(user_id:, lesson_id:)
     lesson = Lesson.find_by(:id => lesson_id)
-    if (lesson_id == "1" || lesson.nil?)
+    private_lesson = UserLesson.where(:lesson_id =>lesson.id, :is_deleted => 1, :user_id=>user_id, :is_teacher => false)
+    if (lesson_id == "1" || lesson.nil? ||private_lesson.present?)
       redirect_to root_path, :alert => "該当する授業が存在しません"
       return false
     elsif lesson.user_lessons.where(:lesson_id => lesson_id, :user_id => user_id).empty?

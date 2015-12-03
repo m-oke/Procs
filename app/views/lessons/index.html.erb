@@ -1,33 +1,3 @@
-<%= render "layouts/notice" %>
-<% if current_user.nil? %>
-    ログインまたは新規登録してください
-<% else %>
-    <div class = "lesson-new">
-      <% if current_user.has_role?(:teacher) %>
-          <%= link_to '授業作成',{ :controller =>"lessons", :action =>"new"}, :class => 'btn btn-primary'%>
-      <% end %>
-    </div>
-    <div class="hero-unit">
-      <h1>Procsへようこそ!</h1>
-      <p>こちらからすべての問題を見ることができます。<br>
-      また授業への参加もこちらからできます。</p>
-      <p>
-        <%= link_to '問題一覧', '/questions', class: 'btn btn-primary' %>
-        <%= link_to '授業参加', {:controller => :user_lessons, :action => :create}, class: 'btn btn-primary' %>
-      </p>
-    </div>
-    <% user_lesson = UserLesson.where(:user_id => current_user.id) %>
-    <% unless user_lesson.empty? %>
-        <% user_lesson.each do |lesson_select_user| %>
-          <% next if lesson_select_user.lesson_id == 1 %>
-            <% select_lesson = Lesson.find(lesson_select_user.lesson_id) %>
-            <div class="hero-unit">
-              <h1><%= link_to select_lesson.name, lesson_path(:id => select_lesson.id) %></h1>
-              <% user_name = User.find(select_lesson.user_lessons.find_by_is_teacher(true).user_id) %>
-              <p><%= user_name.name  %></p>
-              <p><%= simple_format(h(select_lesson.description)) %></p>
-            </div>
-        <% end %>
-    <% end %>
-<% end %>
+<%= render "lessons/index" %>
+
 

@@ -12,7 +12,11 @@
 </div>
 <div class="tab-content">
   <div class="tab-pane active" id="tab1">
-    <%= link_to "授業一覧に戻る" ,lessons_path , :class => "btn btn-default btn_top "%>
+    <%= link_to "授業一覧に戻る" ,root_path , :class => "btn btn-default btn_top "%>
+    <% if @is_teacher && session[:seleted_lesson] != "private_lesson" %>
+        <%= link_to "編集" ,edit_lesson_path(:id => @lesson.id ) , :remote => true, :class => "btn btn-default btn_top " %>
+        <button class="btn btn-danger btn_top", id="lesson_delete">非公開</button><span id="lesson_delete_attach", style="visibility: hidden;"><text ><%= @lesson.id %></text></span>
+    <% end %>
     <h1>授業基本情報</h1>
     <table class="student">
       <tbody>
@@ -45,3 +49,4 @@
   <div class="tab-pane" id="tab2">
   </div>
 </div>
+<%= javascript_include_tag "lessons/delete_lesson" %>

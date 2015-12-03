@@ -24,6 +24,10 @@ class PlagiarismInternetCheck
 
     fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + answer.file_name
     csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
+    csv_file_full_path2 = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log2.csv'
+    CSV.open(csv_file_full_path,'w') do |out|
+      out << ["keyword","title","link","times"]
+    end
 
     nlen = answer.file_name.size
     if answer.file_name[nlen-2,nlen-1]=='.c' || answer.file_name[nlen-4,nlen-1]=='.cpp'
@@ -69,6 +73,11 @@ class PlagiarismInternetCheck
             title = page[:Title]
             link = page[:Url]
             content = page[:Description]
+
+            CSV.open(csv_file_full_path,'a') do |out|
+              out << [search_keyword,title,link,1]
+            end
+
             nSize = @result.size
             if nSize == 0
               @result.push([title,link,1,content])
@@ -109,7 +118,7 @@ class PlagiarismInternetCheck
       @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
-      # write_search_results_log(csv_file_full_path,@result,temp_keyword_csv)
+      write_search_results_log(csv_file_full_path2,@result,temp_keyword_csv)
       first_elem = @result.first
       # search_limit = 5
       # 5回の検索、毎回の検索結果はありません=>else ;　各LINK一回だけの場合　titleに’’を与える =>else
@@ -402,17 +411,17 @@ class PlagiarismInternetCheck
   #
   # end
 
-  # def write_search_results_log(full_path,results,keywords)
-  #   # File.delete(full_path)
-  #   CSV.open(full_path,'w') do |out|
-  #     out << ["title","link","times"]
-  #     results.each do |r|
-  #       out << [r[0],r[1],r[2]]
-  #     end
-  #     out << ["keyword"]
-  #     keywords.each do |keyword|
-  #       out << [keyword]
-  #     end
-  #   end
-  # end
+  def write_search_results_log(full_path,results,keywords)
+    # File.delete(full_path)
+    CSV.open(full_path,'w') do |out|
+      out << ["title","link","times"]
+      results.each do |r|
+        out << [r[0],r[1],r[2]]
+      end
+      out << ["keyword"]
+      keywords.each do |keyword|
+        out << [keyword]
+      end
+    end
+  end
 end
