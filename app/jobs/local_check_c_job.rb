@@ -19,7 +19,7 @@ class LocalCheckCJob < ActiveJob::Base
     students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
     students.each do |s|
       unless s.id == user_id
-        compare_answer = Answer.latest_answer(:student_id => s.id,
+        compare_answer = Answer.accept_answer(:student_id => s.id,
                                               :question_id => question_id,
                                               :lesson_id => lesson_id,
                                               :lesson_question_id => lesson_question_id)

@@ -17,6 +17,13 @@
 
 }
 
+.check_result {
+  float: left;
+  width: 390px;
+  height: 590px;
+  overflow-y: auto;
+  margin-left: 10px;
+}
  table.diff {
    width: 100%;
    border-collapse: collapse;
