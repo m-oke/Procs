@@ -59,8 +59,8 @@ class LessonsController < ApplicationController
   def update
     lesson_id = params[:id]
     lesson = Lesson.find(lesson_id)
-    lesson['name'] = params[:lesson]['name']
-    lesson['description'] = params[:lesson]['description']
+    lesson.name= params[:lesson][:name]
+    lesson.description = params[:lesson][:description]
     if lesson.save
       flash.notice = '授業を更新しました'
     else
