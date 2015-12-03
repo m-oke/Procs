@@ -1,6 +1,6 @@
 <%= render "layouts/notice" %>
 <div class="btn-right">
-  <% if @is_teacher %>
+  <% if @is_teacher && session[:seleted_lesson] != "private_lesson"  %>
     <%= link_to "問題新規作成",new_lesson_question_path(:lesson_id => @lesson.id) ,:remote => true ,:class=>"btn btn-primary" %>
   <% end %>
 </div>

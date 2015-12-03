@@ -66,7 +66,6 @@ class LessonsController < ApplicationController
     else
       flash.notice = '授業の更新に失敗しました'
     end
-    redirect_to  root_path
 
   end
 
@@ -81,6 +80,11 @@ class LessonsController < ApplicationController
     @teachers = get_teachers
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson.id).is_teacher
     session[:lesson_id] = params[:id] || session[:lesson_id]
+    private_lesson = UserLesson.where(:lesson_id => params[:id],:is_deleted =>1).last
+    session[:seleted_lesson]=nil
+    if private_lesson.present?
+      session[:seleted_lesson] = "private_lesson"
+    end
   end
 
   # get '/lessons/:id/students'
