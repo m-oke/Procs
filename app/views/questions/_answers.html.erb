@@ -87,7 +87,9 @@
       <td><%= answer.language.capitalize unless answer.language.nil? %></td>
         <!-- ローカル類似度の表示 -->
         <td>
-          <a class="draw_fancybox" href="#local_checked_results_<%=student.id %>" ><%= answer.plagiarism_percentage %>%</a>
+          <% unless answer.new_record? %>
+              <a class="draw_fancybox" href="#local_checked_results_<%=student.id %>" ><%= answer.plagiarism_percentage %>%</a>
+          <% end %>
         </td>
         <td>
           <% title_nil_exist = 0 %>
@@ -117,43 +119,63 @@
         </td>
         <!-- Localウィンドウ表示内容-->
         <div id="local_checked_results_<%=student.id %>" class="internet-check-results-css" >
-          <p>学生：<%= student.name %></p>
-          <p>問題：<%= @question.title %></p>
-          <% unless answer.plagiarism_percentage == 0.0 %>
-              <p>ソースコード：</p>
-              <div class="hero-unit3">
-                <% @target_code.each_with_index do |line, i| %>
-                    <% for j in 0..@target_check_count-1 %>
+          <% unless answer.new_record? %>
+              <p>学生：<%= student.name %></p>
+              <p>問題：<%= @question.title %></p>
+              <% unless answer.plagiarism_percentage == 0.0 %>
+                  <!--データベースからデータを取得-->
+                  <% local_check_result = LocalCheckResult.find_by(:answer_id => answer.id) %>
+                  <% @target_line = local_check_result.target_line %>
+                  <% @compare_line = local_check_result.compare_line %>
+                  <% @target_path = @target_file = UPLOADS_ANSWERS_PATH.join(student.id.to_s, answer.lesson_question_id.to_s, answer.file_name).to_s %>
+                  <% @compare_path = local_check_result.check_file %>
+
+                  <!--Mark the check line-->
+                  <% @target_check_count = @target_line.count(";") %>
+                  <% @compare_check_count = @compare_line.count(";") %>
+                  <% t_line = @target_line.scan(/\d+/) %>
+                  <% c_line = @compare_line.scan(/\d+/) %>
+                  <% @t_line = t_line.map(&:to_i).sort %>
+                  <% @c_line = c_line.map(&:to_i).sort %>
+
+                  <!--ソースコード内容の取得-->
+                  <% @target_code = show_local(@target_path) %>
+                  <% @compare_code = show_local(@compare_path) %>
+                  <p>ソースコード：</p>
+                  <div class="hero-unit3">
+                    <% @target_code.each_with_index do |line, i| %>
+                        <% for j in 0..@target_check_count-1 %>
                         <% if i >= @t_line[j*2] && i <= @t_line[j*2+1] %>
                             <p class="red"> <%= line %> </p>
                         <% elsif i < @t_line[j*2] && i > @t_line[j*2-1] %>
                             <p> <%= line %> </p>
                         <% end %>
-                    <% end %>
-                    <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
-                    <p> <%= line %> </p>
-                  <% end %>
-                <% end %>
-          </div>
-
-              <p>類似ファイルのパス：<%= @compare_path %></p>
-              <p>ソースコード：</p>
-              <div class="hero-unit3">
-                <% @compare_code.each_with_index do |line, i| %>
-                    <% for j in 0..@compare_check_count-1 %>
-                        <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
-                            <p class="red"> <%= line %> </p>
-                        <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
+                        <% end %>
+                        <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
                             <p> <%= line %> </p>
                         <% end %>
                     <% end %>
-                    <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
-                        <p> <%= line %> </p>
+                  </div>
+
+                  <p>類似ファイルのパス：<%= @compare_path %></p>
+                  <p>ソースコード：</p>
+                  <div class="hero-unit3">
+                    <% @compare_code.each_with_index do |line, i| %>
+                        <% for j in 0..@compare_check_count-1 %>
+                            <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
+                                <p class="red"> <%= line %> </p>
+                            <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
+                                <p> <%= line %> </p>
+                            <% end %>
+                        <% end %>
+                        <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
+                            <p> <%= line %> </p>
+                        <% end %>
                     <% end %>
-                <% end %>
-              </div>
-          <% else %>
-              <p>類似ファイルは存在しません</p>
+                  </div>
+              <% else %>
+                  <p>類似ファイルは存在しません</p>
+              <% end %>
           <% end %>
         </div>
       <% unless ENV['BING_APIKEY'].nil? %>

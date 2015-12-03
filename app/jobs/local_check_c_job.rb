@@ -16,19 +16,14 @@ class LocalCheckCJob < ActiveJob::Base
     check_count = 0
     local_result = []
 
-    pp "11111111111111111111111"
     students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
-    pp "22222222222222222222222"
     students.each do |s|
-      pp "33333333333333333333333"
       unless s.id == user_id
         compare_answer = Answer.latest_answer(:student_id => s.id,
                                               :question_id => question_id,
                                               :lesson_id => lesson_id,
                                               :lesson_question_id => lesson_question_id)
-        pp "44444444444444444444444"
         if compare_answer.present?
-          pp "55555555555555555555555"
 
           @compare_file = UPLOADS_ANSWERS_PATH.join(s.id.to_s, lesson_question_id.to_s, compare_answer.file_name)
           @compare_name = compare_answer.file_name
@@ -37,12 +32,8 @@ class LocalCheckCJob < ActiveJob::Base
           @compare_line = ""
           @check_token = 0
 
-          pp "=========================================================="
           @c_check = local_check_c(@target_file, @compare_file , user_id.to_s, s.id.to_s, @target_dir)
           p @c_check
-          pp "----------------------------------------------------------"
-          #open( 'exammm.txt' ,'w+' ).write( open( 'test.txt' ).readlines.join.sub( /\d+/m ,'' ) )
-          #open( 'exannn.txt' ,'w+' ).write( open( 'test.txt' ).readlines.join.sub( /\[\d+\]/m ,'' ) )
 
           @c_check.each_with_index do |line,i|
             if i == 0
@@ -71,7 +62,7 @@ class LocalCheckCJob < ActiveJob::Base
             end
           end
           # [目標ファイルtoken数,比較ファイル名,目標類似行,類似token数]の配列を作る
-          unless check_count = 0
+          if check_count == 0
             return
           else
             local_result.push([@target_token,@compare_path,@target_line,@compare_line,@check_token])
