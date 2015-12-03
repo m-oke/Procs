@@ -55,34 +55,34 @@ class QuestionsController < ApplicationController
     # アップロードされたテストデータを取得
     # TestDatumモデルにはファイル名を入力
     test_data = {}
-    params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
+    params[:question][:test_data_attributes].each.with_index(1) do |(key, val), i|
       files = {}
 
       # データが無い項目は無視
-      if val['input'].nil?
+      if val[:input].nil?
         next
       end
 
       # ファイルの取得
-      files['input'] = val['input']
-      files['output'] = val['output']
-      if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
+      files[:input] = val[:input]
+      files[:output] = val[:output]
+      if files[:input].size > 10.megabyte || files[:output].size > 10.megabyte
         flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
         return
       end
 
       # ファイルの入っていた項目にファイル名などを保存
-      val['input'] = val['input'].original_filename
-      val['output'] = val['output'].original_filename
-      val['input_storename'] = "input#{i}"
-      val['output_storename'] = "output#{i}"
+      val[:input] = val[:input].original_filename
+      val[:output] = val[:output].original_filename
+      val[:input_storename] = "input#{i}"
+      val[:output_storename] = "output#{i}"
       test_data["#{i}"] = files
     end
-    params['question']['version'] = 1
+    params[:question][:version] = 1
 
     # パブリック化の有無
-    if params['question']['is_public'] != "false"
-      params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
+    if params[:question][:is_public] != "false"
+      params[:question][:lesson_questions_attributes]['100101010'] = {'lesson_id' => "1"}
     end
 
     @question = Question.new(question_params)
@@ -98,10 +98,10 @@ class QuestionsController < ApplicationController
       # テストデータの保存
       test_data.each do |key, val|
         File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
-          f.write(val['input'].read)
+          f.write(val[:input].read)
         end
         File.open("#{uploads_test_data_path}/output#{key}", "wb") do |f|
-          f.write(val['output'].read)
+          f.write(val[:output].read)
         end
       end
 
@@ -168,96 +168,77 @@ class QuestionsController < ApplicationController
     @questions = @lesson.lesson_questions
     @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
 
-    original_input_output_file = Hash.new  # for original
-    delete_input_output_file = Hash.new  #for delete file
-
-    @question.test_data.each do |item|
-      original_input_output_file[item['id']] = {"input_storename"=>item['input_storename'],"output_storename"=>item['output_storename']}
-    end
-    start_num = 1
-    version_up = 0
+    version_up = false
     test_data = {}
-    @question.test_data.each do |item|
-      unless item['input_storename'].to_s == ""
-        if item['input_storename'].to_s.include?("input")
-          len = item['input_storename'].size
-          num = item['input_storename'][5..len-1].to_i
-          if num > start_num
-            start_num = num
-          end
-        end
+    start_num = @question.test_data.size
+
+    if @question.run_time_limit != params[:question][:run_time_limit].to_i || @question.memory_usage_limit != params[:question][:memory_usage_limit].to_i
+      version_up = true
+    end
+
+    params[:question][:samples_attributes].each do |key, val|
+      if val[:_destroy] != 'false'
+        val[:is_deleted] = true
       end
     end
 
-    if @question.run_time_limit != params['question']['run_time_limit'].to_i || @question.memory_usage_limit != params['question']['memory_usage_limit'].to_i
-      version_up = 1
+    params[:question][:question_keywords_attributes].each do |key, val|
+      if val[:_destroy] != 'false'
+        val[:is_deleted] = true
+      end
     end
 
-    params['question']['test_data_attributes'].each.with_index(1) do |(key, val), i|
-      if val['input'].nil? || val['output'].nil?
+    params[:question][:test_data_attributes].each.with_index(1) do |(key, val), i|
+      if val[:input].nil? || val[:output].nil?
         next
       end
 
       files = {}
       if val["id"].to_s == ""
-        version_up = 1
-        files['input'] = val['input']
-        files['output'] = val['output']
-        if files['input'].size > 10.megabyte || files['output'].size > 10.megabyte
+        version_up = true
+        files[:input] = val[:input]
+        files[:output] = val[:output]
+        if files[:input].size > 10.megabyte || files[:output].size > 10.megabyte
           flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
           return
         end
         start_num = start_num + 1
 
-        val['input'] = val['input'].original_filename
-        val['output'] = val['output'].original_filename
-        val['input_storename'] = "input#{start_num}"
-        val['output_storename'] = "output#{start_num}"
+        val[:input] = val[:input].original_filename
+        val[:output] = val[:output].original_filename
+        val[:input_storename] = "input#{start_num}"
+        val[:output_storename] = "output#{start_num}"
         test_data["#{start_num}"] = files
-      else
-        original_input_output_file.each do |key ,val |
-          if val['id'] == key
-            val['input_storename'] = val['id']["input_storename"]
-            val['output_storename'] = val['id']["output_storename"]
-          end
-        end
       end
 
-      if val['_destroy'] != 'false'
-        version_up = 1
-        delete_input_output_file[val['input_storename']] = val['input']
-        delete_input_output_file[val['output_storename']] = val['output']
+      if val[:_destroy] != 'false'
+        version_up = true
+        val[:is_deleted] = true
       end
    end
 
-    if version_up == 1
-      params['question']['version'] = params['question']['version'].to_i + 1
+    if version_up
+      params[:question][:version] = params[:question][:version].to_i + 1
     end
 
     # パブリック化の有無
-    if (params['question']['is_public'] != "false") && (@question.is_public != true)
-      params['question']['lesson_questions_attributes']['100101010'] = {'lesson_id' => "1"}
+    if (params[:question][:is_public] != "false") && (@question.is_public != true)
+      params[:question][:lesson_questions_attributes]['100101010'] = {'lesson_id' => "1"}
     end
 
-    if @question.update(params['question'])
+    if @question.update(params[:question])
 
       # テストデータのディレクトリを作成
       uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
       FileUtils.mkdir_p(uploads_test_data_path) unless FileTest.exist?(uploads_test_data_path)
-      # delete no use file
-      delete_input_output_file.each do |key,val|
-        file_name = "#{uploads_test_data_path}/" + key
-        if File.exist?(file_name)
-          File.delete(file_name)
-        end
-      end
+
       # テストデータの保存
       test_data.each do |key, val|
         File.open("#{uploads_test_data_path}/input#{key}", "wb") do |f|
-          f.write(val['input'].read)
+          f.write(val[:input].read)
         end
         File.open("#{uploads_test_data_path}/output#{key}", "wb") do |f|
-          f.write(val['output'].read)
+          f.write(val[:output].read)
         end
       end
       flash.notice = '問題を更新しました'
@@ -288,9 +269,9 @@ class QuestionsController < ApplicationController
                                      :version,
                                      :author,
                                      :is_public,
-                                     samples_attributes: [:question_id, :input, :output, :_destroy],
-                                     test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :_destroy],
-                                     question_keywords_attributes: [:question_id, :keyword, :_destroy],
+                                     samples_attributes: [:question_id, :input, :output, :is_deleted],
+                                     test_data_attributes: [:question_id, :input, :output, :input_storename, :output_storename, :is_deleted],
+                                     question_keywords_attributes: [:question_id, :keyword, :is_deleted],
                                      lesson_questions_attributes: [:lesson_id, :question_id, :start_time, :end_time, :_destroy]
                                      )
   end

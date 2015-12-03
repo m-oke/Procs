@@ -23,6 +23,7 @@
       <fieldset id="question_keywords">
         <legend>剽窃チェック用のキーワード(<span class="inputnote">＊</span>)</legend>
         <%= f.fields_for :question_keywords do |builder| %>
+          <% if builder.object.is_deleted then next end %>
           <%= builder.label :keyword,"キーワード" %>
           <%= builder.text_field :keyword , :size => 100, required: 'required'  %>
           <%= builder.link_to_remove "削除" %>
@@ -47,6 +48,7 @@
       <fieldset id="samples">
         <legend>入出力サンプル(<span class="inputnote">＊</span>)</legend>
         <%= f.fields_for :samples do |builder| %>
+          <% if builder.object.is_deleted then next end %>
           <%= builder.label :input,"入力" %>
           <%= builder.text_area :input , required: 'required', style:'resize: vertical', :rows => 4 , :cols => 40  %>
           <%= builder.label :output ,"出力" %>
@@ -61,6 +63,7 @@
       <fieldset id="test_data">
         <legend>解答用データ(<span class="inputnote">＊</span>)</legend>
         <%= f.fields_for :test_data do |builder| %>
+          <% if builder.object.is_deleted then next end %>
           <div>
             <div class="left">
               <%= builder.label :input, "入力" %>
