@@ -27,7 +27,7 @@
       <fieldset id="question_keywords">
         <legend>剽窃チェック用のキーワード(<span class="inputnote">＊</span>)</legend>
         <%= f.fields_for :question_keywords do |builder| %>
-          <%= builder.label :keyword,"キーワード" %>
+          <%= builder.label :keyword,"キーワード:" %>
           <%= builder.text_field :keyword , :size => 100, required: 'required'  %>
           <%= builder.link_to_remove "削除" %>
         <% end %>
@@ -38,9 +38,9 @@
       <%= f.label :lesson_questions,"開始と終了時間" %><br/>
       <%= f.fields_for :lesson_questions do |builder| %>
         <%= builder.hidden_field :lesson_id , :value => @lesson_id %>
-        <%= builder.label :start_time, '開始時間' %>
+        <%= builder.label :start_time, '開始時間:' %>
         <%= builder.text_field :start_time, :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker1'  %>
-        <%= builder.label :end_time, '終了時間' %>
+        <%= builder.label :end_time, ' 終了時間:' %>
         <%= builder.text_field :end_time, :placeholder => "yy-mm-dd hh:mm:ss" , :readonly => "readonly" ,:class=>'datepicker2' %>
       <% end %>
     </div>
@@ -50,9 +50,9 @@
         <legend>入出力サンプル(<span class="inputnote">＊</span>)</legend>
         <%= f.fields_for :samples do |builder| %>
 
-          <%= builder.label :input,"入力" %>
+          <%= builder.label :input,"入力:" %>
           <%= builder.text_area :input , required: 'required', style:'resize: vertical', :rows => 4 , :cols => 40  %>
-          <%= builder.label :output ,"出力" %>
+          <%= builder.label :output ,"出力:" %>
           <%= builder.text_area :output  , required: 'required' , style:'resize: vertical',  :rows => 4 , :cols => 40  %>
           <%= builder.link_to_remove "削除" %>
 
@@ -82,17 +82,21 @@
 
 
     <div>
-      <%= f.label :run_time_limit , '時間制限'%>（単位：ms）
+      <%= f.label :run_time_limit , '時間制限:'%>（単位：ms）
       <%= f.number_field :run_time_limit, min: 1, step: 1 , size: 40 %><br/>
     </div>
     <div>
-      <%= f.label :memory_usage_limit , 'メモリ制限'%>（単位：MB）
+      <%= f.label :memory_usage_limit , 'メモリ制限:'%>（単位：MB）
       <%= f.number_field :memory_usage_limit,  min: 1, step: 1 ,size: 40  %><br/>
     </div>
     <br>
     <div>
+      <%= f.label :is_public, 'パブリック化:' %>
       <%= f.check_box :is_public, {:onclick => 'publicCheck(this)'}, 'true', 'false'%>
       <%= f.label :is_public, 'この問題を一般に公開する場合はチェックしてください．' %>
+      <p style="color:red">
+        パブリック化した問題は非パブリック化できません．
+      </p>
     </div>
     <div class="btn_submit">
       <%= f.submit '登録',:class=>'btn btn-primary' %>

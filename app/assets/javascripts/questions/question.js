@@ -1,6 +1,6 @@
 function publicCheck(self){
     if(self.checked)
-        alert("一度公開すると管理者以外は非公開にできません．");
+        alert("一度パブリック化するとシステム管理者以外は解除できません．");
 }
 
 $(function(){

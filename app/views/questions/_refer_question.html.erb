@@ -5,6 +5,9 @@
 
   <h4>問題の参照</h4>
   <%= select_tag :exist_question, options_for_select(@exist_question), :class => 'form-control', :style => 'width:220px', :id => 'get_exist_question', :prompt => "他の問題を参照する" %>
+  <div>
+    <p>参照した問題は開始時間・終了時間のみ変更できます</p>
+  </div>
 
   <%= nested_form_for(@question, :remote => true, :method => "POST", :url=> lesson_questions_path(:lesson_id => session[:lesson_id], :question_id => session[:question_id])) do |f| %>
     <div>
