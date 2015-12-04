@@ -117,16 +117,21 @@
     </table>
   </div>
   <% if @is_teacher && @lesson.id != 1 %>
-    <% have_answer = false %>
-    <% lesson_all_question = LessonQuestion.where(:lesson_id => @lesson.id,:is_deleted =>true) %>
-    <% @questions.each do |q| %>
-        <% answers = Answer.where(:lesson_id=>@lesson.id, :question_id =>q.question_id, :lesson_question_id => q.id)%>
-        <% if answers.count > 0 %>
-          <% have_answer = true %>
+    <% private_question_show = false %>
+    <% all_delete_question = LessonQuestion.where(:lesson_id => @lesson.id,:is_deleted =>true) %>
+    <% all_delete_question.each do |d| %>
+      <% q = Question.find(d.question_id) %>
+      <% if q.is_public == true %>
+        <% private_question_show =true %>
+        <% break %>
+      <% end %>
+      <% answers = Answer.where(:lesson_id=>@lesson.id, :question_id =>d.question_id, :lesson_question_id => d.id)%>
+      <% if answers.count > 0 %>
+          <% private_question_show = true %>
           <% break %>
-        <% end %>
+      <% end %>
     <% end %>
-    <% if lesson_all_question.count > 0 && have_answer == true %>
+    <% if  private_question_show == true %>
       <h2><font color="red">非公開問題一覧</font></h2>
       <p>非公開問題は学生に表示されません．再公開したい場合はシステム管理者に連絡してください.</p>
       <p>問題再利用したい場合は問題を参照して作成できます.</p>
@@ -141,25 +146,27 @@
           <% ii = 0 %>
           <% @questions.each do |question_lesson| %>
               <tr>
-                <% if question_lesson.is_deleted == true %>
+                <% question_private = Question.find_by(:id => question_lesson.question_id) %>
+                <% answers = Answer.where(:lesson_id=>@lesson.id, :question_id =>question_lesson.question_id, :lesson_question_id => question_lesson.id)%>
+                <% if (question_lesson.is_deleted == true && question_private.is_public == true ) || (question_lesson.is_deleted == true && answers.count>0 )%>
                     <% ii += 1 %>
-                    <% question_private = Question.find_by(:id => question_lesson.question_id) %>
+
                     <td><%= ii  %></td>
                     <td>
                       <%= link_to(question_private.title, lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question_private.id, :lesson_question_id => question_lesson.id),:remote =>true) %>
                     </td>
                     <td>
-                      <% if @lesson.lesson_questions.find_by(:question_id => question_private.id).start_time.nil? %>
-                          <%= @lesson.lesson_questions.find_by(:question_id => question_private.id).start_time %>
+                      <% if @lesson.lesson_questions.find_by(:id => question_lesson.id).start_time.nil? %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).start_time %>
                       <% else %>
-                          <%= @lesson.lesson_questions.find_by(:question_id => question_private.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ")  %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ")  %>
                       <% end %>
                     </td>
                     <td>
-                      <% if @lesson.lesson_questions.find_by(:question_id => question_private.id).end_time.nil? %>
-                          <%= @lesson.lesson_questions.find_by(:question_id => question_private.id).end_time %>
+                      <% if @lesson.lesson_questions.find_by(:id => question_lesson.id).end_time.nil? %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).end_time %>
                       <% else %>
-                          <%= @lesson.lesson_questions.find_by(:question_id => question_private.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %>
                       <% end %>
                     </td>
                 <% end %>

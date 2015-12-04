@@ -24,8 +24,7 @@ class QuestionsController < ApplicationController
     @question.lesson_questions.build
     @question.question_keywords.build
     @lesson_id = params[:lesson_id].to_i || session[:lesson_id]
-    LessonQuestion.where(:lesson_id=>@lesson_id, :is_deleted => true)
-    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
+    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id, :is_deleted => false)).uniq.sort
     @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
   end
 
@@ -277,6 +276,12 @@ class QuestionsController < ApplicationController
     select_lesson_question = LessonQuestion.find(session[:lesson_question_id])
     select_lesson_question.is_deleted = true
     select_lesson_question.save
+
+    answers = Answer.where(:lesson_id=>@lesson_id, :question_id =>@question.id, :lesson_question_id => select_lesson_question.id)
+    if @question.is_public != true && answers.count == 0
+      @question.is_deleted = true
+      @question.save
+    end
 
     ##ajax
     params[:lesson_id] = @lesson_id
