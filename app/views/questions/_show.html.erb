@@ -5,24 +5,20 @@
 
 </style>
 <%= render "layouts/notice" %>
-<<<<<<< HEAD
 <% if session[:lesson_id] != 1 %>
     <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => session[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
-    <% if @is_teacher && (@question.author == current_user.id) %>
-      <%= link_to '編集',edit_lesson_question_path(:lesson_id => session[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
-      <button class="btn btn-danger btn_top", id="question_delete">削除</button><span id="question_delete_attach", style="visibility: hidden;"><text ><%= params[:lesson_id]+';'+params[:question_id] %></text></span>
-=======
-<% if params[:lesson_id] %>
-    <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id =>params[:lesson_id]  ),:remote => true ,:class=>"btn btn-default btn_top"  %>
     <% if @is_teacher %>
-        <%= link_to '編集',edit_lesson_question_path(:lesson_id =>params[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
-        <% if @have_submit_answer == 1 %>
-            <% btn_label = "非公開" %>
-        <% else %>
-            <% btn_label = "削除" %>
+        <% if @question.author == current_user.id %>
+            <%= link_to '編集',edit_lesson_question_path(:lesson_id => session[:lesson_id], :question_id => params[:question_id]), :remote => true, :class => "btn btn-default btn_top" %>
         <% end %>
-        <button class="btn btn-danger btn_top", id="question_delete"><%= btn_label %></button><span id="question_delete_attach", style="visibility: hidden;"><text ><%= params[:lesson_id]+';'+params[:question_id] %></text></span>
->>>>>>> 削除ボタンは問題解答の有無によって表示を変わる
+        <% unless LessonQuestion.find_by(:id => session[:lesson_question_id]).is_deleted %>
+            <% if @have_submit_answer == true %>
+                <% btn_label = "非公開" %>
+            <% else %>
+                <% btn_label = "削除" %>
+            <% end %>
+            <button class="btn btn-danger btn_top", id="question_delete"><%= btn_label %></button><span id="question_delete_attach", style="visibility: hidden;"><text ><%= params[:lesson_id]+';'+params[:question_id] %></text></span>
+        <% end %>
     <% end %>
 <% else %>
     <%= link_to '問題一覧に戻る', questions_path, :class => "btn btn-default btn_top" %>
