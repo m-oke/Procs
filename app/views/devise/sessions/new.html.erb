@@ -1,3 +1,10 @@
+<% if notice %>
+  <p class="alert alert-success"><%= notice %></p>
+<% end %>
+<% if alert %>
+  <p class="alert alert-danger"><%= alert %></p>
+<% end %>
+
 <ul class="nav nav-tabs">
 <li class="active col-sm-3" id="header_tab1"><a href="#tab1" data-toggle="tab">ログイン</a></li>
 <li class="col-sm-3" id="header_tab2"><a href="#tab2" data-toggle="tab">新規登録</a></li>

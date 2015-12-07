@@ -35,10 +35,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
       end
     else
       set_minimum_password_length
-      flash[:resource] = resource
       clean_up_passwords resource
+      flash[:resource] = resource
+      flash[:alert] = "新規登録できませんでした．入力項目を確認してください．"
       redirect_to new_user_session_path(resource) + "#tab2"
-#      respond_with resource, location: new_user_session_path(resource)
     end
   end
 
