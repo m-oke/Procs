@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   :uniqueness => true
   validates :email_confirmation, :presence => true
 
+  # TODO: 他のカラムのvalidationを追加
 
   has_many :user_lessons, :foreign_key => :user_id
   has_many :lessons, :through => :user_lessons
