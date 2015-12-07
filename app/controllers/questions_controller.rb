@@ -9,9 +9,9 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] lesson_id
   # @param [Fixnum] id Questionのid
   def index
-    id = params[:lesson_id] || session[:lessson_id] || 1
-    session[:lesson_id] = id
-    @lesson = Lesson.find_by(:id => id)
+    lesson_id = params[:lesson_id] || session[:lessson_id] || 1
+    session[:lesson_id] = lesson_id
+    @lesson = Lesson.find_by(:id => lesson_id)
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
     @questions = @lesson.lesson_questions
   end
@@ -118,12 +118,18 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] id Questionのid
   # @param [Fixnum] lesson_question_id
   def show
-    session[:lesson_question_id] = params[:lesson_question_id].present? ? params[:lesson_question_id] : session[:lesson_question_id]
+    session[:lesson_question_id] = params[:lesson_question_id] .present? ? params[:lesson_question_id] : session[:lesson_question_id]
     session[:question_id] = params[:question_id]
     lesson_question_id = session[:lesson_question_id]
     question_id = session[:question_id]
-    @question = Question.find_by(:id => params[:question_id])
     lesson_id = session[:lesson_id] || 1
+    unless check_lesson_question(:lesson_id => lesson_id,
+                                 :question_id => question_id,
+                                 :lesson_question_id => lesson_question_id)
+      return
+    end
+
+    @question = Question.find_by(:id => params[:question_id])
     @lesson = Lesson.find_by(:id => lesson_id)
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                           :question_id => question_id,
@@ -292,5 +298,16 @@ class QuestionsController < ApplicationController
   def check_lesson
     id = params[:lesson_id] || 1
     return unless access_lesson_check(:user_id => current_user.id, :lesson_id => id)
+  end
+
+  # 該当する授業と問題の関連が存在するかどうか
+  # @param [Fixnum] lesson_id
+  # @param [Fixnum] question_id
+  # @param [Fixnum] lesson_question_id
+  # @return [Boolean]
+  def check_lesson_question(lesson_id:, question_id:, lesson_question_id:)
+    return LessonQuestion.find_by(:lesson_id => lesson_id,
+                                  :question_id => question_id,
+                                  :id => lesson_question_id).present?
   end
 end
