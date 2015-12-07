@@ -37,7 +37,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_minimum_password_length
       clean_up_passwords resource
       flash[:resource] = resource
-      flash[:alert] = "新規登録できませんでした．入力項目を確認してください．"
+      flash[:alert] = resource.errors.full_messages ? resource.errors.full_messages : "新規登録できませんでした．入力項目を確認してください．"
+
       redirect_to new_user_session_path(resource) + "#tab2"
     end
   end
@@ -70,7 +71,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.for(:sign_up).push(:student_number, :name, :nickname, roles: [] )
+    devise_parameter_sanitizer.for(:sign_up).push(:student_number, :name, :nickname, :email_confirmation, roles: [])
   end
 
   # If you have extra params to permit, append them to the sanitizer.

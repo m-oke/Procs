@@ -23,6 +23,11 @@
   </div>
 
   <div class="field">
+    <%= f.label :email_confirmation, "メールアドレスの確認" %>(<span class="inputnote">＊</span>)<br />
+    <%= f.email_field :email_confirmation %>
+  </div>
+
+  <div class="field">
     <%= f.label :password, "パスワード" %>(<span class="inputnote">＊</span>)
     <% if @minimum_password_length %>
     <em>(パスワードは <%= @minimum_password_length %>~255文字にしてください)</em>

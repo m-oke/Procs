@@ -4,7 +4,13 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  validates :email, :email_format => { :message => 'メールアドレスの形式が正しくありません' }
+
+  validates :email, :presence => true,
+  :email_format => { :message => 'メールアドレスの形式が正しくありません' },
+  :confirmation => true,
+  :uniqueness => true
+  validates :email_confirmation, :presence => true
+
 
   has_many :user_lessons, :foreign_key => :user_id
   has_many :lessons, :through => :user_lessons
