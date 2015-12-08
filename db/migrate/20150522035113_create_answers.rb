@@ -9,7 +9,7 @@ class CreateAnswers < ActiveRecord::Migration
       t.float :run_time, default: 0
       t.integer :memory_usage, default: 0
       t.integer :cpu_usage, default: 0
-      t.float :plagiarism_percentage, default: 0
+      t.float :local_plagiarism_percentage, default: 0
 
       t.timestamps null: false
     end

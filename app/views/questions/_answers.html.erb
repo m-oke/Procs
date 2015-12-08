@@ -1,17 +1,27 @@
 <script type="text/javascript">
 
   jQuery(document).ready(function(){
-  jQuery(".draw_fancybox").fancybox({
-  maxWidth    : 800,
-  maxHeight   : 600,
-  fitToView   : false,
-  width       : '70%',
-  height      : '70%',
-  autoSize    : false,
-  closeClick  : false,
-  openEffect  : 'none',
-  closeEffect : 'none'
-  });
+      jQuery(".draw_fancybox").fancybox({
+      maxWidth    : 800,
+      maxHeight   : 600,
+      fitToView   : false,
+      width       : '70%',
+      height      : '70%',
+      autoSize    : false,
+      closeClick  : false,
+      openEffect  : 'none',
+      closeEffect : 'none'
+      });
+      jQuery(".draw_fancybox2").fancybox({
+          maxHeight   : 500,
+          fitToView   : false,
+          width       : '90%',
+          height      : '90%',
+          autoSize    : false,
+          closeClick  : false,
+          openEffect  : 'none',
+          closeEffect : 'none'
+      });
   });
 </script>
 <h3 id="answer">解答状況</h3>
@@ -86,7 +96,7 @@
       <td>
         <% unless answer.new_record? %>
             <p><%= answer.plagiarism_percentage %>%</p>
-            <a class="btn btn-default draw_fancybox" href="#local_checked_results_<%=student.id %>" >内容を確認</a>
+            <a class="btn btn-default draw_fancybox2" href="#local_checked_results_<%=student.id %>" >内容を確認</a>
         <% end %>
       </td>
       <td>

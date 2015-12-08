@@ -16,6 +16,7 @@
 <!--ソースコード内容の取得-->
 <% @target_code = show_local(@target_path) %>
 <% @compare_code = show_local(@compare_path) %>
+<div id="check_results">
 <div class="check_result">
   <p>学生：<%= student.name %></p>
   <p>問題：<%= question.title %></p>
@@ -53,4 +54,5 @@
         <% end %>
     <% end %>
   </div>
+</div>
 </div>
