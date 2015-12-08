@@ -13,8 +13,10 @@
   </div>
 
   <div class="field">
-    <%= f.label :nickname, "ニックネーム" %>(<span class="inputnote">＊</span>)<br />
-    <%= f.text_field :nickname %>
+    <%= f.label :nickname, "ニックネーム" %>(<span class="inputnote">＊</span>)
+    <i class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" data-title="<%= @nickname_hint_title %>"
+       data-html="true" data-content="<%= @nickname_hint %>"></i><br />
+    <%= f.text_field :nickname, :pattern => '^[!-~]{1,255}$' %>
   </div>
 
   <div class="field">
@@ -29,15 +31,14 @@
 
   <div class="field">
     <%= f.label :password, "パスワード" %>(<span class="inputnote">＊</span>)
-    <% if @minimum_password_length %>
-    <em>(パスワードは <%= @minimum_password_length %>~255文字にしてください)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
+    <i class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" data-title="<%= @password_hint_title %>"
+       data-html="true" data-content="<%= @password_hint %>"></i><br />
+    <%= f.password_field :password, autocomplete: "off", :pattern => '^[!-~]{8,255}$' %>
   </div>
 
   <div class="field">
     <%= f.label :password_confirmation, "パスワードの確認" %>(<span class="inputnote">＊</span>)<br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    <%= f.password_field :password_confirmation, autocomplete: "off", :pattern => '^[!-~]{1,255}$' %>
   </div>
 
   <div class="actions">

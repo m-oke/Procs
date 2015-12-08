@@ -6,7 +6,7 @@ Rails.application.config.assets.precompile += %w(questions/question.js)
 Rails.application.config.assets.precompile += %w(questions/question_delete.js)
 Rails.application.config.assets.precompile += %w( answers/answers.js )
 Rails.application.config.assets.precompile += %w( lessons/delete_lesson.js )
-Rails.application.config.assets.precompile += %w( goto_tab.js )
+Rails.application.config.assets.precompile += %w( users/users.js )
 
 
 # Add additional assets to the asset load path
