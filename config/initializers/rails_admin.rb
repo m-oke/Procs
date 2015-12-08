@@ -16,6 +16,18 @@ RailsAdmin.config do |config|
 
   ### More at https://github.com/sferik/rails_admin/wiki/Base-configuration
 
+  config.main_app_name = ["Procs", "Admin page"]
+  config.included_models = ["User", "Lesson", "Question", "Answer", "Sample", "TestDatum", "InternetCheckResult"]
+
+  config.model Sample do
+    parent Question
+  end
+
+  config.model TestDatum do
+    parent Question
+
+  end
+
   config.actions do
     dashboard                     # mandatory
     index                         # mandatory
@@ -48,7 +60,12 @@ RailsAdmin.config do |config|
       field :email do
         required true
       end
-      field :password
+      field :email_confirmation do
+        required true
+      end
+      field :password do
+        required true
+      end
       field :password_confirmation do
         required true
       end

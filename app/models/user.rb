@@ -7,21 +7,27 @@ class User < ActiveRecord::Base
 
   validates :email,
   :presence => true,
-  :email_format => { :message => 'メールアドレスの形式が正しくありません' },
+  :email_format => { :message => 'の形式が正しくありません' },
   :confirmation => true,
   :uniqueness => true
-  validates :email_confirmation, :presence => true
+
+  validates :email_confirmation,
+  :presence => true,
+  if: Proc.new {|obj| obj.new_record? || !obj.email_confirmation.blank?}
+
   validates :name, :length => {:maximum => 255}
+
   validates :nickname,
   :presence => true,
   :length => {:minimum => 1, :maximum => 255},
   # アスキー文字33~126対応
-  :format => {:with => /\A[!-~]{1,255}\z/, :message => '適切なフォーマットではありません' }
+  :format => {:with => /\A[!-~]{1,255}\z/, :message => 'は適切なフォーマットではありません' }
+
   validates :password,
   :presence => true,
   :length => {:minimum => 1, :maximum => 255},
-  :format => {:with => /\A[!-~]{8,255}\z/, :message => '適切なフォーマットではありません' }
-  validates :roles, :presence => true
+  :format => {:with => /\A[!-~]{8,255}\z/, :message => 'は適切なフォーマットではありません' },
+  if: Proc.new {|obj| obj.new_record? || !obj.email_confirmation.blank?}
 
 
   has_many :user_lessons, :foreign_key => :user_id
