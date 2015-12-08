@@ -61,6 +61,9 @@ class LocalCheckCJob < ActiveJob::Base
               check_count += 1
             end
           end
+          # チェック実行で生成したファイルを削除
+          File.delete(@target_dir + "/" + user_id.to_s + "_" + s.id.to_s + ".txt")
+
           # [目標ファイルtoken数,比較ファイル名,目標類似行,類似token数]の配列を作る
           if check_count == 0
             return
@@ -73,6 +76,9 @@ class LocalCheckCJob < ActiveJob::Base
           end
         end
       end
+    end
+    if local_result.empty?
+      return
     end
     result_temp = LocalCheckResult.new(:answer_id => answer.id,
                                        :check_result => (local_result[0][4].to_f/local_result[0][0].to_f*100) ,
