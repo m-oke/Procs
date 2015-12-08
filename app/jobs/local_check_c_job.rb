@@ -67,10 +67,10 @@ class LocalCheckCJob < ActiveJob::Base
           if check_count == 0
             return
           else
-            local_result.push([@target_token,@compare_path,@target_line,@compare_line,@check_token])
+            local_result.push([@target_token,@target_name,@compare_name,@target_line,@compare_line,@check_token,@compare_path,s.id,compare_answer.lesson_question_id])
             # SORT
             local_result = local_result.sort do |item1,item2|
-              item2[4]<=> item1[4]
+              item2[5]<=> item1[5]
             end
           end
         end
@@ -80,14 +80,18 @@ class LocalCheckCJob < ActiveJob::Base
       return
     end
     result_temp = LocalCheckResult.new(:answer_id => answer.id,
-                                       :check_result => (local_result[0][4].to_f/local_result[0][0].to_f*100) ,
-                                       :check_file => local_result[0][1],
-                                       :target_line => local_result[0][2],
-                                       :compare_line => local_result[0][3] )
+                                       :check_result => (local_result[0][5].to_f/local_result[0][0].to_f*100) ,
+                                       :target_name => local_result[0][1],
+                                       :compare_name => local_result[0][2],
+                                       :target_line => local_result[0][3],
+                                       :compare_line => local_result[0][4],
+                                       :compare_path => local_result[0][6],
+                                       :compare_user_id => local_result[0][7],
+                                       :compare_lesson_question_id => local_result[0][8])
     result_temp.save
 
     # アンサーの類似度を保存
-    answer.local_plagiarism_percentage = local_result[0][4].to_f/local_result[0][0].to_f*100
+    answer.local_plagiarism_percentage = local_result[0][5].to_f/local_result[0][0].to_f*100
     answer.save
 
     # File.delete(UPLOADS_ANSWERS_PATH.to_s + "/test.txt")
