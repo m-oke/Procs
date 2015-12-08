@@ -2,7 +2,6 @@ class LocalCheckCJob < ActiveJob::Base
   queue_as :plagiarism
 
   def perform(user_id:, lesson_id:, question_id:, lesson_question_id:)
-    # ローカル剽窃チェックテスト
 
     answer = Answer.where(:student_id => user_id,
                           :lesson_id => lesson_id,
@@ -71,7 +70,7 @@ class LocalCheckCJob < ActiveJob::Base
             local_result.push([@target_token,@compare_path,@target_line,@compare_line,@check_token])
             # SORT
             local_result = local_result.sort do |item1,item2|
-              item2[5]<=> item1[5]
+              item2[4]<=> item1[4]
             end
           end
         end
