@@ -279,8 +279,18 @@ class QuestionsController < ApplicationController
 
     answers = Answer.where(:lesson_id=>@lesson_id, :question_id =>@question.id, :lesson_question_id => select_lesson_question.id)
     if @question.is_public != true && answers.count == 0
-      @question.is_deleted = true
-      @question.save
+      question_to_be_delete = true
+      same_lesson_question = LessonQuestion.where(:lesson_id =>@lesson_id, :question_id =>@question_id)
+      same_lesson_question.each do |s|
+        if s.is_deleted == false
+          question_to_be_delete = false
+          break
+        end
+      end
+      if question_to_be_delete == true
+        @question.is_deleted = true
+        @question.save
+      end
     end
 
     ##ajax
