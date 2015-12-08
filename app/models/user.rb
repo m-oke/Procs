@@ -10,8 +10,18 @@ class User < ActiveRecord::Base
   :confirmation => true,
   :uniqueness => true
   validates :email_confirmation, :presence => true
+  validates :name, :length => {:maximum => 255}
+  validates :nickname,
+  :presence => true,
+  :length => {:minimum => 1, :maximum => 255},
+  # アスキー文字33~126対応
+  :format => {:with => /\A[!-~]{1,255}\z/, :message => '適切なフォーマットではありません' }
+  validates :password,
+  :presence => true,
+  :length => {:minimum => 1, :maximum => 255},
+  :format => {:with => /\A[!-~]{8,255}\z/, :message => '適切なフォーマットではありません' }
+  validates :roles, :presence => true
 
-  # TODO: 他のカラムのvalidationを追加
 
   has_many :user_lessons, :foreign_key => :user_id
   has_many :lessons, :through => :user_lessons

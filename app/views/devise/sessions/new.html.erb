@@ -1,14 +1,16 @@
 <ul>
-<% if notice %>
+<% unless notice.nil? %>
   <div class="alert alert-success">
-    <% notice.each do |msg| %>
+    <% notice_message = Array(notice) %>
+    <% notice_message.each do |msg| %>
       <li><%= msg %></li>
     <% end %>
   </div>
 <% end %>
-<% if alert %>
+<% unless alert.nil? %>
+  <% alert_message = Array(alert)%>
   <div class="alert alert-danger">
-    <% alert.each do |msg| %>
+    <% alert_message.each do |msg| %>
       <li><%= msg %></li>
     <% end %>
   </div>
