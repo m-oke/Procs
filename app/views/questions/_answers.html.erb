@@ -98,14 +98,14 @@
         <!-- ローカル類似度の表示 -->
         <td>
           <% unless answer.new_record? %>
-              <p><%= answer.plagiarism_percentage %>%</p>
+              <p><%= answer.local_plagiarism_percentage %>%</p>
               <a class="btn btn-default draw_fancybox2" href="#local_checked_results_<%=student.id %>" >内容を確認</a>
           <% end %>
         </td>
         <!-- Localウィンドウ表示内容-->
         <div id="local_checked_results_<%=student.id %>" class="internet-check-results-css" >
           <% unless answer.new_record? %>
-              <% unless answer.plagiarism_percentage == 0.0 %>
+              <% unless answer.local_plagiarism_percentage == 0.0 %>
                   <%= render :partial => "questions/local_check_results", :locals => {:student => student, :question => @question, :answer => answer} %>
               <% else %>
                   <p>類似ファイルは存在しません</p>

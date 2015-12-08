@@ -3,7 +3,10 @@
 <% @target_line = local_check_result.target_line %>
 <% @compare_line = local_check_result.compare_line %>
 <% @target_path = @target_file = UPLOADS_ANSWERS_PATH.join(student.id.to_s, answer.lesson_question_id.to_s, answer.file_name).to_s %>
-<% @compare_path = local_check_result.check_file %>
+<% @compare_path = local_check_result.compare_path %>
+<% compare_user = User.find_by(:id => local_check_result.compare_user_id) %>
+<% compare_lesson_question =  LessonQuestion.find_by(:id => local_check_result.compare_lesson_question_id)%>
+<% compare_question = Question.find_by(:id => compare_lesson_question.question_id) %>
 
 <!--Mark the check line-->
 <% @target_check_count = @target_line.count(";") %>
@@ -18,7 +21,9 @@
 <% @compare_code = show_local(@compare_path) %>
 <div id="check_results">
 <div class="check_result">
-  <p>学生：<%= student.name %></p>
+  <p>元のファイル：<%= answer.file_name %></p>
+  <p>学生名：<%= student.name %></p>
+  <p>ニックネーム：<%= student.nickname %></p>
   <p>問題：<%= question.title %></p>
   <p>ソースコード：</p>
   <div class="hero-unit3">
@@ -38,7 +43,10 @@
 </div>
 
 <div class="check_result">
-  <p>類似ファイルのパス：<%= @compare_path %></p>
+  <p>検出した類似ファイル：<%= local_check_result.compare_name %></p>
+  <p>学生名：<%= compare_user.name %></p>
+  <p>ニックネーム：<%= compare_user.nickname %></p>
+  <p>問題：<%= compare_question.title %></p>
   <p>ソースコード：</p>
   <div class="hero-unit3">
     <% @compare_code.each_with_index do |line, i| %>

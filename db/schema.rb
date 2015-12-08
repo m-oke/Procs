@@ -14,22 +14,22 @@
 ActiveRecord::Schema.define(version: 20151204074642) do
 
   create_table "answers", force: :cascade do |t|
-    t.integer  "student_id",            limit: 4,                 null: false
-    t.integer  "question_id",           limit: 4,                 null: false
-    t.string   "file_name",             limit: 255,               null: false
-    t.string   "result",                limit: 255,               null: false
-    t.string   "language",              limit: 255,               null: false
-    t.float    "run_time",              limit: 24,  default: 0.0
-    t.integer  "memory_usage",          limit: 4,   default: 0
-    t.integer  "cpu_usage",             limit: 4,   default: 0
-    t.float    "plagiarism_percentage", limit: 24,  default: 0.0
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
-    t.integer  "lesson_id",             limit: 4
-    t.integer  "question_version",      limit: 4
-    t.integer  "test_passed",           limit: 4,   default: 0,   null: false
-    t.integer  "test_count",            limit: 4,   default: 0,   null: false
-    t.integer  "lesson_question_id",    limit: 4,                 null: false
+    t.integer  "student_id",                  limit: 4,                 null: false
+    t.integer  "question_id",                 limit: 4,                 null: false
+    t.string   "file_name",                   limit: 255,               null: false
+    t.string   "result",                      limit: 255,               null: false
+    t.string   "language",                    limit: 255,               null: false
+    t.float    "run_time",                    limit: 24,  default: 0.0
+    t.integer  "memory_usage",                limit: 4,   default: 0
+    t.integer  "cpu_usage",                   limit: 4,   default: 0
+    t.float    "local_plagiarism_percentage", limit: 24,  default: 0.0
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
+    t.integer  "lesson_id",                   limit: 4
+    t.integer  "question_version",            limit: 4
+    t.integer  "test_passed",                 limit: 4,   default: 0,   null: false
+    t.integer  "test_count",                  limit: 4,   default: 0,   null: false
+    t.integer  "lesson_question_id",          limit: 4,                 null: false
   end
 
   create_table "internet_check_results", force: :cascade do |t|
@@ -65,13 +65,17 @@ ActiveRecord::Schema.define(version: 20151204074642) do
   end
 
   create_table "local_check_results", force: :cascade do |t|
-    t.integer  "answer_id",    limit: 4,                 null: false
-    t.float    "check_result", limit: 24,  default: 0.0
-    t.string   "check_file",   limit: 255
-    t.string   "target_line",  limit: 255
-    t.string   "compare_line", limit: 255
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.integer  "answer_id",                  limit: 4,                 null: false
+    t.float    "check_result",               limit: 24,  default: 0.0
+    t.string   "target_name",                limit: 255
+    t.string   "compare_name",               limit: 255
+    t.string   "target_line",                limit: 255
+    t.string   "compare_line",               limit: 255
+    t.string   "compare_path",               limit: 255
+    t.integer  "compare_user_id",            limit: 4
+    t.integer  "compare_lesson_question_id", limit: 4
+    t.datetime "created_at",                                           null: false
+    t.datetime "updated_at",                                           null: false
   end
 
   create_table "question_keywords", force: :cascade do |t|
