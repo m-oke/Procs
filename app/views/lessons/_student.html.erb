@@ -90,7 +90,8 @@
               <td>
                 <span>
                   <% unless answer.new_record? %>
-                    <a class="draw_fancybox" href="#local_checked_results_<%=lesson_question.question_id %>" ><%= answer.plagiarism_percentage %>%</a>
+                    <p><%= answer.plagiarism_percentage %>%</p>
+                    <a class="btn btn-default draw_fancybox" href="#local_checked_results_<%=lesson_question.question_id %>" >内容を確認</a>
                   <% end %>
                 </span>
               </td>
