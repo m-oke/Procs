@@ -9,19 +9,19 @@
 
 # root
 User.create(:name => "root1", :nickname => "root", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
-            :email => "root@user.com", :password => "testtest", :roles => [:root, :admin, :teacher, :student])
+            :email => "root@user.com", :email_confirmation => "root@user.com", :password => "testtest", :roles => [:root, :admin, :teacher, :student])
 
 # 管理者
 2.times do |i|
   User.create(:name => "管理者#{i + 1}", :nickname => "admin#{i+1}", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
-             :email => "Admin#{i + 1}@user.com", :password => "testtest", :roles => [:admin, :teacher, :student])
+             :email => "Admin#{i + 1}@user.com", :email_confirmation => "Admin#{i + 1}@user.com", :password => "testtest", :roles => [:admin, :teacher, :student])
 end
 
 
 # 教師
 3.times do |i|
     User.create(:name => "教員#{i + 1}", :nickname => "teacher#{i+1}", # :faculty => "工学域#{i + 1}", :department => "工学域#{i + 1}", :grade => 0,
-                :email => "teacher#{i + 1}@user.com", :password => "testtest", :roles => [:teacher, :student])
+                :email => "teacher#{i + 1}@user.com", :email_confirmation => "teacher#{i + 1}@user.com", :password => "testtest", :roles => [:teacher, :student])
 end
 
 # 学生
@@ -32,7 +32,7 @@ end
     x = "#{i + 1}"
   end
   User.create(:student_number => "2015200#{x}", :name => "学生#{i + 1}", :nickname => "student#{i+1}", #:faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4),
-              :email => "student#{i + 1}@user.com", :password => "testtest", :roles => [:student])
+              :email => "student#{i + 1}@user.com", :email_confirmation => "student#{i + 1}@user.com", :password => "testtest", :roles => [:student])
 end
 
 # クラス

@@ -5,7 +5,8 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  validates :email, :presence => true,
+  validates :email,
+  :presence => true,
   :email_format => { :message => 'メールアドレスの形式が正しくありません' },
   :confirmation => true,
   :uniqueness => true
