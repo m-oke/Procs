@@ -12,6 +12,16 @@
             openEffect  : 'none',
             closeEffect : 'none'
         });
+        jQuery(".draw_fancybox2").fancybox({
+            maxHeight   : 500,
+            fitToView   : false,
+            width       : '90%',
+            height      : '90%',
+            autoSize    : false,
+            closeClick  : false,
+            openEffect  : 'none',
+            closeEffect : 'none',
+        });
     });
 </script>
 <%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"btn btn-default btn_top" %>
@@ -90,15 +100,15 @@
               <td>
                 <span>
                   <% unless answer.new_record? %>
-                    <p><%= answer.plagiarism_percentage %>%</p>
-                    <a class="btn btn-default draw_fancybox" href="#local_checked_results_<%=lesson_question.question_id %>" >内容を確認</a>
+                    <p><%= answer.local_plagiarism_percentage %>%</p>
+                    <a class="btn btn-default draw_fancybox2" href="#local_checked_results_<%=lesson_question.question_id %>" >内容を確認</a>
                   <% end %>
                 </span>
               </td>
               <!-- Localウィンドウ表示内容-->
               <div id="local_checked_results_<%=lesson_question.question_id %>" class="internet-check-results-css" >
                 <% unless answer.new_record? %>
-                    <% unless answer.plagiarism_percentage == 0.0 %>
+                    <% unless answer.local_plagiarism_percentage == 0.0 %>
                         <%= render :partial => "questions/local_check_results", :locals => {:student => @student, :question => question, :answer => answer} %>
                     <% else %>
                         <p>類似ファイルは存在しません</p>

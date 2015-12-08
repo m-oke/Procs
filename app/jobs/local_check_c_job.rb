@@ -87,7 +87,7 @@ class LocalCheckCJob < ActiveJob::Base
     result_temp.save
 
     # アンサーの類似度を保存
-    answer.plagiarism_percentage = local_result[0][4].to_f/local_result[0][0].to_f*100
+    answer.local_plagiarism_percentage = local_result[0][4].to_f/local_result[0][0].to_f*100
     answer.save
 
     # File.delete(UPLOADS_ANSWERS_PATH.to_s + "/test.txt")
