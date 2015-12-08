@@ -1,3 +1,3 @@
 class InternetCheckResult < ActiveRecord::Base
-  belongs_to :answers
+  belongs_to :answer, :foreign_key => :answer_id
 end

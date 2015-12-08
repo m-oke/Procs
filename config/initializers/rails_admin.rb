@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 RailsAdmin.config do |config|
 
   ### Popular gems integration
@@ -19,13 +20,15 @@ RailsAdmin.config do |config|
   config.main_app_name = ["Procs", "Admin page"]
   config.included_models = ["User", "Lesson", "Question", "Answer", "Sample", "TestDatum", "InternetCheckResult"]
 
+  # TODO: 各モデルの必要事項を追加
   config.model Sample do
     parent Question
   end
 
   config.model TestDatum do
     parent Question
-
+    create do
+    end
   end
 
   config.actions do
@@ -69,14 +72,6 @@ RailsAdmin.config do |config|
       field :password_confirmation do
         required true
       end
-      field :reset_password_sent_at
-      field :remember_created_at
-      field :sign_in_count
-      field :current_sign_in_at
-      field :last_sign_in_at
-      field :current_sign_in_ip
-      field :last_sign_in_ip
-      field :user_lessons
       field :lessons
       field :answers
       field :questions
@@ -91,17 +86,8 @@ RailsAdmin.config do |config|
       end
       field :email
       field :password do
-        required false
       end
       field :password_confirmation
-      field :reset_password_sent_at
-      field :remember_created_at
-      field :sign_in_count
-      field :current_sign_in_at
-      field :last_sign_in_at
-      field :current_sign_in_ip
-      field :last_sign_in_ip
-      field :user_lessons
       field :lessons
       field :answers
       field :questions
