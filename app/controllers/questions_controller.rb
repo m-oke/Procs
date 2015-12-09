@@ -24,7 +24,7 @@ class QuestionsController < ApplicationController
     @question.lesson_questions.build
     @question.question_keywords.build
     @lesson_id = params[:lesson_id].to_i || session[:lesson_id]
-    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
+    my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id, :is_deleted => false)).uniq.sort
     @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
   end
 
@@ -129,20 +129,32 @@ class QuestionsController < ApplicationController
                                           :question_id => question_id,
                                           :lesson_id => lesson_id,
                                           :lesson_question_id => lesson_question_id) || nil
+
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
-      @multi_check_enable = 0
+      @have_submit_answer = false #非公開と削除を区別する
+      @multi_check_enable = false #クラス全体剽窃チェック用
+
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @students.each do |s|
         answer = Answer.latest_answer(:student_id => s.id,
                                       :question_id => @question.id,
                                       :lesson_id => @lesson.id,
                                       :lesson_question_id => lesson_question_id)
-        if answer.present?
+        if @have_submit_answer == false
+          have_answer = Answer.where(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id, :lesson_question_id => lesson_question_id)
+          if have_answer.count> 0
+            @have_submit_answer = true
+          end
+        end
+        if @multi_check_enable == false && answer.present?
           checked_result = InternetCheckResult.where(:answer_id =>answer.id)
           if checked_result.count == 0
-            @multi_check_enable = 1
+            @multi_check_enable = true
           end
+        end
+        if @multi_check_enable == true && @have_submit_answer == true
+          break
         end
       end
     else
@@ -254,6 +266,39 @@ class QuestionsController < ApplicationController
     @question = Question.find_by(:id => question_id)
     my_questions = (Question.where(:is_public => true) + Question.where(:author => current_user.id)).uniq.sort
     @exist_question = my_questions.map{|q| [q.title, q.id]}.to_h
+  end
+
+  def destroy
+    @lesson_id = params[:lesson_id]
+    @question_id = params[:question_id]
+    @question = Question.find_by(:id =>@question_id)
+
+    select_lesson_question = LessonQuestion.find(session[:lesson_question_id])
+    select_lesson_question.is_deleted = true
+    select_lesson_question.save
+
+    answers = Answer.where(:lesson_id=>@lesson_id, :question_id =>@question.id, :lesson_question_id => select_lesson_question.id)
+    if @question.is_public != true && answers.count == 0
+      question_to_be_delete = true
+      same_lesson_question = LessonQuestion.where(:lesson_id =>@lesson_id, :question_id =>@question_id)
+      same_lesson_question.each do |s|
+        if s.is_deleted == false
+          question_to_be_delete = false
+          break
+        end
+      end
+      if question_to_be_delete == true
+        @question.is_deleted = true
+        @question.save
+      end
+    end
+
+    ##ajax
+    params[:lesson_id] = @lesson_id
+    @lesson = Lesson.find_by(:id => @lesson_id)
+    @questions = @lesson.lesson_questions
+    @is_teacher = Lesson.find_by(:id => @lesson_id).user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson_id).is_teacher
+
   end
 
   private

@@ -5,6 +5,7 @@
   <% end %>
 </div>
 <div>
+
   <h2>問題一覧</h2>
   <div class="table-responsive">
     <% unless @is_teacher %>
@@ -27,7 +28,13 @@
           <th>解答詳細</th>
         <% end %>
       </tr>
-      <% @questions.each.with_index(1) do |lesson_question, i| %>
+      <% i = 0 %>
+      <% @questions.each do |lesson_question| %>
+
+        <% if lesson_question.is_deleted == true%>
+          <% next %>
+        <% end %>
+        <% i += 1 %>
         <% question = Question.find_by(:id => lesson_question.question_id) %>
         <tr>
           <td><%= i %></td>
@@ -109,5 +116,65 @@
       <% end %>
     </table>
   </div>
+  <% if @is_teacher && @lesson.id != 1 %>
+    <% private_question_show = false %>
+    <% all_delete_question = LessonQuestion.where(:lesson_id => @lesson.id,:is_deleted =>true) %>
+    <% all_delete_question.each do |d| %>
+      <% q = Question.find(d.question_id) %>
+      <% if q.is_public == true %>
+        <% private_question_show =true %>
+        <% break %>
+      <% end %>
+      <% answers = Answer.where(:lesson_id=>@lesson.id, :question_id =>d.question_id, :lesson_question_id => d.id)%>
+      <% if answers.count > 0 %>
+          <% private_question_show = true %>
+          <% break %>
+      <% end %>
+    <% end %>
+    <% if  private_question_show == true %>
+      <h2><font color="red">非公開問題一覧</font></h2>
+      <p>非公開問題は学生に表示されません．再公開したい場合はシステム管理者に連絡してください.</p>
+      <p>問題再利用したい場合は問題を参照して作成できます.</p>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <tr>
+            <th>問題ID</th>
+            <th>問題名</th>
+            <th>開始時間</th>
+            <th>終了時間</th>
+          </tr>
+          <% ii = 0 %>
+          <% @questions.each do |question_lesson| %>
+              <tr>
+                <% question_private = Question.find_by(:id => question_lesson.question_id) %>
+                <% answers = Answer.where(:lesson_id=>@lesson.id, :question_id =>question_lesson.question_id, :lesson_question_id => question_lesson.id)%>
+                <% if (question_lesson.is_deleted == true && question_private.is_public == true ) || (question_lesson.is_deleted == true && answers.count>0 )%>
+                    <% ii += 1 %>
+
+                    <td><%= ii  %></td>
+                    <td>
+                      <%= link_to(question_private.title, lesson_question_path(:lesson_id => params[:lesson_id], :question_id => question_private.id, :lesson_question_id => question_lesson.id),:remote =>true) %>
+                    </td>
+                    <td>
+                      <% if @lesson.lesson_questions.find_by(:id => question_lesson.id).start_time.nil? %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).start_time %>
+                      <% else %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).start_time.strftime(" %Y /  %m / %d - %H:%M:%S ")  %>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% if @lesson.lesson_questions.find_by(:id => question_lesson.id).end_time.nil? %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).end_time %>
+                      <% else %>
+                          <%= @lesson.lesson_questions.find_by(:id => question_lesson.id).end_time.strftime(" %Y /  %m / %d - %H:%M:%S ") %>
+                      <% end %>
+                    </td>
+                <% end %>
+              </tr>
+          <% end %>
+        </table>
+      </div>
+    <% end %>
+  <% end %>
 </div>
 <% flash[:previous] = 'questions' %>
