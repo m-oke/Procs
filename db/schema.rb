@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204074642) do
+ActiveRecord::Schema.define(version: 20151209083703) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "student_id",            limit: 4,                 null: false
@@ -21,7 +21,6 @@ ActiveRecord::Schema.define(version: 20151204074642) do
     t.string   "language",              limit: 255,               null: false
     t.float    "run_time",              limit: 24,  default: 0.0
     t.integer  "memory_usage",          limit: 4,   default: 0
-    t.integer  "cpu_usage",             limit: 4,   default: 0
     t.float    "plagiarism_percentage", limit: 24,  default: 0.0
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
@@ -55,9 +54,6 @@ ActiveRecord::Schema.define(version: 20151204074642) do
   create_table "lessons", force: :cascade do |t|
     t.string   "name",        limit: 255,   null: false
     t.text     "description", limit: 65535
-    t.string   "term",        limit: 255
-    t.integer  "date",        limit: 4
-    t.string   "period",      limit: 255
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
     t.string   "lesson_code", limit: 255,   null: false

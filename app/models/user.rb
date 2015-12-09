@@ -35,6 +35,7 @@ class User < ActiveRecord::Base
 
   has_many :answers, :foreign_key => :student_id
   has_many :questions, :through => :answers
+  has_many :questions, :foreign_key => :author
 
   ROLES = %i[root admin teacher student]
 
@@ -64,4 +65,57 @@ class User < ActiveRecord::Base
     end
     return true
   end
+
+
+
+  rails_admin do
+    create do
+      field :student_number do
+        help "学籍番号など，#{help}"
+      end
+      field :name do
+        help "本名など，#{help}"
+      end
+      field :nickname do
+        help "ニックネームなど他のユーザに表示される，#{help}"
+        required true
+      end
+      field :roles do
+        help "ユーザの権限，#{help}"
+        required true
+        partial 'roles_form'
+      end
+      field :email do
+        required true
+        help "ログインに使用，#{help}"
+      end
+      field :email_confirmation do
+        required true
+      end
+      field :password do
+        required true
+      end
+      field :password_confirmation do
+        required true
+      end
+      field :lessons
+      field :answers
+    end
+
+    update do
+      field :student_number
+      field :name
+      field :nickname
+      field :roles do
+        partial 'roles_form'
+      end
+      field :email
+      field :password do
+      end
+      field :password_confirmation
+      field :lessons
+      field :answers
+    end
+  end
+
 end

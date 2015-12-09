@@ -1,5 +1,6 @@
 <% for role in User::ROLES %>
-  <%= check_box_tag "user[roles][#{role}]", role, @object.roles.include?(role), {:name => "user[roles][]"}%>
+  <% if role == :root then next end %>
+  <%= check_box_tag "user[roles][#{role}]", role, @object.roles.include?(role), {:name => "user[roles][]", :disabled => (role == :student)}%>
   <%= label_tag "user_roles_#{role}", role.to_s.humanize %><br />
 <% end %>
 <%= hidden_field_tag "user[roles][]", "" %>

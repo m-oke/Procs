@@ -54,4 +54,120 @@ class Answer < ActiveRecord::Base
     return accept_count
   end
 
+
+  rails_admin do
+    create do
+      field :user do
+        required true
+      end
+      field :question do
+        required true
+      end
+      field :lesson do
+        required true
+      end
+      field :lesson_question, :enum do
+        enum do
+          LessonQuestion.all.collect {|lq| ["[#{lq.lesson.name}] - [#{lq.question.title}] ##{lq.id}", lq.id]}
+        end
+        required true
+        help "解答した問題と授業の関連, コピーした問題がある場合は注意, #{help}"
+      end
+      # TODO: ファイルアップロード機能
+      field :file_name do
+        required true
+        help "サーバに保存した解答ソースコードのファイル名, #{help}"
+      end
+      field :language do
+        required true
+        help "cまたはpython, #{help}"
+      end
+      field :run_time do
+        help "単位はms, #{help}"
+      end
+      field :memory_usage do
+        help "単位はMB, #{help}"
+      end
+      field :question_version do
+        required true
+        help "解答した問題のバージョン, #{help}"
+      end
+      field :test_count
+      field :test_passed
+      field :result do
+        required true
+        res = ""
+        RESULT.each_with_index do |(key, val), i|
+          res += "#{key} => #{val}"
+          if (i + 1 != RESULT.size)
+            res += ", "
+          end
+        end
+        help "評価結果, 対応表(#{res}), #{help}"
+      end
+      field :plagiarism_percentage do
+        help "学生間のソースコードの類似度, #{help}"
+      end
+      field :internet_check_results do
+        help "Web上のソースコードとの類似度"
+      end
+    end
+
+    edit do
+      field :user do
+        required true
+      end
+      field :question do
+        required true
+      end
+      field :lesson do
+        required true
+      end
+      field :lesson_question, :enum do
+        enum do
+          LessonQuestion.all.collect {|lq| ["[#{lq.lesson.name}] - [#{lq.question.title}] ##{lq.id}", lq.id]}
+        end
+        required true
+        help "解答した問題と授業の関連, コピーした問題がある場合は注意, #{help}"
+      end
+      field :file_name do
+        required true
+        help "サーバに保存した解答ソースコードのファイル名, #{help}"
+      end
+      field :language do
+        required true
+        help "cまたはpython, #{help}"
+      end
+      field :run_time do
+        help "単位はms, #{help}"
+      end
+      field :memory_usage do
+        help "単位はMB, #{help}"
+      end
+      field :question_version do
+        required true
+        help "解答した問題のバージョン, #{help}"
+      end
+      field :test_count
+      field :test_passed
+      field :result do
+        required true
+        res = ""
+        RESULT.each_with_index do |(key, val), i|
+          res += "#{key} => #{val}"
+          if (i + 1 != RESULT.size)
+            res += ", "
+          end
+        end
+        help "評価結果, 対応表(#{res}), #{help}"
+      end
+      field :plagiarism_percentage do
+        help "学生間のソースコードの類似度, #{help}"
+      end
+      field :internet_check_results do
+        help "Web上のソースコードとの類似度"
+      end
+    end
+  end
+
 end

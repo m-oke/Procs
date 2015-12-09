@@ -8,15 +8,14 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # root
-User.create(:name => "root1", :nickname => "root", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
+User.create(:name => "root1", :nickname => "root",
             :email => "root@user.com", :email_confirmation => "root@user.com", :password => "testtest", :roles => [:root, :admin, :teacher, :student])
 
 # 管理者
 2.times do |i|
-  User.create(:name => "管理者#{i + 1}", :nickname => "admin#{i+1}", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
-             :email => "Admin#{i + 1}@user.com", :email_confirmation => "Admin#{i + 1}@user.com", :password => "testtest", :roles => [:admin, :teacher, :student])
+  User.create(:name => "管理者#{i + 1}", :nickname => "admin#{i+1}",
+                 :email => "admin#{i + 1}@user.com", :email_confirmation => "admin#{i + 1}@user.com", :password => "testtest", :roles => [:admin, :teacher, :student])
 end
-
 
 # 教師
 3.times do |i|
