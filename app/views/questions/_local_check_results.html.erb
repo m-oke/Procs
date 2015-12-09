@@ -21,7 +21,7 @@
         <!--ソースコード内容の取得-->
         <% @target_code = show_local(@target_path) %>
         <% @compare_code = show_local(@compare_path) %>
-        <div id="check_results">
+        <div class="check_results">
           <div class="check_result">
             <p>元のファイル：<%= answer.file_name %></p>
             <p>学生名：<%= student.name %></p>
@@ -29,18 +29,22 @@
             <p>問題：<%= question.title %></p>
             <p>ソースコード：</p>
             <div class="hero-unit3">
+              <table class="local-check">
               <% @target_code.each_with_index do |line, i| %>
+                    <tr>
                   <% for j in 0..@target_check_count-1 %>
                       <% if i >= @t_line[j*2] && i <= @t_line[j*2+1] %>
-                          <span class="number_span"><%= i %></span><span class="red"><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                          <td><%= i + 1 %></td><td class="yellow"><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                       <% elsif i < @t_line[j*2] && i > @t_line[j*2-1] %>
-                          <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                          <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                       <% end %>
                   <% end %>
                   <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
-                      <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                      <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                   <% end %>
+                    </tr>
               <% end %>
+              </table>
             </div>
           </div>
 
@@ -51,18 +55,22 @@
             <p>問題：<%= compare_question.title %></p>
             <p>ソースコード：</p>
             <div class="hero-unit3">
+              <table class="local-check">
               <% @compare_code.each_with_index do |line, i| %>
+                    <tr>
                   <% for j in 0..@compare_check_count-1 %>
                       <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
-                          <span class="number_span"><%= i %></span><span class="red"><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                          <td><%= i + 1 %></td><td class="yellow"><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                       <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
-                          <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                          <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                       <% end %>
                   <% end %>
                   <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
-                      <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                      <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                   <% end %>
+                    </tr>
               <% end %>
+              </table>
             </div>
           </div>
         </div>
