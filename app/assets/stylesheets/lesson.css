@@ -43,18 +43,20 @@
     padding: 20px;
     margin-bottom: 30px;
     margin-top: 30px;
-    font-size: 10px;
     font-weight: 200;
-    line-height: 5px;
     color: inherit;
     background-color: #ffffff;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border: 1px solid #000000;
-    border-radius: 6px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border: 1px #808080 solid;
+    border-width: 0px 1px;
+    border-radius: 10px;
     word-wrap: break-word;
     word-break: break-all;
 }
+.number_span {
+    margin-right: 20px;
+    }
 .lesson-new{
     width:700px;
     margin-right: auto;

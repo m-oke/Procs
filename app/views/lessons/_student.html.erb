@@ -13,7 +13,7 @@
             closeEffect : 'none'
         });
         jQuery(".draw_fancybox2").fancybox({
-            maxHeight   : 500,
+            maxHeight   : 600,
             fitToView   : false,
             width       : '90%',
             height      : '90%',
@@ -118,13 +118,7 @@
               </td>
               <!-- Localウィンドウ表示内容-->
               <div id="local_checked_results_<%=lesson_question.question_id %>" class="internet-check-results-css" >
-                <% unless answer.new_record? %>
-                    <% unless answer.local_plagiarism_percentage == 0.0 %>
-                        <%= render :partial => "questions/local_check_results", :locals => {:student => @student, :question => question, :answer => answer} %>
-                    <% else %>
-                        <p>類似ファイルは存在しません</p>
-                    <% end %>
-                <% end %>
+                <%= render :partial => "questions/local_check_results", :locals => {:student => @student, :question => question, :answer => answer} %>
               </div>
               <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
                 <p>学生：<%= @student.name %></p>
