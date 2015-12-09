@@ -1,0 +1,72 @@
+<% unless answer.new_record? %>
+    <% unless answer.local_plagiarism_percentage == 0.0 %>
+        <!--データベースからデータを取得-->
+        <% local_check_result = LocalCheckResult.find_by(:answer_id => answer.id) %>
+        <% @target_line = local_check_result.target_line %>
+        <% @compare_line = local_check_result.compare_line %>
+        <% @target_path = @target_file = UPLOADS_ANSWERS_PATH.join(student.id.to_s, answer.lesson_question_id.to_s, answer.file_name).to_s %>
+        <% @compare_path = local_check_result.compare_path %>
+        <% compare_user = User.find_by(:id => local_check_result.compare_user_id) %>
+        <% compare_lesson_question =  LessonQuestion.find_by(:id => local_check_result.compare_lesson_question_id)%>
+        <% compare_question = Question.find_by(:id => compare_lesson_question.question_id) %>
+
+        <!--Mark the check line-->
+        <% @target_check_count = @target_line.count(";") %>
+        <% @compare_check_count = @compare_line.count(";") %>
+        <% t_line = @target_line.scan(/\d+/) %>
+        <% c_line = @compare_line.scan(/\d+/) %>
+        <% @t_line = t_line.map(&:to_i).sort %>
+        <% @c_line = c_line.map(&:to_i).sort %>
+
+        <!--ソースコード内容の取得-->
+        <% @target_code = show_local(@target_path) %>
+        <% @compare_code = show_local(@compare_path) %>
+        <div id="check_results">
+          <div class="check_result">
+            <p>元のファイル：<%= answer.file_name %></p>
+            <p>学生名：<%= student.name %></p>
+            <p>ニックネーム：<%= student.nickname %></p>
+            <p>問題：<%= question.title %></p>
+            <p>ソースコード：</p>
+            <div class="hero-unit3">
+              <% @target_code.each_with_index do |line, i| %>
+                  <% for j in 0..@target_check_count-1 %>
+                      <% if i >= @t_line[j*2] && i <= @t_line[j*2+1] %>
+                          <span class="number_span"><%= i %></span><span class="red"><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                      <% elsif i < @t_line[j*2] && i > @t_line[j*2-1] %>
+                          <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                      <% end %>
+                  <% end %>
+                  <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
+                      <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                  <% end %>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="check_result">
+            <p>検出した類似ファイル：<%= local_check_result.compare_name %></p>
+            <p>学生名：<%= compare_user.name %></p>
+            <p>ニックネーム：<%= compare_user.nickname %></p>
+            <p>問題：<%= compare_question.title %></p>
+            <p>ソースコード：</p>
+            <div class="hero-unit3">
+              <% @compare_code.each_with_index do |line, i| %>
+                  <% for j in 0..@compare_check_count-1 %>
+                      <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
+                          <span class="number_span"><%= i %></span><span class="red"><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                      <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
+                          <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                      <% end %>
+                  <% end %>
+                  <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
+                      <span class="number_span"><%= i %></span><span><pre id="code"> <%= remove_head(line).chomp %> </pre></span><br>
+                  <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+    <% else %>
+        <p>類似ファイルは存在しません</p>
+    <% end %>
+<% end %>
