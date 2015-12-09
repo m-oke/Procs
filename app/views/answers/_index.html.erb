@@ -1,18 +1,18 @@
 <div>
   <% if @lesson_id.to_i == 1 %>
     <% if flash[:previous] == "question" %>
-      <%=  link_to '問題詳細に戻る', question_path(:question_id => @question_id),:class => "btn btn-default btn_top" %>
+      <%= button_to '問題詳細に戻る', question_path(:question_id => @question_id), :method => 'get',:class => "btn btn-default btn_top" %>
     <% elsif flash[:previous] == "questions" %>
-      <%= link_to '問題一覧に戻る', questions_path, :class => "btn btn-default btn_top" %>
+      <%= button_to '問題一覧に戻る', questions_path, :method => 'get', :class => "btn btn-default btn_top" %>
     <% end %>
   <% else %>
     <% if flash[:previous] == "question" %>
-      <%=  link_to '問題詳細に戻る', lesson_question_path(:lesson_id => @lesson_id, :question_id => @question_id),
+      <%= button_to '問題詳細に戻る', lesson_question_path(:lesson_id => @lesson_id, :question_id => @question_id), :method => 'get',
            :remote => true, :class => "btn btn-default btn_top" %>
     <% elsif flash[:previous] == "questions" %>
-      <%= link_to '問題一覧に戻る', lesson_questions_path(:lesson_id => @lesson_id), :remote => true, :class => "btn btn-default btn_top" %>
+      <%= button_to '問題一覧に戻る', lesson_questions_path(:lesson_id => @lesson_id), :remote => true, :method => 'get', :class => "btn btn-default btn_top" %>
     <% elsif flash[:previous] == "student" %>
-      <%=  link_to '学生詳細に戻る', student_lessons_path(:lesson_id => @lesson_id, :student_id => params[:student_id]),
+      <%= button_to '学生詳細に戻る', student_lessons_path(:lesson_id => @lesson_id, :student_id => params[:student_id]), :method => 'get',
            :remote => true, :class => "btn btn-default btn_top" %>
     <% end %>
   <% end %>
