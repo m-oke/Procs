@@ -1,1 +1,13 @@
-$("#tab2").html("<%= escape_javascript(render(:partial => 'answers/index')) %>");
+$('a[data-toggle="tab"]').each(function(i){
+
+    if($(this).parent().attr("class") == 'active'){
+        if($(this).text() == "問題"){
+            $("#tab2").html("<%= escape_javascript(render(:partial => 'answers/index')) %>");
+        }
+        if ($(this).text() == "学生"){
+            $("#tab3").html("<%= escape_javascript(render(:partial => 'answers/index')) %>");
+        }
+    }
+});
+
+

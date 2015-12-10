@@ -22,7 +22,7 @@
                 <% btn_label = "削除" %>
             <% end %>
         <% end %>
-        <% unless current_lesson.is_deleted %>
+        <% unless (current_lesson.is_deleted || session[:seleted_lesson] == "private_lesson")%>
             <button class="btn btn-danger btn_top", id="question_delete"><%= btn_label %></button><span id="question_delete_attach", style="visibility: hidden;"><text ><%= params[:lesson_id]+';'+params[:question_id] %></text></span>
         <% end %>
     <% end %>
