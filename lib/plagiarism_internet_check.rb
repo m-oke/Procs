@@ -5,23 +5,24 @@ class PlagiarismInternetCheck
   #bing jp
   APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
 
-  def initialize(question_id,lesson_id,student_id,result)
+  def initialize(question_id,lesson_id,student_id,lesson_question_id,result)
 
     @question_id = question_id
     @lesson_id = lesson_id
     @student_id = student_id
     @result = result
+    @lesson_question_id = lesson_question_id
   end
 
   def check
     search_limit = 5
     http_error = 0
     question_keyword = ""
-    question_keywords = QuestionKeyword.where(:question_id => @question_id )
+    question_keywords = QuestionKeyword.where(:question_id => @question_id)
     question_keywords.each do |k|
       question_keyword = question_keyword + " " + k['keyword']
     end
-    answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+    answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id, :lesson_question_id => @lesson_question_id).last
 
     fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + answer.file_name
     csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
@@ -223,7 +224,8 @@ class PlagiarismInternetCheck
           if line[0,3] == 'for' && line.include?('for')
             tmp = line.sub(/\s+/,' ')
             if tmp.include?('for(') || tmp.include?('for (')
-            line = ''
+              line = ''
+            end
           end
           # delete lines which only contain break or continue
           if line == 'break' || line == 'continue'
@@ -241,10 +243,9 @@ class PlagiarismInternetCheck
           end
 
           # delete { and } which like { a = cycle_length(n/2, ++i); return a; }
-        end
-
-        if line.size>0
-          a.push(line)
+          if line.size>0
+            a.push(line)
+          end
         end
       end
     end

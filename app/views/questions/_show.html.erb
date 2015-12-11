@@ -95,17 +95,18 @@
 <div class="bg-success description">
   <%= simple_format(h(@question.content)) %>
 </div>
-
-<% if @question.question_keywords.count >0 %>
-    <h3>剽窃チェック用のキーワード</h3>
-    <div>
-      <% @question.question_keywords.each.with_index(1) do |word,i| %>
-          <p>キーワード<%= i %></p>
-          <div class="bg-success description">
-            <%= word.keyword %>
-          </div>
-      <% end %>
-    </div>
+<% if @is_teacher %>
+    <% if @question.question_keywords.count >0 %>
+        <h3>剽窃チェック用のキーワード</h3>
+        <div>
+          <% @question.question_keywords.each.with_index(1) do |word,i| %>
+              <p>キーワード<%= i %></p>
+              <div class="bg-success description">
+                <%= word.keyword %>
+              </div>
+          <% end %>
+        </div>
+    <% end %>
 <% end %>
 
 <h3>入力</h3>

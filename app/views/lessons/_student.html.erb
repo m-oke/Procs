@@ -59,7 +59,7 @@
 
           <% num = num + 1 %>
           <% question = Question.find_by(:id => lesson_question.question_id) %>
-          <% answer = Answer.where(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id => lesson_question.question_id, :lesson_question_id => lesson_question.id).last %>
+          <% answer = Answer.latest_answer(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id => lesson_question.question_id, :lesson_question_id => lesson_question.id) %>
           <td><%= num  %></td>
           <% unless answer.nil? %>
               <td class="table-question-title-css"><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
@@ -88,7 +88,7 @@
                 <% key_word_change = 0 %>
                 <% question_keyword = '' %>
 
-                <% question_keywords = QuestionKeyword.where(:question_id => question['id'] ) %>
+                <% question_keywords = QuestionKeyword.where(:question_id => question['id']) %>
                 <% question_keywords.each do |k| %>
                     <% question_keyword = question_keyword + " " + k['keyword'] %>
                 <% end %>
@@ -150,6 +150,7 @@
               </td>
               <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
                 <p>学生：<%= @student.name %></p>
+                <p>学生：<%= @student.nickname %></p>
                 <p>問題：<%= question.title %></p>
                 <% max_time = 0 %>
 

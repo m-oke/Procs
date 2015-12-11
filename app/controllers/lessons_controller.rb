@@ -133,12 +133,13 @@ class LessonsController < ApplicationController
     @question_id = params[:question_id]
     @student_id = params[:student_id]
     @lesson_id = params[:lesson_id]
+    lesson_question_id = session[:lesson_question_id]
 
     @question = Question.find_by(:id => @question_id)
     @lesson = Lesson.find_by(:id => @lesson_id)
 
     question_keyword =''
-    question_keywords = QuestionKeyword.where(:question_id => @question_id )
+    question_keywords = QuestionKeyword.where(:question_id => @question_id)
     question_keywords.each do |k|
       question_keyword = question_keyword + " " + k['keyword']
     end
@@ -147,7 +148,7 @@ class LessonsController < ApplicationController
     if @student_id.to_i != 0
 
       @student = User.find_by(:id => @student_id)
-      answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+      answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id, :lesson_question_id => lesson_question_id).last
       #「Http error , Api 使用できない」原因で保存した　臨時データを削除
       http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )
       if http_error.present?
@@ -176,13 +177,13 @@ class LessonsController < ApplicationController
 
       init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0, :key_word => "" )
       init_result.save
-      single_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, @student_id, @result)
+      single_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, @student_id, lesson_question_id,@result)
       single_check.check
     else
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @multi_check = 1
       @students.each do |s|
-        answer = Answer.where(:lesson_id => @lesson_id, :student_id => s['id'], :question_id => @question_id).last
+        answer = Answer.where(:lesson_id => @lesson_id, :student_id => s['id'], :question_id => @question_id, :lesson_question_id => lesson_question_id).last
         #「Http error , Api 使用できない」原因で保存した　臨時データを削除
         if answer.present?
         http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )
@@ -213,7 +214,7 @@ class LessonsController < ApplicationController
           end
         end
       end
-      InternetCheckJob.perform_later(@question_id,@lesson_id)
+      InternetCheckJob.perform_later(@question_id,@lesson_id,lesson_question_id)
     end
 
   end
