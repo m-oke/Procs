@@ -127,7 +127,7 @@ ActiveRecord::Schema.define(version: 20151210070257) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.string   "nickname",               limit: 255,              null: false
-    t.integer  "roles_mask",             limit: 4
+    t.integer  "roles_mask",             limit: 4,   default: 8
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

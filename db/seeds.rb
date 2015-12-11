@@ -36,7 +36,7 @@ end
 
 # クラス
 # すべての問題を含む，全員が参加するクラス
-Lesson.create(:name => "All probrems", :description => "このクラスはすべての問題を含むクラスです。", :lesson_code => "0000000000")
+Lesson.create(:name => "パブリック問題", :description => "このクラスはすべての問題を含むクラスです。", :lesson_code => "0000000000")
 # 授業コード 1010101, 1010102
 2.times do |i|
   Lesson.create(:name => "講義#{i + 1}", :description => "説明#{i + 1}", :lesson_code => "101010#{i+1}")
