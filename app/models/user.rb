@@ -69,6 +69,8 @@ class User < ActiveRecord::Base
 
 
   rails_admin do
+    weight 1
+
     create do
       field :student_number do
         help "学籍番号など，#{help}"
@@ -98,24 +100,68 @@ class User < ActiveRecord::Base
       field :password_confirmation do
         required true
       end
-      field :lessons
-      field :answers
     end
 
-    update do
+    edit do
+      field :student_number do
+        help "学籍番号など，#{help}"
+      end
+      field :name do
+        help "本名など，#{help}"
+      end
+      field :nickname do
+        help "ニックネームなど他のユーザに表示される，#{help}"
+        required true
+      end
+      field :roles do
+        help "ユーザの権限, #{help}"
+        required true
+        partial 'roles_form'
+      end
+      field :email do
+        required true
+        help "ログインに使用，#{help}"
+      end
+      field :email_confirmation do
+        required true
+      end
+      field :password do
+        required true
+      end
+      field :password_confirmation do
+        required true
+      end
+    end
+
+    list do
+      field :id
       field :student_number
       field :name
       field :nickname
       field :roles do
-        partial 'roles_form'
+        formatted_value do
+          val = ""
+          value.to_a.each_with_index do |role, i|
+            val += "#{role.to_s}"
+            unless (i + 1) == value.size
+              val += ", "
+            end
+          end
+          val
+        end
       end
       field :email
-      field :password do
-      end
-      field :password_confirmation
       field :lessons
-      field :answers
+      field :reset_password_sent_at
+      field :remember_created_at
+      field :sign_in_count
+      field :current_sign_in_at
+      field :last_sign_in_at
+      field :current_sign_in_ip
+      field :last_sign_in_ip
+      field :created_at
+      field :updated_at
     end
-  end
 
+  end
 end

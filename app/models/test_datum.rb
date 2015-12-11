@@ -7,6 +7,7 @@ class TestDatum < ActiveRecord::Base
     create do
       field :question do
         required true
+        help "関連付ける問題, 問題作成時は選択する必要はありません, #{help}"
       end
       # ファイルアップロード機能
       field :input do
@@ -30,6 +31,7 @@ class TestDatum < ActiveRecord::Base
     edit do
       field :question do
         required true
+        help "関連付ける問題, #{help}"
       end
       field :input do
         required true
@@ -51,6 +53,17 @@ class TestDatum < ActiveRecord::Base
         help "非公開にしたテストデータは評価時に利用されません, #{help}"
       end
     end
-  end
 
+    list do
+      field :id
+      field :question
+      field :input
+      field :output
+      field :input_storename
+      field :output_storename
+      field :is_deleted
+      field :created_at
+      field :updated_at
+    end
+  end
 end

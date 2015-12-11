@@ -7,29 +7,22 @@ class Lesson < ActiveRecord::Base
   has_many :questions
 
   has_many :user_lessons, :foreign_key => :lesson_id
-  has_many :user, :through => :user_lessons
+  has_many :users, :through => :user_lessons
 
   has_many :lesson_questions, :foreign_key => :lesson_id
-  has_many :question, :through => :lesson_questions
+  has_many :questions, :through => :lesson_questions
 
   has_many :answers, :foreign_key => :lesson_id
 
-  attr_accessor :teacher
-
 
   rails_admin do
+    weight 2
     show do
       field :description
       field :lesson_code
       # TODO: teacherの表示
-      field :teacher do
-        pretty_value do
-          UserLesson.find_by(:lesson_id => bindings[:object].id, :is_teacher => true).user.name.to_s
-          bindings[:object].id
-        end
-      end
-      field :user
-      field :question
+      field :users
+      field :questions
     end
 
     create do
@@ -40,19 +33,8 @@ class Lesson < ActiveRecord::Base
       field :lesson_code do
         required true
       end
-      #TODO: is_teacherを設定できるように
-      field :teacher, :enum do
-        required true
-        enum do
-          User.all.collect do |u|
-            if u.has_role?(:teacher)
-              [u.name, u.id]
-            end
-          end
-        end
-      end
-      field :user
-      field :question
+      field :users
+      field :questions
     end
 
     edit do
@@ -64,8 +46,19 @@ class Lesson < ActiveRecord::Base
         required true
         help "授業に参加するためのコード, #{help}"
       end
-      field :user
-      field :question
+      field :users
+      field :questions
+    end
+
+    list do
+      field :id
+      field :name
+      field :description
+      field :lesson_code
+      field :users
+      field :questions
+      field :created_at
+      field :updated_at
     end
   end
 end

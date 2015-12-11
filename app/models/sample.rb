@@ -7,7 +7,7 @@ class Sample < ActiveRecord::Base
     create do
       field :question do
         required true
-        help "関連を付ける問題, #{help}"
+        help "関連を付ける問題, 問題作成時は選択する必要はありません, #{help}"
       end
       field :input do
         required true
@@ -31,6 +31,17 @@ class Sample < ActiveRecord::Base
         help "非公開にしたサンプルデータは表示されません, #{help}"
       end
     end
+
+    list do
+      field :id
+      field :question
+      field :input
+      field :output
+      field :is_deleted
+      field :created_at
+      field :updated_at
+    end
+
   end
 
 end

@@ -25,6 +25,12 @@ ja:
       internet_check_result:
         one: インターネット剽窃チェック
         other: インターネット剽窃チェック
+      user_lesson:
+        one: 授業の参加
+        other: 授業の参加
+      question_keyword:
+        one: 剽窃チェック用キーワード
+        other: 剽窃チェック用キーワード
 
     attributes:
       user:
@@ -44,14 +50,15 @@ ja:
         name: 名前
         description: 説明
         lesson_code: 授業コード
-        question: 問題
-        user: ユーザ
+        questions: 問題
+        users: ユーザ
       question:
         id: ID
         title: タイトル
         content: 内容
         input_description: 入力の説明
         output_description: 出力の説明
+        question_keywords: 剽窃チェック用キーワード
         run_time_limit: 実行時間制限
         memory_usage_limit: メモリ制限
         version: 問題の更新履歴
@@ -103,5 +110,13 @@ ja:
         link: WebページURL
         content: Webページ抜粋
         repeat: ヒット回数
-
-# 他のモデルの日本語化
+      user_lesson:
+        id: ID
+        user: ユーザ
+        lesson: 授業
+        is_teacher: 教員の設定
+        is_deleted: 非公開設定
+      question_keyword:
+        question: 関連する問題
+        keyword: 検索用キーワード
+        is_deleted: 削除設定

@@ -55,7 +55,10 @@ class Answer < ActiveRecord::Base
   end
 
 
+  # TODO: controllerの登録でカスタマイズが可能?
+  # https://github.com/sferik/rails_admin/blob/master/lib/rails_admin/config/actions/edit.rb
   rails_admin do
+    weight 4
     create do
       field :user do
         required true
@@ -104,12 +107,6 @@ class Answer < ActiveRecord::Base
           end
         end
         help "評価結果, 対応表(#{res}), #{help}"
-      end
-      field :plagiarism_percentage do
-        help "学生間のソースコードの類似度, #{help}"
-      end
-      field :internet_check_results do
-        help "Web上のソースコードとの類似度"
       end
     end
 
@@ -167,6 +164,35 @@ class Answer < ActiveRecord::Base
       field :internet_check_results do
         help "Web上のソースコードとの類似度"
       end
+    end
+
+    list do
+      field :id
+      field :user
+      field :question
+      field :lesson
+      field :lesson_question do
+        pretty_value do
+          val = "[#{value.lesson.name}] - [#{value.question.title}] : ##{value.id}"
+          bindings[:view].link_to val, bindings[:view].rails_admin.show_path('lesson_question', value.id)
+        end
+      end
+      field :result do
+        formatted_value do
+          RESULT[value]
+        end
+      end
+      field :file_name
+      field :language
+      field :run_time
+      field :memory_usage
+      field :question_version
+      field :test_count
+      field :test_passed
+      field :plagiarism_percentage
+      field :internet_check_results
+      field :created_at
+      field :updated_at
     end
   end
 
