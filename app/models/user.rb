@@ -91,9 +91,6 @@ class User < ActiveRecord::Base
         required true
         help "ログインに使用，#{help}"
       end
-      field :email_confirmation do
-        required true
-      end
       field :password do
         required true
       end
@@ -122,14 +119,9 @@ class User < ActiveRecord::Base
         required true
         help "ログインに使用，#{help}"
       end
-      field :email_confirmation do
-        required true
-      end
       field :password do
-        required true
       end
       field :password_confirmation do
-        required true
       end
     end
 
