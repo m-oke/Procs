@@ -1,6 +1,6 @@
 <div id ="proftab">
   <ul class="nav nav-tabs">
-    <li role="presentation" class="active" id = "home_tab"><a href="#tab1" data-toggle="tab">ホーム</a></li>
+    <li role="presentation" class="active" id = "home_tab"><a>ホーム</a></li>
 
     <li role="presentation" id = "questions_tab" ><%= link_to  "問題",  lesson_questions_path(:lesson_id =>@lesson.id ),
                                          :remote => true , :data => { :toggle=>"tab"} %></li>
@@ -12,41 +12,22 @@
 </div>
 <div class="tab-content">
   <div class="tab-pane active" id="tab1">
-    <%= link_to "授業一覧に戻る" ,root_path , :class => "btn btn-default btn_top "%>
-    <% if @is_teacher && session[:seleted_lesson] != "private_lesson" %>
-        <%= link_to "編集" ,edit_lesson_path(:id => @lesson.id ) , :remote => true, :class => "btn btn-default btn_top " %>
-        <button class="btn btn-danger btn_top", id="lesson_delete">非公開</button><span id="lesson_delete_attach", style="visibility: hidden;"><text ><%= @lesson.id %></text></span>
-    <% end %>
-    <h1>授業基本情報</h1>
-    <table class="student">
-      <tbody>
-      <tr>
-        <th>授業名</th>
-        <td><%= @lesson.name %></td>
-      </tr>
-      <tr>
-        <th>授業の説明</th>
-        <td><%= simple_format(h(@lesson.description)) %></td>
-      </tr>
-      <tr>
-        <th>教員</th>
-        <td>
-          <% @teachers.each_with_index do |teacher, i| %>
-              <%= teacher.name %>
-              <% if i + 1 < @teachers.count %>
-                  ,
-              <% end %>
-          <% end %>
-        </td>
-      </tr>
-      <tr>
-        <th>授業コード</th>
-        <td><%= @lesson.lesson_code %></td>
-      </tr>
-      </tbody>
-    </table>
+    <%= render "lessons/lesson_details" %>
   </div>
   <div class="tab-pane" id="tab2">
   </div>
+  <div class="tab-pane" id="tab3">
+  </div>
 </div>
-<%= javascript_include_tag "lessons/delete_lesson" %>
+<script>
+    $('#home_tab').click(function(){
+        var str_url = "/ajax/lessons/tab_back_home";
+        $.ajax({
+            url: str_url,
+            type: "GET",
+            data:{
+                lesson_id:"<%=@lesson.id %>"
+            }
+        });
+    });
+</script>

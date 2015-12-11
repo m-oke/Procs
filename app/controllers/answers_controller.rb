@@ -63,9 +63,9 @@ class AnswersController < ApplicationController
 
       # ファイルのチェック
       if !(extention == File.extname(name).downcase)
-        flash[:alert] = '使用言語とファイル拡張子が一致しません。'
+        flash.now[:alert] = '使用言語とファイル拡張子が一致しません。'
       elsif file.size > 10.megabyte
-        flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
+        flash.now[:alert] = 'ファイルサイズは10MBまでにしてください。'
       else
 
         # 保存ディレクトリの作成
@@ -99,10 +99,10 @@ class AnswersController < ApplicationController
                             :memory_usage => 0,
                             :question_version =>@question.version)
         unless answer.save
-          flash[:notice] = "解答の保存に失敗しました．" and return
+          flash.now[:notice] = "解答の保存に失敗しました．" and return
         end
         @latest_answer = answer
-        flash[:notice] = '解答を投稿しました。'
+        flash.now[:notice] = '解答を投稿しました。'
 
         # 評価スクリプトをメッセージキューに入れる
         case params[:language]
@@ -125,7 +125,7 @@ class AnswersController < ApplicationController
                                             :question_id => question_id,
                                             :lesson_id => lesson_id,
                                             :lesson_question_id => lesson_question_id) || nil
-      flash[:alert] = 'ファイルが選択されていません。'
+      flash.now[:alert] = 'ファイルが選択されていません。'
     end
 
     # パブリック授業の場合

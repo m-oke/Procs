@@ -45,9 +45,9 @@ class QuestionsController < ApplicationController
                                            :start_time => params[:start_time],
                                            :end_time => params[:end_time])
       if lesson_question.save
-        flash.notice = '問題を登録しました'
+        flash.now[:notice] = '問題を登録しました'
       else
-        flash.notice = '問題を登録に失敗しました'
+        flash.now[:notice] = '問題を登録に失敗しました'
       end
       return
     end
@@ -67,7 +67,7 @@ class QuestionsController < ApplicationController
       files[:input] = val[:input]
       files[:output] = val[:output]
       if files[:input].size > 10.megabyte || files[:output].size > 10.megabyte
-        flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
+        flash.now[:alert] = 'ファイルサイズは10MBまでにしてください。'
         return
       end
 
@@ -89,7 +89,7 @@ class QuestionsController < ApplicationController
     @question.author = current_user.id
 
     if @question.save
-      flash.notice='問題を登録しました'
+      flash.now[:notice] ='問題を登録しました'
 
       # テストデータのディレクトリを作成
       uploads_test_data_path = UPLOADS_QUESTIONS_PATH.join(@question.id.to_s)
@@ -105,10 +105,10 @@ class QuestionsController < ApplicationController
         end
       end
 
-      flash.notice = '問題を登録しました'
+      flash.now[:notice]  = '問題を登録しました'
 
     else
-      flash.notice='問題の登録に失敗しました'
+      flash.now[:notice] ='問題の登録に失敗しました'
     end
   end
 
@@ -217,7 +217,7 @@ class QuestionsController < ApplicationController
         files[:input] = val[:input]
         files[:output] = val[:output]
         if files[:input].size > 10.megabyte || files[:output].size > 10.megabyte
-          flash[:alert] = 'ファイルサイズは10MBまでにしてください。'
+          flash.now[:alert] = 'ファイルサイズは10MBまでにしてください。'
           return
         end
         start_num = start_num + 1
@@ -259,9 +259,9 @@ class QuestionsController < ApplicationController
           f.write(val[:output].read)
         end
       end
-      flash.notice = '問題を更新しました'
+      flash.now[:notice]  = '問題を更新しました'
     else
-      flash.notice='問題の更新に失敗しました'
+      flash.now[:notice] ='問題の更新に失敗しました'
     end
 
   end

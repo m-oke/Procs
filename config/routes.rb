@@ -22,6 +22,7 @@ Rails.application.routes.draw do
 
   scope :ajax do
     get 'answers/select_version' => 'answers#select_version'
+    get 'lessons/tab_back_home' => 'lessons/tab_back_home'
     post 'answers/diff_select' => 'answers#diff_select'
     post 'lessons/internet_check' =>'lessons#internet_check'
     post 'questions/get_exist_question' => 'questions#get_exist_question'

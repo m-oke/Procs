@@ -57,14 +57,24 @@ class LessonsController < ApplicationController
   end
 
   def update
-    lesson_id = params[:id]
-    lesson = Lesson.find(lesson_id)
-    lesson.name= params[:lesson][:name]
-    lesson.description = params[:lesson][:description]
-    if lesson.save
-      flash.notice = '授業を更新しました'
+    @lesson_id = params[:id]
+    @lesson = Lesson.find(@lesson_id)
+    @lesson.name= params[:lesson][:name]
+    @lesson.description = params[:lesson][:description]
+    if @lesson.save
+      flash.now[:notice] = '授業を更新しました'
     else
-      flash.notice = '授業の更新に失敗しました'
+      flash.now[:notice] = '授業の更新に失敗しました'
+    end
+
+    #Ajax
+    @teachers = get_teachers
+    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson.id).is_teacher
+    session[:lesson_id] = params[:id] || session[:lesson_id]
+    private_lesson = UserLesson.where(:lesson_id => params[:id],:is_deleted =>true).last
+    session[:seleted_lesson]=nil
+    if private_lesson.present?
+      session[:seleted_lesson] = "private_lesson"
     end
 
   end
@@ -80,7 +90,21 @@ class LessonsController < ApplicationController
     @teachers = get_teachers
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson.id).is_teacher
     session[:lesson_id] = params[:id] || session[:lesson_id]
-    private_lesson = UserLesson.where(:lesson_id => params[:id],:is_deleted =>1).last
+    private_lesson = UserLesson.where(:lesson_id => params[:id],:is_deleted =>true).last
+    session[:seleted_lesson]=nil
+    if private_lesson.present?
+      session[:seleted_lesson] = "private_lesson"
+    end
+  end
+
+  def tab_back_home
+    @lesson_id = params[:lesson_id]
+    @lesson = Lesson.find(@lesson_id)
+    #Ajax
+    @teachers = get_teachers
+    @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id, :lesson_id => @lesson.id).is_teacher
+    session[:lesson_id] = @lesson_id || session[:lesson_id]
+    private_lesson = UserLesson.where(:lesson_id => @lesson_id,:is_deleted =>true).last
     session[:seleted_lesson]=nil
     if private_lesson.present?
       session[:seleted_lesson] = "private_lesson"
