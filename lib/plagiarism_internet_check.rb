@@ -3,7 +3,8 @@ class PlagiarismInternetCheck
   # bing  ch
   # APIKEY = "b03khzsJqXejAfMS3U1ik0lC2Ryd5lnhKu/wZEXaOAc"
   #bing jp
-  APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
+  # APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
+  APIKEY = ENV['BING_APIKEY']
 
   def initialize(question_id,lesson_id,student_id,lesson_question_id,result)
 

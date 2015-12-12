@@ -1,4 +1,5 @@
 <div>
+<% if @have_bing_key == true %>
   <p>学生：<%= @student.name %></p>
   <p>問題：<%= @question.title %></p>
   <% max_time = 0 %>
@@ -65,4 +66,7 @@
     <% end %>
 
   <% end %>
+<% else %>
+  <p>BingSearchのAPIKeyの設定を確認してください。</p>
+<% end %>
 </div>

@@ -129,6 +129,7 @@ class LessonsController < ApplicationController
   def internet_check
     @result = Array.new(0,Array.new(5,0))
     @multi_check = 0
+    @have_bing_key = true
     #get data from ajax
     @question_id = params[:question_id]
     @student_id = params[:student_id]
@@ -146,7 +147,10 @@ class LessonsController < ApplicationController
 
 
     if @student_id.to_i != 0
-
+      # if ENV['BING_APIKEY'].nil?
+      #   @have_bing_key = false
+      #   return
+      # end
       @student = User.find_by(:id => @student_id)
       answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id, :lesson_question_id => lesson_question_id).last
       #「Http error , Api 使用できない」原因で保存した　臨時データを削除
@@ -182,6 +186,10 @@ class LessonsController < ApplicationController
     else
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @multi_check = 1
+      # if ENV['BING_APIKEY'].nil?
+      #   @have_bing_key = false
+      #   return
+      # end
       @students.each do |s|
         answer = Answer.where(:lesson_id => @lesson_id, :student_id => s['id'], :question_id => @question_id, :lesson_question_id => lesson_question_id).last
         #「Http error , Api 使用できない」原因で保存した　臨時データを削除
