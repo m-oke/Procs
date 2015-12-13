@@ -65,5 +65,15 @@ class TestDatum < ActiveRecord::Base
       field :created_at
       field :updated_at
     end
+
+    show do
+      field :question
+      field :input do
+      end
+      field :output
+      field :input_storename
+      field :output_storename
+      field :is_deleted
+    end
   end
 end

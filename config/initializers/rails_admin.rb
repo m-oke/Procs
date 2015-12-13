@@ -29,56 +29,6 @@ RailsAdmin.config do |config|
     show
     edit
     delete
-
-    ## With an audit adapter, you can add:
-    # history_index
-    # history_show
   end
 
-  config.model User do
-    create do
-      field :student_number
-      field :name do
-        required true
-      end
-      field :nickname do
-        required true
-      end
-      field :roles do
-        required true
-        partial 'roles_form'
-      end
-      field :email do
-        required true
-      end
-      field :email_confirmation do
-        required true
-      end
-      field :password do
-        required true
-      end
-      field :password_confirmation do
-        required true
-      end
-      field :lessons
-      field :answers
-      field :questions
-    end
-
-    update do
-      field :student_number
-      field :name
-      field :nickname
-      field :roles do
-        partial 'roles_form'
-      end
-      field :email
-      field :password do
-      end
-      field :password_confirmation
-      field :lessons
-      field :answers
-      field :questions
-    end
-  end
 end

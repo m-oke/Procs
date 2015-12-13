@@ -118,6 +118,10 @@ class Question < ActiveRecord::Base
       field :created_at
       field :updated_at
     end
+
+    show do
+      exclude_fields :lesson_questions
+    end
   end
 
 end

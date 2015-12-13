@@ -33,7 +33,9 @@ class Lesson < ActiveRecord::Base
       field :lesson_code do
         required true
       end
-      field :users
+      field :users do
+        help "ここでは参加する学生を設定できます．この授業を担当する教員は別途「授業の参加」から作成してください，#{help}"
+      end
       field :questions
     end
 
@@ -55,7 +57,9 @@ class Lesson < ActiveRecord::Base
       field :name
       field :description
       field :lesson_code
-      field :users
+      field :users do
+        help "ここでは参加する学生を設定できます．この授業を担当する教員は別途「授業の参加」から作成してください，#{help}"
+      end
       field :questions
       field :created_at
       field :updated_at

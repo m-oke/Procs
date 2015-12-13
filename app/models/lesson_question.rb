@@ -56,7 +56,6 @@ class LessonQuestion < ActiveRecord::Base
       field :start_time
       field :end_time
 #      field :is_deleted
-      field :answers
       field :created_at
       field :updated_at
     end

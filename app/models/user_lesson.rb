@@ -16,7 +16,7 @@ class UserLesson < ActiveRecord::Base
         help "参加させる授業, #{help}"
       end
       field :is_teacher do
-        help "該当するユーザをその授業の教員とする設定, teacher権限を持つユーザ以外は設定しないでください, #{help}"
+        help "該当する教員をその授業の担当とする設定, teacher権限を持つユーザ以外は設定しないでください, #{help}"
       end
     end
 
@@ -30,7 +30,7 @@ class UserLesson < ActiveRecord::Base
         help "参加させる授業, #{help}"
       end
       field :is_teacher do
-        help "該当するユーザをその授業の教員とする設定, teacher権限を持つユーザ以外は設定しないでください, #{help}"
+        help "該当する教員をその授業の担当とする設定, teacher権限を持つユーザ以外は設定しないでください, #{help}"
       end
       field :is_deleted do
         help "ユーザをその授業から脱退させる設定, #{help}"
@@ -39,14 +39,13 @@ class UserLesson < ActiveRecord::Base
 
     list do
       field :id
-      field :user do
-        help "test"
-      end
+      field :user
       field :lesson
       field :is_teacher
       field :is_deleted
       field :created_at
       field :updated_at
     end
+
   end
 end

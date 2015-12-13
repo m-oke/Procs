@@ -57,6 +57,7 @@ class Answer < ActiveRecord::Base
 
   # TODO: controllerの登録でカスタマイズが可能?
   # https://github.com/sferik/rails_admin/blob/master/lib/rails_admin/config/actions/edit.rb
+  # TODO: createアクションは必要だろうか？
   rails_admin do
     weight 4
     create do

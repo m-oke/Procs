@@ -155,5 +155,34 @@ class User < ActiveRecord::Base
       field :updated_at
     end
 
+    show do
+      field :student_number
+      field :name
+      field :nickname
+      field :roles do
+        formatted_value do
+          val = ""
+          value.to_a.each_with_index do |role, i|
+            val += "#{role.to_s}"
+            unless (i + 1) == value.size
+              val += ", "
+            end
+          end
+          val
+        end
+      end
+      field :email
+      field :lessons
+      field :sign_in_count
+      field :current_sign_in_at
+      field :last_sign_in_at
+      field :current_sign_in_ip
+      field :last_sign_in_ip
+      field :created_at
+      field :updated_at
+    end
+
+
+
   end
 end
