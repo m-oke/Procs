@@ -1,3 +1,4 @@
+
 <div id ="proftab">
   <ul class="nav nav-tabs">
     <li role="presentation" class="active" id = "home_tab"><a>ホーム</a></li>
@@ -20,7 +21,15 @@
   </div>
 </div>
 <script>
+    var tmp = <%=@is_teacher %>;
+    if(tmp==true){
+        $('#navbar ul').prepend('<li><%= link_to "権限：教員", '' %></li');
+    }else{
+        $('#navbar ul').prepend('<li><%= link_to "権限：学生", '' %></li');
+    }
+
     $('#home_tab').click(function(){
+
         var str_url = "/ajax/lessons/tab_back_home";
         $.ajax({
             url: str_url,
