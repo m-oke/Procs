@@ -9,14 +9,20 @@
         <% compare_user = User.find_by(:id => local_check_result.compare_user_id) %>
         <% compare_lesson_question =  LessonQuestion.find_by(:id => local_check_result.compare_lesson_question_id)%>
         <% compare_question = Question.find_by(:id => compare_lesson_question.question_id) %>
+        <% color = ["yellow","blue","purple","green","red"] %>
 
         <!--Mark the check line-->
-        <% @target_check_count = @target_line.count(";") %>
-        <% @compare_check_count = @compare_line.count(";") %>
-        <% t_line = @target_line.scan(/\d+/) %>
-        <% c_line = @compare_line.scan(/\d+/) %>
-        <% @t_line = t_line.map(&:to_i).sort %>
-        <% @c_line = c_line.map(&:to_i).sort %>
+        <% tar_starts_temp = @target_line.scan(/\d+-/) %>
+        <% tar_starts = tar_starts_temp.map(&:to_i) %>
+        <% tar_ends_temp = @target_line.split(/\d+-/) %>
+        <% tar_ends = tar_ends_temp.map(&:to_i) %>
+        <% tar_ends.delete_at(0) %>
+
+        <% com_starts_temp = @compare_line.scan(/\d+-/) %>
+        <% com_starts = com_starts_temp.map(&:to_i) %>
+        <% com_ends_temp = @compare_line.split(/\d+-/) %>
+        <% com_ends = com_ends_temp.map(&:to_i) %>
+        <% com_ends.delete_at(0) %>
 
         <!--ソースコード内容の取得-->
         <% @target_code = show_local(@target_path) %>
@@ -30,18 +36,19 @@
             <p>ソースコード：</p>
             <div class="hero-unit3">
               <table class="local-check">
+
+              <% col = nil %>
               <% @target_code.each_with_index do |line, i| %>
                     <tr>
-                  <% for j in 0..@target_check_count-1 %>
-                      <% if i >= @t_line[j*2] && i <= @t_line[j*2+1] %>
-                          <td><%= i + 1 %></td><td class="yellow"><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
-                      <% elsif i < @t_line[j*2] && i > @t_line[j*2-1] %>
-                          <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
+                      <% if tar_starts.include?(i) %>
+                        <% col = color[tar_starts.index(i) % 5] %>
                       <% end %>
-                  <% end %>
-                  <% if i < @t_line[0] || i > @t_line[@target_check_count*2-1] %>
-                      <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
-                  <% end %>
+                      <% if tar_ends.include?(i - 1) %>
+                        <% col = nil %>
+                      <% end %>
+
+                      <td><%= i + 1 %></td>
+                      <td class=<%= col %>><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                     </tr>
               <% end %>
               </table>
@@ -56,18 +63,18 @@
             <p>ソースコード：</p>
             <div class="hero-unit3">
               <table class="local-check">
-              <% @compare_code.each_with_index do |line, i| %>
+                <% col = nil %>
+                <% @compare_code.each_with_index do |line, i| %>
                     <tr>
-                  <% for j in 0..@compare_check_count-1 %>
-                      <% if i >= @c_line[j*2] && i <= @c_line[j*2+1] %>
-                          <td><%= i + 1 %></td><td class="yellow"><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
-                      <% elsif i < @c_line[j*2] && i > @c_line[j*2-1] %>
-                          <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
+                      <% if com_starts.include?(i) %>
+                          <% col = color[com_starts.index(i) % 5] %>
                       <% end %>
-                  <% end %>
-                  <% if i < @c_line[0] || i > @c_line[@compare_check_count*2-1] %>
-                      <td><%= i + 1 %></td><td><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
-                  <% end %>
+                      <% if com_ends.include?(i - 1) %>
+                          <% col = nil %>
+                      <% end %>
+
+                      <td><%= i + 1 %></td>
+                      <td class=<%= col %>><pre id="code"> <%= remove_head(line).chomp %> </pre></td>
                     </tr>
               <% end %>
               </table>
