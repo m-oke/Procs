@@ -104,12 +104,23 @@ class User < ActiveRecord::Base
 
     edit do
       field :student_number do
+        visible do
+          bindings[:view]._current_user.has_role?(:root)
+        end
         help "学籍番号など，#{help}"
       end
       field :name do
+        visible do
+          bindings[:view]._current_user.has_role?(:root)
+        end
+
         help "本名など，#{help}"
       end
       field :nickname do
+        visible do
+          bindings[:view]._current_user.has_role?(:root)
+        end
+
         help "ニックネームなど他のユーザに表示される，#{help}"
         required true
       end
@@ -119,16 +130,31 @@ class User < ActiveRecord::Base
         partial 'roles_form'
       end
       field :email do
+        visible do
+          bindings[:view]._current_user.has_role?(:root)
+        end
+
         required true
         help "ログインに使用，#{help}"
       end
       field :email_confirmation do
+        visible do
+          bindings[:view]._current_user.has_role?(:root)
+        end
         required true
       end
 
       field :password do
+        visible do
+          bindings[:view]._current_user.has_role?(:root)
+        end
+
       end
       field :password_confirmation do
+        visible do
+          bindings[:view]._current_user.has_role?(:root)
+        end
+
       end
     end
 

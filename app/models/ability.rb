@@ -19,6 +19,7 @@ class Ability
       can :dashboard
       can :manage, :all
       cannot :destroy, User
+      cannot :update, User, :id => 1
     elsif user && (user.has_role? :teacher)
     elsif user && (user.has_role? :student)
     end
