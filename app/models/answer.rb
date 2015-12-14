@@ -147,8 +147,8 @@ class Answer < ActiveRecord::Base
         help "解答した問題と授業の関連, コピーした問題がある場合は注意, #{help}"
       end
       field :file_name do
-        required true
-        help "サーバに保存した解答ソースコードのファイル名, #{help}"
+        read_only true
+        help "サーバに保存した解答ソースコードのファイル名"
       end
       field :language, :enum do
         required true

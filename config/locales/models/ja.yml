@@ -102,10 +102,10 @@ ja:
         test_passed: パスしたテストケース数
         test_count: 実行したテストケース数
         internet_check_results: インターネット剽窃チェック
-        lesson_question: 関連する問題
+        lesson_question_id: 関連する問題
       internet_check_result:
         id: ID
-        answer: チェックした解答
+        answer_id: チェックした解答
         title: Webページタイトル
         link: WebページURL
         content: Webページ抜粋

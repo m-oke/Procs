@@ -45,7 +45,6 @@ class LessonQuestion < ActiveRecord::Base
       field :end_time do
         help "問題に解答できる時間, #{help}"
       end
-      field :answers
       # field :is_deleted do
       #   help "非公開設定, #{help}"
       # end
