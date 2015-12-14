@@ -4,6 +4,9 @@ class LessonQuestion < ActiveRecord::Base
   belongs_to :question, :foreign_key => :question_id
   has_many :answers, :foreign_key => :lesson_question_id
 
+  validates :lesson, :presence => true
+  validates :question, :presence => true
+
   rails_admin do
     parent Lesson
     weight 1

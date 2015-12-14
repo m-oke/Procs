@@ -62,7 +62,7 @@ ja:
         run_time_limit: 実行時間制限
         memory_usage_limit: メモリ制限
         version: 問題の更新履歴
-        user: 問題作成ユーザ
+        author: 問題作成ユーザ
         is_public: パブリック問題設定
         lessons: 授業
         samples: サンプルデータ

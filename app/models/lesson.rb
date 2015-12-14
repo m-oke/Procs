@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 class Lesson < ActiveRecord::Base
-  validates :name, :presence => true
-  validates :lesson_code, :presence => true, :uniqueness => true
+  validates :name, :presence => true,
+  :format => {:with => /\A[!-~]{1,255}\z/, :message => 'は適切なフォーマットではありません' }
 
+  validates :lesson_code, :presence => true, :uniqueness => true,
+  :format => {:with => /\A[!-~]{1,255}\z/, :message => 'は適切なフォーマットではありません' }
 
   has_many :questions
 
@@ -32,6 +34,7 @@ class Lesson < ActiveRecord::Base
       field :description
       field :lesson_code do
         required true
+        help "学生が授業に参加する際に入力するコード, #{help}"
       end
       field :users do
         help "ここでは参加する学生を設定できます．この授業を担当する教員は別途「授業の参加」から作成してください，#{help}"

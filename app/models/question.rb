@@ -15,6 +15,14 @@ class Question < ActiveRecord::Base
   accepts_nested_attributes_for :lesson_questions, allow_destroy: false, reject_if: :all_blank
   accepts_nested_attributes_for :question_keywords, allow_destroy: false, reject_if: :all_blank
 
+  validates :title, :presence => true
+  validates :content, :presence => true
+  validates :question_keywords, :presence => true
+  validates :run_time_limit, :presence => true
+  validates :memory_usage_limit, :presence => true
+  validates :author, :presence => true
+
+
   rails_admin do
     weight 3
 
@@ -40,14 +48,14 @@ class Question < ActiveRecord::Base
         required true
         help "単位はMB, #{help}"
       end
-      field :user do
+      field :author, :enum do
         required true
+        enum do
+          User.all.collect { |u| ["#{u.nickname}", u.id] }
+        end
       end
 
       field :samples do
-        inverse_of :question
-      end
-      field :test_data do
         inverse_of :question
       end
       field :lessons
@@ -82,13 +90,10 @@ class Question < ActiveRecord::Base
         required true
         help "単位はMB, #{help}"
       end
-      field :user do
+      field :author do
         required true
       end
       field :samples do
-        inverse_of :question
-      end
-      field :test_data do
         inverse_of :question
       end
       field :lessons
