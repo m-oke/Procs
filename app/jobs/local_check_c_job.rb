@@ -14,6 +14,10 @@ class LocalCheckCJob < ActiveJob::Base
     check_count = 0
     local_result = []
 
+    # check実行中はlocal_plagiarism_percentageを実行中に表示する
+    answer.local_plagiarism_percentage = -1.0
+    answer.save
+
     lesson_questions = LessonQuestion.where(:question_id => question_id)
     lesson_questions.each do |lesson_question|
       @lesson = Lesson.find_by(:id => lesson_question.lesson_id)
@@ -68,6 +72,8 @@ class LocalCheckCJob < ActiveJob::Base
 
             # [目標ファイルtoken数,比較ファイル名,目標類似行,類似token数]の配列を作る
             if check_count == 0
+              answer.local_plagiarism_percentage = 0.0
+              answer.save
               return
             else
               local_result.push([@target_token,@target_name,@compare_name,@target_line,@compare_line,@check_token,@compare_path,s.id,compare_answer.lesson_question_id])
@@ -81,6 +87,8 @@ class LocalCheckCJob < ActiveJob::Base
       end
     end
     if local_result.empty?
+      answer.local_plagiarism_percentage = 0.0
+      answer.save
       return
     end
     result_temp = LocalCheckResult.new(:answer_id => answer.id,
