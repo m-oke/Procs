@@ -4,16 +4,25 @@ class QuestionsController < ApplicationController
   before_action :check_lesson, only: [:index, :new]
   before_filter :authenticate_user!
 
-  # get '/questions' || get '/lessons/:lesson_id/questions'
+  # get '/lessons/:lesson_id/questions'
   # 問題一覧を表示
   # @param [Fixnum] lesson_id
-  # @param [Fixnum] id Questionのid
   def index
     lesson_id = params[:lesson_id] || session[:lessson_id] || 1
     session[:lesson_id] = lesson_id
     @lesson = Lesson.find_by(:id => lesson_id)
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
     @questions = @lesson.lesson_questions
+  end
+
+  # get '/questions'
+  # 問題一覧を表示
+  def public_questions
+    lesson_id = 1
+    session[:lesson_id] = lesson_id
+    @lesson = Lesson.find_by(:id => lesson_id)
+    @questions = @lesson.lesson_questions
+    render 'index'
   end
 
   def new

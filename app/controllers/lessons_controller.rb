@@ -6,6 +6,7 @@ class LessonsController < ApplicationController
 
   # get '/'
   def index
+    session[:lesson_id]=nil
   end
 
   # get '/lessons/new'

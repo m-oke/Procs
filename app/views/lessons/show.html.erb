@@ -21,13 +21,6 @@
   </div>
 </div>
 <script>
-    var tmp = <%=@is_teacher %>;
-    if(tmp==true){
-        $('#navbar ul').prepend('<li><%= link_to "権限：教員", '' %></li');
-    }else{
-        $('#navbar ul').prepend('<li><%= link_to "権限：学生", '' %></li');
-    }
-
     $('#home_tab').click(function(){
 
         var str_url = "/ajax/lessons/tab_back_home";
