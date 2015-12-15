@@ -100,8 +100,12 @@
               <td>
                 <span>
                   <% unless answer.new_record? %>
-                    <p><%= answer.local_plagiarism_percentage %>%</p>
-                    <a class="btn btn-default draw_fancybox2" href="#local_checked_results_<%=lesson_question.question_id %>" >内容を確認</a>
+                      <% if answer.local_plagiarism_percentage == -1.0 %>
+                          <p>実行中...</p>
+                      <% else %>
+                          <p><%= answer.local_plagiarism_percentage %>%</p>
+                          <a class="btn btn-default draw_fancybox2" href="#local_checked_results_<%=lesson_question.question_id %>" >内容を確認</a>
+                      <% end %>
                   <% end %>
                 </span>
               </td>
