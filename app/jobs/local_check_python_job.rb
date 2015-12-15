@@ -59,7 +59,6 @@ class LocalCheckPythonJob < ActiveJob::Base
               target_line_right = line.rindex(" path=\"" + @target_path) - 2
               target_line_first_temp = line[12..target_line_right]
               target_line_first = target_line_first_temp.to_i
-              target_line_first -= 1
 
               # マークラインに空行とコメント行を追加
               tar_check_line = @check_line
@@ -87,7 +86,6 @@ class LocalCheckPythonJob < ActiveJob::Base
               compare_line_right = line.rindex(" path=\"" + @compare_path) - 2
               compare_line_first_temp = line[12..compare_line_right]
               compare_line_first = compare_line_first_temp.to_i
-              compare_line_first -= 1
 
               # マークラインに空行とコメント行を追加
               com_check_line = @check_line
