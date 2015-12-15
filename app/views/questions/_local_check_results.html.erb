@@ -40,10 +40,10 @@
               <% col = nil %>
               <% @target_code.each_with_index do |line, i| %>
                     <tr>
-                      <% if tar_starts.include?(i) %>
-                        <% col = color[tar_starts.index(i) % 5] %>
+                      <% if tar_starts.include?(i + 1) %>
+                        <% col = color[tar_starts.index(i + 1) % 5] %>
                       <% end %>
-                      <% if tar_ends.include?(i - 1) %>
+                      <% if tar_ends.include?(i) %>
                         <% col = nil %>
                       <% end %>
 
@@ -66,10 +66,10 @@
                 <% col = nil %>
                 <% @compare_code.each_with_index do |line, i| %>
                     <tr>
-                      <% if com_starts.include?(i) %>
-                          <% col = color[com_starts.index(i) % 5] %>
+                      <% if com_starts.include?(i + 1) %>
+                          <% col = color[com_starts.index(i + 1) % 5] %>
                       <% end %>
-                      <% if com_ends.include?(i - 1) %>
+                      <% if com_ends.include?(i) %>
                           <% col = nil %>
                       <% end %>
 
