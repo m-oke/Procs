@@ -179,6 +179,14 @@ class EvaluatePythonJob < ActiveJob::Base
     # 作業ディレクトリの削除
     Dir.chdir("..")
     `rm -fr #{dir_name}`
+
+    if res == "A"
+      # Python言語ローカル剽窃チェックスクリプトをメッセージキューに入れる
+      LocalCheckPythonJob.perform_later(:user_id => user_id,
+                                        :lesson_id => lesson_id,
+                                        :question_id => question_id,
+                                        :lesson_question_id => lesson_question_id)
+    end
     return
   end
 end
