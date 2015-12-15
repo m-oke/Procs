@@ -148,10 +148,6 @@ class LessonsController < ApplicationController
 
 
     if @student_id.to_i != 0
-      # if ENV['BING_APIKEY'].nil?
-      #   @have_bing_key = false
-      #   return
-      # end
       @student = User.find_by(:id => @student_id)
       answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id, :lesson_question_id => lesson_question_id).last
       #「Http error , Api 使用できない」原因で保存した　臨時データを削除
@@ -179,7 +175,6 @@ class LessonsController < ApplicationController
         return
       end
 
-
       init_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil, :link => nil, :content => nil, :repeat => 0, :key_word => "" )
       init_result.save
       single_check = PlagiarismInternetCheck.new(@question_id, @lesson_id, @student_id, lesson_question_id,@result)
@@ -187,10 +182,6 @@ class LessonsController < ApplicationController
     else
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @multi_check = 1
-      # if ENV['BING_APIKEY'].nil?
-      #   @have_bing_key = false
-      #   return
-      # end
       @students.each do |s|
         answer = Answer.where(:lesson_id => @lesson_id, :student_id => s['id'], :question_id => @question_id, :lesson_question_id => lesson_question_id).last
         #「Http error , Api 使用できない」原因で保存した　臨時データを削除

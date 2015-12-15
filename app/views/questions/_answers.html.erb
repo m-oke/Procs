@@ -17,20 +17,21 @@
 <h3 id="answer">解答状況</h3>
 
 <div>
-  <div style="float:left;">
-    <% if ENV['BING_APIKEY'].nil? == false &&@plagiarism_have_keyword == 1 && @have_accepted_answer==1 && (@multi_check_todo == 1 || @key_word_change == 1) %>
-        <%= button_to "全員のWEB剽窃チェック", lessons_internet_check_path(:lesson_id => @lesson.id,
-                                                                                :student_id => 0,
-                                                                                :question_id => params[:question_id]), {:remote => true , :method => "post",:class=>"btn btn-default", :id => "multi_check_internet" }%>
-    <% else %>
-      <a class="btn btn-default disabled" >全員のWEB剽窃チェック</a>
-    <% end %>
-
-  </div>
-  <div style="float:left;">
-    <p class ="text_align_user", id='check_message_internet'>WEB剽窃チェックの結果を確認するために、ページを更新してください</p>
-  </div>
-  <div style="clear:both"></div>
+  <% unless ENV['BING_APIKEY'].nil? %>
+      <div style="float:left;">
+        <% if @plagiarism_have_keyword == 1 && @have_accepted_answer==1 && (@multi_check_todo == 1 || @key_word_change == 1) %>
+            <%= button_to "全員のWEB剽窃チェック", lessons_internet_check_path(:lesson_id => @lesson.id,
+                                                                                    :student_id => 0,
+                                                                                    :question_id => params[:question_id]), {:remote => true , :method => "post",:class=>"btn btn-default", :id => "multi_check_internet" }%>
+        <% else %>
+          <a class="btn btn-default disabled" >全員のWEB剽窃チェック</a>
+        <% end %>
+      </div>
+      <div style="float:left;">
+        <p class ="text_align_user", id='check_message_internet'>WEB剽窃チェックの結果を確認するために、ページを更新してください</p>
+      </div>
+      <div style="clear:both"></div>
+  <% end %>
 </div>
 <div class="table-responsive">
   <div>
@@ -47,8 +48,9 @@
       <th>メモリ使用量(MB/KB)</th>
       <th>使用言語</th>
       <th>学生類似度</th>
+      <% unless ENV['BING_APIKEY'].nil? %>
       <th>WEB剽窃チェック</th>
-
+      <% end %>
     </tr>
     <% @students.each do |student| %>
       <% answer = Answer.latest_answer(:student_id => student.id,
@@ -59,12 +61,14 @@
 
       <tr>
         <td>
-          <% unless answer.new_record? %>
-            <%= link_to(student.student_number, lesson_student_answers_path(:lesson_id => @lesson.id,
-                                                                            :question_id => @question.id,
-                                                                            :student_id => student.id), :remote => ( @lesson.id != 1)) %>
-          <% else %>
-            <%= student.student_number %>
+          <%unless student.student_number.nil? %>
+              <% unless answer.new_record? %>
+                <%= link_to(student.student_number, lesson_student_answers_path(:lesson_id => @lesson.id,
+                                                                                :question_id => @question.id,
+                                                                                :student_id => student.id), :remote => ( @lesson.id != 1)) %>
+              <% else %>
+                <%= student.student_number %>
+              <% end %>
           <% end %>
         </td>
         <td><%= student.name %></td>
@@ -82,8 +86,9 @@
       <td><%= answer.memory_usage %></td>
       <td><%= answer.language.capitalize unless answer.language.nil? %></td>
       <td><%= answer.plagiarism_percentage %></td>
+      <% unless ENV['BING_APIKEY'].nil? %>
       <td>
-        <% unless ENV['BING_APIKEY'].nil? %>
+
             <% title_nil_exist = 0 %>
             <% http_error_exist = 0 %>
             <% key_word_change = 0 %>
@@ -132,44 +137,41 @@
                     <% end %>
                 <% end %>
             <% end %>
-        <% else  %>
-            <% if answer.result== 'A' %>
-                <a class="btn btn-default disabled" >チェック</a>
-            <% end %>
-        <% end %>
 
       </td>
-      <div id="internet_results_checked_question_<%=student.id%>" class="internet-check-results-css" >
-        <% unless ENV['BING_APIKEY'].nil? %>
+      <td style="display:none">
+        <div id="internet_results_checked_question_<%=student.id%>" class="internet-check-results-css" >
           <p>学生：<%= student.name %></p>
           <p>問題：<%= @question.title %></p>
           <% max_time = 0 %>
           <% checked_result.each do |r|%>
-            <% if r['repeat'].to_i > 1 %>
-              <% max_time=r['repeat'].to_i %>
-              <% break %>
-            <% end %>
+              <% if r['repeat'].to_i > 1 %>
+                  <% max_time=r['repeat'].to_i %>
+                  <% break %>
+              <% end %>
           <% end %>
           <% if max_time > 1 %>
-            <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
+              <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
               <% checked_result.each do |result| %>
-                <div class="hero-unit2">
+                  <div class="hero-unit2">
                     <p>関連タイトル：<%= result['title'] %></p>
                     <p>関連リンク：<%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %></p>
                     <p>回数：<%= result['repeat'] %></p>
                     <p>内容：<%= result['content'] %></p>
-                </div>
+                  </div>
               <% end %>
           <% elsif http_error_exist == 1 %>
-                <p>剽窃チェックができませんでした。以下の問題が考えられます。</p>
-                <p>(1)インターネットの接続に問題がありませんか。</p>
-                <p>(2)検索回数の上限を超えてませんか。</p>
-                <p>設定を確認したら、再チェックを行なってください。</p>
+              <p>剽窃チェックができませんでした。以下の問題が考えられます。</p>
+              <p>(1)インターネットの接続に問題がありませんか。</p>
+              <p>(2)検索回数の上限を超えてませんか。</p>
+              <p>設定を確認したら、再チェックを行なってください。</p>
           <%else %>
-            <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
+              <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
           <%end %>
-        <% end %>
-      </div>
+        </div>
+      </td>
+
+      <% end %>
       </tr>
     <% end %>
   </table>

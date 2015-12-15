@@ -20,6 +20,7 @@ class QuestionsController < ApplicationController
   def public_questions
     lesson_id = 1
     session[:lesson_id] = lesson_id
+    session[:lesson_question_id] = 1
     @lesson = Lesson.find_by(:id => lesson_id)
     @questions = @lesson.lesson_questions
     render 'index'

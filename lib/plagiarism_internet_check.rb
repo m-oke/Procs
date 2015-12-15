@@ -383,17 +383,6 @@ class PlagiarismInternetCheck
           break
         end
       end
-      # comment_mark = "\"\"\""
-      # while content.index(comment_mark)!= nil do
-      #   len = content.size
-      #   first_num  = content.index(comment_mark)
-      #   second_num = content[first_num+3,len-1].index(comment_mark)
-      #   if first_num != nil && second_num != nil
-      #     content = content[0..first_num-1]  + content[first_num+second_num+6..len-1]
-      #   else
-      #     break
-      #   end
-      # end
     end
     File.write(pathname,content)
     file.close
@@ -455,53 +444,6 @@ class PlagiarismInternetCheck
     end
     return result_set
   end
-  # def internet_search_json(search_word, search_type)
-  #   user = ''
-  #   account_key = APIKEY
-  #   # ja-JP and en-US
-  #   market = 'en-US'
-  #   num_results= 10.to_s
-  #   web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
-  #   sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
-  #   query_string = '&$format=json&Query='
-  #   query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
-  #   query_market_string = '&Market='
-  #   query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
-  #   params = "&$top=#{num_results}&$skip=#{0}"
-  #
-  #   full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
-  #   pp full_address
-  #
-  #   uri = URI(full_address)
-  #   req = Net::HTTP::Get.new(uri.request_uri)
-  #   if search_type == 'bing search'
-  #     req.basic_auth user, account_key
-  #   end
-  #   begin
-  #     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|
-  #       http.open_timeout = 3
-  #       http.read_timeout = 6
-  #       http.request(req)
-  #     }
-  #     case res
-  #       when Net::HTTPSuccess
-  #         if search_type == 'bing search'
-  #           body = JSON.parse(res.body, :symbolize_names => true)
-  #           result_set = body[:d][:results]
-  #         else
-  #           g_results = JSON.parse(res.body)
-  #
-  #         end
-  #       else
-  #         puts [uri.to_s, res.value].join(" : ")
-  #         result_set = 'HTTPError'
-  #     end
-  #   rescue => e
-  #     puts [uri.to_s, e.class, e].join(" : ")
-  #     result_set = 'HTTPError'
-  #   end
-  #
-  # end
 
   def write_search_results_log(full_path,results,keywords)
     # File.delete(full_path)

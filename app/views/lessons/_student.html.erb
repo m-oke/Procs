@@ -48,7 +48,9 @@
       <th>メモリ使用量(MB/KB)</th>
       <th>終了時間</th>
       <th>提出</th>
+      <% unless ENV['BING_APIKEY'].nil? %>
       <th>WEB剽窃チェック</th>
+      <% end %>
     </tr>
     <% num = 0 %>
     <% @lesson_questions.each do |lesson_question| %>
@@ -83,8 +85,9 @@
               <% end %>
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
-              <td>
-                <% unless ENV['BING_APIKEY'].nil? %>
+              <% unless ENV['BING_APIKEY'].nil? %>
+                <td>
+
                     <% http_error_exist = 0 %>
                     <% key_word_change = 0 %>
                     <% question_keyword = '' %>
@@ -147,14 +150,10 @@
                         </span>
                         <% end %>
                     <% end %>
-                <% else %>
-                    <% if answer.result== 'A' %>
-                        <a class="btn btn-default disabled" >チェック</a>
-                    <% end %>
-                <% end %>
-              </td>
-              <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
-                <% unless ENV['BING_APIKEY'].nil? %>
+                </td>
+                <td style="display:none">
+                  <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
+
                     <p>学生：<%= @student.name %></p>
                     <p>学生：<%= @student.nickname %></p>
                     <p>問題：<%= question.title %></p>
@@ -172,10 +171,10 @@
 
                         <% checked_result.each do |result| %>
                             <div class="hero-unit2">
-                                <p>関連タイトル：<%= result['title'] %></p>
-                                <p>関連リンク：</p><%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
-                                <p>回数：<%= result['repeat'] %></p>
-                                <p>内容：<%= result['content'] %></p>
+                              <p>関連タイトル：<%= result['title'] %></p>
+                              <p>関連リンク：</p><%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
+                              <p>回数：<%= result['repeat'] %></p>
+                              <p>内容：<%= result['content'] %></p>
                             </div>
                         <% end %>
                     <% elsif http_error_exist == 1 %>
@@ -186,8 +185,10 @@
                     <%else %>
                         <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
                     <%end %>
-                <% end %>
-              </div>
+                  </div>
+                </td>
+
+              <% end %>
           <% else %>
               <td class="table-question-title-css"><%= question.title %></td>
               <td><p>-</p></td>
@@ -195,8 +196,10 @@
               <td><%= %></td>
               <td><%= lesson_question.end_time %></td>
               <td><%= %>
+              <% unless ENV['BING_APIKEY'].nil? %>
               <td>
               </td>
+              <% end %>
           <% end %>
         </tr>
     <% end %>
