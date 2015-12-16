@@ -113,6 +113,13 @@ install_procs(){
     bundle exec rake db:create:all 1> /dev/null
     echo "Created!"
     bundle exec rake assets:precompile 1> /dev/null
+
+    echo "Procs has plagiarism detection using Web."
+    echo "If you want use this, you have to get Bing Search API Key."
+    echo -n "If you have Key, type here (optional) : "
+    read apikey
+    echo "BING_API_KEY='${apikey}'" >> $dir/.env
+    echo "If you want to set apikey later, please edit ${dir}/.env ."
 }
 
 setup_nginx(){
