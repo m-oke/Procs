@@ -46,7 +46,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  config.log_level = :info
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
@@ -70,6 +70,7 @@ Rails.application.configure do
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
+  config.active_support.deprecation = :log
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
@@ -77,20 +78,22 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.after_initialize do
-    FileUtils.mkdir_p(DOCKER_PATH) unless FileTest.exist?(DOCKER_PATH)
-    puts "Downloading Procs images."
-    if FileTest.exist?("#{DOCKER_PATH}/.git")
-      puts "Downloading Procs images."
-      Dir.chdir(DOCKER_PATH)
-      `git pull`
-    else
-      `git clone https://github.com/m-oke/TKB-procon_sandbox.git #{DOCKER_PATH}`
-    end
-    puts "Download ended."
-    puts "Building Procs images."
-    `docker build -t procs/python_sandbox #{DOCKER_PATH}/python_sandbox & docker build -t procs/cpp_sandbox #{DOCKER_PATH}/cpp_sandbox`
-    puts "Build ended."
-  end
+ #  config.assets.compress = true
+
+  # config.after_initialize do
+  #   FileUtils.mkdir_p(DOCKER_PATH) unless FileTest.exist?(DOCKER_PATH)
+  #   puts "Downloading Procs images."
+  #   if FileTest.exist?("#{DOCKER_PATH}/.git")
+  #     puts "Downloading Procs images."
+  #     Dir.chdir(DOCKER_PATH)
+  #     `git pull`
+  #   else
+  #     `git clone https://github.com/m-oke/TKB-procon_sandbox.git #{DOCKER_PATH}`
+  #   end
+  #   puts "Download ended."
+  #   puts "Building Procs images."
+  #   `docker build -t procs/python_sandbox #{DOCKER_PATH}/python_sandbox & docker build -t procs/cpp_sandbox #{DOCKER_PATH}/cpp_sandbox`
+  #   puts "Build ended."
+  # end
 
 end
