@@ -11,10 +11,10 @@
 
 ## 検証環境
 ### OS
-* Ubuntu 14.04.2
+* Ubuntu 14.04.3
 
 ### Ruby
-* 2.2.2p95
+* 2.2.3
 
 ### Ruby on Rails
 * 4.2.1
@@ -38,7 +38,7 @@
 * Ubuntu14.04.2がインストールされていることを前提
 
 ### 必要なソフトウェアのインストール
-* `sudo apt-get install git build-essential libssl-dev libmysqld-dev nodejs libreadline-dev`
+* `sudo apt-get install git build-essential libssl-dev libmysqld-dev libreadline-dev nodejs`
 
 ### Rubyのインストール
 1. rbenv
@@ -49,9 +49,9 @@
 2. ruby-build
 1. `git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build`
 3. ruby
-1. `rbenv install 2.2.2`
+1. `rbenv install 2.2.3`
 2. `rbenv rehash`
-3. `rbenv global 2.2.2`
+3. `rbenv global 2.2.3`
 4. `ruby -v`
 
 ### Ruby on Railsのインストール
