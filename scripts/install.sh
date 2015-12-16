@@ -110,9 +110,9 @@ install_procs(){
     echo "If you want edit, please use mysql console."
 
     echo "Creating DB..."
-    rake db:create:all 1> /dev/null
+    bundle exec rake db:create:all 1> /dev/null
     echo "Created!"
-    rake assets:precompile 1> /dev/null
+    bundle exec rake assets:precompile 1> /dev/null
 }
 
 setup_nginx(){
@@ -178,8 +178,12 @@ create_root(){
     done
     stty echo
 
-    echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :password => '${password}', :roles => [:root, :admin, :teacher, :student])" | rails console 2> /dev/null
+    echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :password => '${password}', :roles => [:root, :admin, :teacher, :student])" | bundle exec rails console 2> /dev/null
 
+}
+
+start_unicorn(){
+    bundle exec rake unicorn:start
 }
 
 do_install(){
@@ -220,6 +224,7 @@ do_install(){
     install_procs
     setup_nginx
     create_root
+    start_unicorn
     exit 0
 }
 
