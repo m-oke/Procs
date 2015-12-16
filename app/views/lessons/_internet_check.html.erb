@@ -1,7 +1,9 @@
 <div>
+<% if @have_bing_key == true %>
   <p>学生：<%= @student.name %></p>
   <p>問題：<%= @question.title %></p>
   <% max_time = 0 %>
+  <% http_error_result = 0 %>
   <% if @check_result_count == 0 %>
     <% @result.each do |item|%>
       <% if item[2] > 1 %>
@@ -9,7 +11,15 @@
           <% break %>
       <% end %>
     <% end %>
-    <% if max_time > 1 %>
+
+    <% if  @result.size >0  %>
+      <% len = @result.size %>
+      <% if @result[len-1][0] =='http_error' %>
+          <% http_error_result = 1 %>
+      <% end %>
+    <% end %>
+
+    <% if max_time > 1 && http_error_result == 0 %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
       <% index=1 %>
       <%@result.each do |item| %>
@@ -24,7 +34,11 @@
           </div>
           <% index +=1 %>
       <% end %>
-
+    <% elsif http_error_result == 1 %>
+      <p>剽窃チェックができませんでした。以下の問題が考えられます。</p>
+      <p>(1)インターネットの接続に問題がありませんか。</p>
+      <p>(2)検索回数の上限を超えてませんか。</p>
+      <p>設定を確認したら、再チェックを行なってください。</p>
     <% else %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
     <% end %>
@@ -37,7 +51,6 @@
       <% end %>
     <% end %>
     <% if max_time > 1 %>
-          <%= @check_result.count %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
       <% @check_result.each do |result| %>
           <div class="hero-unit2">
@@ -47,9 +60,13 @@
             <p>内容：<%= result['content'] %></p>
           </div>
       <% end %>
+
     <% else %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
     <% end %>
 
   <% end %>
+<% else %>
+  <p>BingSearchのAPIKeyの設定を確認してください。</p>
+<% end %>
 </div>

@@ -2,7 +2,7 @@
 
     jQuery(document).ready(function(){
         jQuery(".draw_fancybox").fancybox({
-            maxWidth    : 800,
+            maxWidth    : 1200,
             maxHeight   : 600,
             fitToView   : false,
             width       : '70%',
@@ -48,7 +48,9 @@
       <th>メモリ使用量(MB/KB)</th>
       <th>終了時間</th>
       <th>提出</th>
-      <th>Internet Copy Check</th>
+      <% unless ENV['BING_APIKEY'].nil? %>
+      <th>WEB剽窃チェック</th>
+      <% end %>
     </tr>
     <% num = 0 %>
     <% @lesson_questions.each do |lesson_question| %>
@@ -59,10 +61,10 @@
 
           <% num = num + 1 %>
           <% question = Question.find_by(:id => lesson_question.question_id) %>
-          <% answer = Answer.where(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id => lesson_question.question_id, :lesson_question_id => lesson_question.id).last %>
+          <% answer = Answer.latest_answer(:lesson_id => @lesson_id ,:student_id => @student.id ,:question_id => lesson_question.question_id, :lesson_question_id => lesson_question.id) %>
           <td><%= num  %></td>
           <% unless answer.nil? %>
-              <td><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
+              <td class="table-question-title-css"><%= link_to question.title, lesson_student_answers_path(:lesson_id => @lesson_id,
                                                                           :question_id => question.id,
                                                                           :student_id => @student.id,
                                                                           :lesson_question_id => lesson_question.id),:remote => true  %></td>
@@ -83,59 +85,121 @@
               <% end %>
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
-              <td>
-                <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
-                <% if checked_result.size > 0 %>
-                    <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
-                <% else %>
-                    <span>
-                      <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
-                                                                        :student_id => @student.id,
-                                                                        :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
-                      <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
-                    </span>
-                <% end %>
-              </td>
-              <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
-                <p>学生：<%= @student.name %></p>
-                <p>問題：<%= question.title %></p>
-                <% max_time = 0 %>
-                <% checked_result.each do |r|%>
-                    <% if r['repeat'].to_i > 1 %>
-                        <% max_time=r['repeat'].to_i %>
-                        <% break %>
-                    <% end %>
-                <% end %>
-                <% if max_time > 1 %>
-                    <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
+              <% unless ENV['BING_APIKEY'].nil? %>
+                <td>
 
-                    <% checked_result.each do |result| %>
-                        <div class="hero-unit2">
-                            <p>関連タイトル：<%= result['title'] %></p>
-                            <p>関連リンク：</p><%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
-                            <p>回数：<%= result['repeat'] %></p>
-                            <p>内容：<%= result['content'] %></p>
-                        </div>
+                    <% http_error_exist = 0 %>
+                    <% key_word_change = 0 %>
+                    <% question_keyword = '' %>
+
+                    <% question_keywords = QuestionKeyword.where(:question_id => question['id']) %>
+                    <% question_keywords.each do |k| %>
+                        <% question_keyword = question_keyword + " " + k['keyword'] %>
+                    <% end %>
+                    <% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
+                    <% if checked_result.present?%>
+                        <% checked_result.each do |r|%>
+                            <% if r['key_word'] != question_keyword %>
+                                <% key_word_change = 1%>
+                                <% break %>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                    <% http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )%>
+                    <% if http_error.present? %>
+                        <% http_error.each do |r| %>
+                            <% if r['answer_id'] == answer.id %>
+                                <% http_error_exist = 1 %>
+                                <% break %>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                    <% if question_keyword !='' %>
+                        <% if key_word_change == 0 %>
+                            <% if checked_result.size > 0 && http_error_exist == 0 %>
+                                <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
+                            <% elsif checked_result.size == 0 && answer.result== 'A' %>
+                                <%# elsif checked_result.size == 0 %>
+                                <span>
+                              <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
+                                                                                :student_id => @student.id,
+                                                                                :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+                                  <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
+                            </span>
+                            <% elsif checked_result.size > 0 && http_error_exist == 1%>
+                            <span>
+                              <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
+                                                                                :student_id => @student.id,
+                                                                                :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+                              <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
+                            </span>
+
+                            <% else %>
+                            <span>
+                              <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
+                                                                                :student_id => @student.id,
+                                                                                :question_id => lesson_question.question_id ), :remote => true , :disabled => "true", :id => "ajax_link_#{lesson_question.question_id}", :method => "post", :class=>"btn btn-default" %>
+                            </span>
+                            <% end %>
+                        <% else %>
+                        <span>
+                          <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
+                                                                            :student_id => @student.id,
+                                                                            :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+                          <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
+                        </span>
+                        <% end %>
+                    <% end %>
+                </td>
+                <td style="display:none">
+                  <div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
+
+                    <p>学生：<%= @student.name %></p>
+                    <p>学生：<%= @student.nickname %></p>
+                    <p>問題：<%= question.title %></p>
+                    <% max_time = 0 %>
+
+                    <% checked_result.each do |r|%>
+                        <% if r['repeat'].to_i > 1 %>
+                            <% max_time=r['repeat'].to_i %>
+                            <% break %>
+                        <% end %>
                     <% end %>
 
-                <%else %>
-                    <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
-                <%end %>
-              </div>
+                    <% if max_time > 1 %>
+                        <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
+
+                        <% checked_result.each do |result| %>
+                            <div class="hero-unit2">
+                              <p>関連タイトル：<%= result['title'] %></p>
+                              <p>関連リンク：</p><%= link_to result['link'],"#{result['link']}", :target => ["'_blank'"] %>
+                              <p>回数：<%= result['repeat'] %></p>
+                              <p>内容：<%= result['content'] %></p>
+                            </div>
+                        <% end %>
+                    <% elsif http_error_exist == 1 %>
+                        <p>剽窃チェックができませんでした。以下の問題が考えられます。</p>
+                        <p>(1)インターネットの接続に問題がありませんか。</p>
+                        <p>(2)検索回数の上限を超えてませんか。</p>
+                        <p>設定を確認したら、再チェックを行なってください。</p>
+                    <%else %>
+                        <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
+                    <%end %>
+                  </div>
+                </td>
+
+              <% end %>
           <% else %>
-              <td><%= question.title %></td>
+              <td class="table-question-title-css"><%= question.title %></td>
               <td><p>-</p></td>
               <td><%= %></td>
               <td><%= %></td>
               <td><%= lesson_question.end_time %></td>
               <td><%= %>
+              <% unless ENV['BING_APIKEY'].nil? %>
               <td>
-                <span>
-                  <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
-                                                                  :student_id => @student.id,
-                                                                  :question_id => lesson_question.question_id ), :remote => true , :disabled => "true", :id => "ajax_link_#{lesson_question.question_id}", :method => "post", :class=>"btn btn-default" %>
-                </span>
               </td>
+              <% end %>
           <% end %>
         </tr>
     <% end %>

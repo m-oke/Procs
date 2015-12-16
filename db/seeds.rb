@@ -135,7 +135,7 @@ LessonQuestion.create(:lesson_id => 2, :question_id => 2, :start_time => (Date.t
 # LessonQuestion.create(:lesson_id => 3, :question_id => 4, :start_time => (Date.today - 3).to_s, :end_time => (Date.today + 4).to_s)
 
 # 問題のkeywordのサンプル
-QuestionKeyword.create(:question_id => 1, :keyword => "the 3n+1 problem")
+QuestionKeyword.create(:question_id => 1,:keyword => "the 3n+1 problem")
 # QuestionKeyword.create(:question_id => 1, :keyword => "solution")
 QuestionKeyword.create(:question_id => 2, :keyword => "Financial Management C言語")
 
