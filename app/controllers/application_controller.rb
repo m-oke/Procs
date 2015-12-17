@@ -6,9 +6,10 @@ class ApplicationController < ActionController::Base
 
   I18n.backend.reload!
   # ユーザ権限がない場合などで例外が出た場合，例外表示のかわりにrootにリダイレクト
-  rescue_from CanCan::AccessDenied do |exception|
-    redirect_to "/", :alert => exception.message
-  end
+  # rescue_from CanCan::AccessDenied do |exception|
+  #   session[:error] = "test"
+  #   redirect_to "/", :alert => (current_user.nil? ? "" : exception.message)
+  # end
 
   # ユーザが該当する授業に参加しているかどうかをチェック
   # 参加していなかったらrootにリダイレクト

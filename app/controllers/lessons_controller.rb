@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 class LessonsController < ApplicationController
+  before_action :authenticate_user!, except: [:index]
   before_action :check_lesson, only: [:show, :students]
-  before_filter :authenticate_user!
   before_action :init
 
   # get '/'
   def index
     session[:lesson_id]=nil
+    if current_user.nil?
+      redirect_to new_user_session_path
+    end
   end
 
   # get '/lessons/new'

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
+  before_action :authenticate_user!
   before_action :check_question, only: [:show]
   before_action :check_lesson, only: [:index, :new]
-  before_filter :authenticate_user!
+
 
   # get '/lessons/:lesson_id/questions'
   # 問題一覧を表示

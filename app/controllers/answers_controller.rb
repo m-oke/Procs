@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 class AnswersController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   def index
     @student_id = params[:student_id] || current_user.id

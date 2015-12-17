@@ -1,56 +1,51 @@
 <%= render "layouts/notice" %>
-<% if current_user.nil? %>
-    ログインまたは新規登録してください
-<% else %>
-    <div class = "lesson-new">
-      <% if current_user.has_role?(:teacher) %>
-          <%= link_to '授業作成',{ :controller =>"lessons", :action =>"new"}, :class => 'btn btn-primary'%>
-      <% end %>
-    </div>
+<div class = "lesson-new">
+  <% if current_user.has_role?(:teacher) %>
+    <%= link_to '授業作成',{ :controller =>"lessons", :action =>"new"}, :class => 'btn btn-primary'%>
+  <% end %>
+</div>
+<div class="hero-unit">
+  <h1>Procsへようこそ!</h1>
+  <p>こちらからすべての問題を見ることができます。<br>
+    また授業への参加もこちらからできます。</p>
+  <p>
+    <%= link_to '問題一覧', '/public_questions', class: 'btn btn-primary' %>
+    <%= link_to '授業参加', {:controller => :user_lessons, :action => :create}, class: 'btn btn-primary' %>
+  </p>
+</div>
+<% user_lesson = UserLesson.where(:user_id => current_user.id, :is_deleted => false ) %>
+<% unless user_lesson.empty? %>
+  <% user_lesson.each do |lesson_select_user| %>
+    <% next if lesson_select_user.lesson_id == 1 %>
     <div class="hero-unit">
-      <h1>Procsへようこそ!</h1>
-      <p>こちらからすべての問題を見ることができます。<br>
-      また授業への参加もこちらからできます。</p>
-      <p>
-        <%= link_to '問題一覧', '/public_questions', class: 'btn btn-primary' %>
-        <%= link_to '授業参加', {:controller => :user_lessons, :action => :create}, class: 'btn btn-primary' %>
-      </p>
+      <h1><%= link_to lesson_select_user.lesson.name, lesson_path(:id => lesson_select_user.lesson.id) %></h1>
+      <% if lesson_select_user.is_teacher? %>
+        <p><%= lesson_select_user.user.name  %></p>
+      <% else %>
+        <% owner_lesson = UserLesson.where(:lesson_id => lesson_select_user.lesson_id, :is_teacher => true).last %>
+        <p><%= owner_lesson.user.name  %></p>
+      <% end %>
+      <p><%= simple_format(h(lesson_select_user.lesson.description)) %></p>
     </div>
-    <% user_lesson = UserLesson.where(:user_id => current_user.id, :is_deleted => false ) %>
-    <% unless user_lesson.empty? %>
-        <% user_lesson.each do |lesson_select_user| %>
-          <% next if lesson_select_user.lesson_id == 1 %>
-            <div class="hero-unit">
-              <h1><%= link_to lesson_select_user.lesson.name, lesson_path(:id => lesson_select_user.lesson.id) %></h1>
-              <% if lesson_select_user.is_teacher? %>
-                <p><%= lesson_select_user.user.name  %></p>
-              <% else %>
-                <% owner_lesson = UserLesson.where(:lesson_id => lesson_select_user.lesson_id, :is_teacher => true).last %>
-                <p><%= owner_lesson.user.name  %></p>
-              <% end %>
-              <p><%= simple_format(h(lesson_select_user.lesson.description)) %></p>
-            </div>
-        <% end %>
-    <% end %>
-
-    <% if current_user.has_role?(:teacher)%>
-        <% deleted_lessons = UserLesson.where(:user_id => current_user.id , :is_deleted => true) %>
-        <% if deleted_lessons.count > 0 %>
-            <div class = "lesson-new">
-            <h3><FONT color="#ff0000">非公開授業</FONT></h3>
-            <p>非公開授業は学生に表示されません。</p>
-            <p>再公開したい場合は、システム管理者に連絡してください。</p>
-            <% deleted_lessons.each do |d| %>
-                <% next if d.lesson_id == 1%>
-                <% session[d.lesson_id] = "lesson_private" %>
-                <div class="hero-unit">
-                  <h1><%= link_to d.lesson.name, lesson_path(:id => d.lesson.id) %></h1>
-                  <p><%= d.user.name  %></p>
-                  <p><%= simple_format(h(d.lesson.description)) %></p>
-                </div>
-            <% end %>
-            </div>
-        <% end %>
-    <% end %>
+  <% end %>
 <% end %>
 
+<% if current_user.has_role?(:teacher)%>
+  <% deleted_lessons = UserLesson.where(:user_id => current_user.id , :is_deleted => true) %>
+  <% if deleted_lessons.count > 0 %>
+    <div class = "lesson-new">
+      <h3><FONT color="#ff0000">非公開授業</FONT></h3>
+      <p>非公開授業は学生に表示されません。</p>
+      <p>再公開したい場合は、システム管理者に連絡してください。</p>
+      <% deleted_lessons.each do |d| %>
+        <% next if d.lesson_id == 1%>
+        <% session[d.lesson_id] = "lesson_private" %>
+        <div class="hero-unit">
+          <h1><%= link_to d.lesson.name, lesson_path(:id => d.lesson.id) %></h1>
+          <p><%= d.user.name  %></p>
+          <p><%= simple_format(h(d.lesson.description)) %></p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
