@@ -188,6 +188,8 @@ class QuestionsController < ApplicationController
     else
       @languages = LANGUAGES.map { |val| [val, val.downcase] }.to_h
     end
+
+
   end
 
   def edit
@@ -376,5 +378,11 @@ class QuestionsController < ApplicationController
     return LessonQuestion.find_by(:lesson_id => lesson_id,
                                   :question_id => question_id,
                                   :id => lesson_question_id).present?
+  end
+
+  # ローカルファイルの内容を表示
+  def show_local(filepath)
+    code = File.open(filepath, 'r:utf-8')
+    return code
   end
 end

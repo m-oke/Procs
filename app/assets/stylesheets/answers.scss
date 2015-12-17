@@ -16,11 +16,29 @@
   box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
 
 }
-
+.test1 {
+  width: inherit;
+  height: 600px;
+}
+.check_results {
+  width: 95%;
+  height: 600px;
+  margin:auto;
+}
+.check_result {
+  float: left;
+  width: 45%;
+  height: 600px;
+  overflow-y: auto;
+  margin-left: 30px;
+}
  table.diff {
    width: 100%;
    border-collapse: collapse;
    border: 2px #808080 solid;
+ }
+ table.local-check{
+   width: 100%;
  }
 .old_line {
   width: 50px;
@@ -51,6 +69,15 @@
 }
 .green {
   background-color: #88ff88;
+}
+.yellow {
+  background-color: #fcfcc2;
+}
+.blue {
+  background-color: #6ec8ff;
+}
+.purple {
+  background-color: #b579ff;
 }
 .normal {
   background-color: #ffffff;

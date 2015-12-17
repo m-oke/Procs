@@ -12,6 +12,16 @@
             openEffect  : 'none',
             closeEffect : 'none'
         });
+        jQuery(".draw_fancybox2").fancybox({
+            maxHeight   : 600,
+            fitToView   : false,
+            width       : '90%',
+            height      : '90%',
+            autoSize    : false,
+            closeClick  : false,
+            openEffect  : 'none',
+            closeEffect : 'none',
+        });
     });
 </script>
 <%= link_to "学生一覧に戻る", students_lessons_path(:lesson_id => params[:lesson_id]), :remote => true , :method => "GET" , :class=>"btn btn-default btn_top" %>
@@ -48,6 +58,7 @@
       <th>メモリ使用量(MB/KB)</th>
       <th>終了時間</th>
       <th>提出</th>
+      <th>学生同士の類似度</th>
       <% unless ENV['BING_APIKEY'].nil? %>
       <th>WEB剽窃チェック</th>
       <% end %>
@@ -85,6 +96,23 @@
               <% end %>
               <td><%= lesson_question.end_time %></td>
               <td><%= answer.created_at %></td>
+              <!-- ローカル類似度表示 -->
+              <td>
+                <span>
+                  <% unless answer.new_record? %>
+                      <% if answer.local_plagiarism_percentage == -1.0 %>
+                          <p>実行中...</p>
+                      <% else %>
+                          <p><%= answer.local_plagiarism_percentage %>%</p>
+                          <a class="btn btn-default draw_fancybox2" href="#local_checked_results_<%=lesson_question.question_id %>" >内容を確認</a>
+                      <% end %>
+                  <% end %>
+                </span>
+              </td>
+              <!-- Localウィンドウ表示内容-->
+              <div id="local_checked_results_<%=lesson_question.question_id %>" class="internet-check-results-css" >
+                <%= render :partial => "questions/local_check_results", :locals => {:student => @student, :question => question, :answer => answer} %>
+              </div>
               <% unless ENV['BING_APIKEY'].nil? %>
                 <td>
 

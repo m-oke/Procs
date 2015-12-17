@@ -89,6 +89,10 @@
 4. `gcc --version`
 5. (もし4.8が表示されるならば) `sudo apt-get remove g++-4.8`
 
+### SIMのインストール
+[The software and text similarity tester SIM](http://dickgrune.com/Programs/similarity_tester/)
+* `sudo apt-get install similarity-tester`
+
 ### リポジトリのクローン
 1. `git clone https://github.com/m-oke/TKB-procon_rails.git`
 2. デフォルトは`develop`ブランチ
