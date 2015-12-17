@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20150527-20895-1vf0qml.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20151217-3265-1chzxyt.rb extconf.rb
 checking for ruby/thread.h... yes
 checking for rb_thread_call_without_gvl() in ruby/thread.h... yes
 checking for rb_thread_blocking_region()... no
@@ -30,4 +30,4 @@ compiling infile.c
 linking shared-object mysql2/mysql2.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 mysql2.so ./.gem.20150527-20895-vp79c8/mysql2
+/usr/bin/install -c -m 0755 mysql2.so ./.gem.20151217-3265-g7xsp5/mysql2

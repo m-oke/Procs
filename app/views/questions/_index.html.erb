@@ -96,9 +96,9 @@
                                 :method => :get, :disabled => true, :remote => true, class: 'btn btn-default') %>
                 <% end %>
               <% else %>
-                <%= button_to('解答', question_path(:question_id => question.id,
-                                                  :lesson_question_id => lesson_question.id) + '#answer',
-                              :method => :get, class: 'btn btn-default') %>
+                <%= button_to('解答', question_path(:question_id => question.id) + '#answer',
+                              :method => :get, class: 'btn btn-default',
+                              :params => {:lesson_question_id => lesson_question.id}) %>
               <% end %>
             </td>
             <td>
@@ -108,9 +108,9 @@
                                                                        :lesson_question_id => lesson_question.id),
                               :method => :get, :disabled => (@latest_answer.new_record?), :remote => true, class: 'btn btn-default') %>
               <% else %>
-                  <%= button_to('解答詳細', answers_question_path(:question_id => question.id,
-                                                              :lesson_question_id => lesson_question.id),
-                                :method => :get, :disabled => (@latest_answer.new_record?), class: 'btn btn-default') %>
+                <%= button_to('解答詳細', answers_question_path(:question_id => question.id),
+                              :method => :get, :disabled => (@latest_answer.new_record?), class: 'btn btn-default',
+                              :params => {:lesson_question_id => lesson_question.id}) %>
               <% end %>
 
             </td>

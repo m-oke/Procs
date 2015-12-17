@@ -28,7 +28,8 @@ module Procs
     config.active_record.raise_in_transactional_callbacks = true
     config.action_controller.permit_all_parameters = true
     config.active_job.queue_adapter = :sidekiq
-    config.assets.compile =true
+    config.assets.compile = true
 
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
   end
 end

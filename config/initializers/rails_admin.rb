@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 RailsAdmin.config do |config|
 
   ### Popular gems integration
@@ -16,79 +17,20 @@ RailsAdmin.config do |config|
 
   ### More at https://github.com/sferik/rails_admin/wiki/Base-configuration
 
+  config.main_app_name = ["Procs", "Admin page"]
+  config.included_models = ["User", "Lesson", "Question", "Answer", "Sample", "TestDatum", "InternetCheckResult", "LessonQuestion", "UserLesson", "QuestionKeyword"]
+
+  # TODO: 各モデルの必要事項を追加
   config.actions do
     dashboard                     # mandatory
     index                         # mandatory
-    new
+    new do
+      except ["Answer", "TestDatum", "InternetCheckResult"]
+    end
     export
-    bulk_delete
     show
     edit
     delete
-    show_in_app
-
-    ## With an audit adapter, you can add:
-    # history_index
-    # history_show
-  end
-
-  config.model User do
-    create do
-      field :student_number
-      field :name do
-        required true
-      end
-      field :nickname do
-        required true
-      end
-      field :roles do
-        required true
-        partial 'roles_form'
-      end
-      field :email do
-        required true
-      end
-      field :password
-      field :password_confirmation do
-        required true
-      end
-      field :reset_password_sent_at
-      field :remember_created_at
-      field :sign_in_count
-      field :current_sign_in_at
-      field :last_sign_in_at
-      field :current_sign_in_ip
-      field :last_sign_in_ip
-      field :user_lessons
-      field :lessons
-      field :answers
-      field :questions
-    end
-
-    update do
-      field :student_number
-      field :name
-      field :nickname
-      field :roles do
-        partial 'roles_form'
-      end
-      field :email
-      field :password do
-        required false
-      end
-      field :password_confirmation
-      field :reset_password_sent_at
-      field :remember_created_at
-      field :sign_in_count
-      field :current_sign_in_at
-      field :last_sign_in_at
-      field :current_sign_in_ip
-      field :last_sign_in_ip
-      field :user_lessons
-      field :lessons
-      field :answers
-      field :questions
-    end
   end
 
 end

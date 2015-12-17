@@ -1,0 +1,122 @@
+ja:
+  activerecord:
+    models:
+      user:
+        one: ユーザ
+        other: ユーザ
+      lesson:
+        one: 授業
+        other: 授業
+      question:
+        one: 問題
+        other: 問題
+      answer:
+        one: 解答
+        other: 解答
+      test_datum:
+        one: テストデータ
+        other: テストデータ
+      sample:
+        one: サンプルデータ
+        other: サンプルデータ
+      lesson_question:
+        one: 授業と問題の関連
+        other: 授業と問題の関連
+      internet_check_result:
+        one: インターネット剽窃チェック
+        other: インターネット剽窃チェック
+      user_lesson:
+        one: 授業の参加
+        other: 授業の参加
+      question_keyword:
+        one: 剽窃チェック用キーワード
+        other: 剽窃チェック用キーワード
+
+    attributes:
+      user:
+        id: ID
+        student_number: 学籍番号
+        name: 氏名
+        nickname: ニックネーム
+        email: メールアドレス
+        email_confirmation: メールアドレスの確認
+        roles: 権限
+        password: パスワード
+        password_confirmation: パスワードの確認
+        lessons: 授業
+        answers: 解答
+      lesson:
+        id: ID
+        name: 名前
+        description: 説明
+        lesson_code: 授業コード
+        questions: 問題
+        users: ユーザ
+      question:
+        id: ID
+        title: タイトル
+        content: 内容
+        input_description: 入力の説明
+        output_description: 出力の説明
+        question_keywords: 剽窃チェック用キーワード
+        run_time_limit: 実行時間制限
+        memory_usage_limit: メモリ制限
+        version: 問題の更新履歴
+        author: 問題作成ユーザ
+        is_public: パブリック問題設定
+        lessons: 授業
+        samples: サンプルデータ
+        test_data: テストデータ
+      sample:
+        id: ID
+        question: 関連する問題
+        input: 入力データ
+        output: 出力データ
+        is_deleted: 非公開設定
+      test_datum:
+        id: ID
+        question: 関連する問題
+        input: 入力ファイル名
+        output: 出力ファイル名
+        is_deleted: 非公開設定
+        input_storename: 入力ファイル保存名
+        output_storename: 出力ファイル保存名
+      lesson_question:
+        id: ID
+        lesson: 授業
+        question: 問題
+        start_time: 開始時間
+        end_time: 終了時間
+      answer:
+        id: ID
+        user: 解答ユーザ
+        question: 解答問題名
+        file_name: 解答ソースコード名
+        result: 評価結果
+        language: プログラム言語
+        run_time: 実行時間
+        memory_usage: メモリ使用量
+        plagiarism_percentage: 類似度
+        lesson: 解答授業
+        question_version: 解答した問題のバージョン
+        test_passed: パスしたテストケース数
+        test_count: 実行したテストケース数
+        internet_check_results: インターネット剽窃チェック
+        lesson_question_id: 関連する問題
+      internet_check_result:
+        id: ID
+        answer_id: チェックした解答
+        title: Webページタイトル
+        link: WebページURL
+        content: Webページ抜粋
+        repeat: ヒット回数
+      user_lesson:
+        id: ID
+        user: ユーザ
+        lesson: 授業
+        is_teacher: 教員の設定
+        is_deleted: 非公開設定
+      question_keyword:
+        question: 関連する問題
+        keyword: 検索用キーワード
+        is_deleted: 削除設定

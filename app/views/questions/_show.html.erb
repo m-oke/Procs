@@ -124,11 +124,11 @@
     <% @question.samples.each.with_index(1) do |sample, i| %>
         <li><h4>入力<%= i %></h4></li>
         <div class="bg-success">
-          <%= sample.input %>
+          <%= simple_format(h(sample.input)) %>
         </div>
         <li><h4>出力<%= i %></h4></li>
         <div class="bg-success">
-          <%= sample.output %>
+          <%= simple_format(h(sample.output)) %>
         </div>
         <hr size="3" noshade="noshade">
     <% end %>

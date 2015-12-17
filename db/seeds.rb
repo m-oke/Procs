@@ -8,20 +8,19 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # root
-User.create(:name => "root1", :nickname => "root", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
-            :email => "root@user.com", :password => "testtest", :roles => [:root, :admin, :teacher, :student])
+User.create(:name => "root1", :nickname => "root",
+            :email => "root@user.com", :email_confirmation => "root@user.com", :password => "testtest", :roles => [:root, :admin, :teacher, :student])
 
 # 管理者
 2.times do |i|
-  User.create(:name => "管理者#{i + 1}", :nickname => "admin#{i+1}", # :faculty => "研究科1", :department => "工学域1", :grade => 0,
-             :email => "Admin#{i + 1}@user.com", :password => "testtest", :roles => [:admin, :teacher, :student])
+  User.create(:name => "管理者#{i + 1}", :nickname => "admin#{i+1}",
+                 :email => "admin#{i + 1}@user.com", :email_confirmation => "admin#{i + 1}@user.com", :password => "testtest", :roles => [:admin, :teacher, :student])
 end
-
 
 # 教師
 3.times do |i|
     User.create(:name => "教員#{i + 1}", :nickname => "teacher#{i+1}", # :faculty => "工学域#{i + 1}", :department => "工学域#{i + 1}", :grade => 0,
-                :email => "teacher#{i + 1}@user.com", :password => "testtest", :roles => [:teacher, :student])
+                :email => "teacher#{i + 1}@user.com", :email_confirmation => "teacher#{i + 1}@user.com", :password => "testtest", :roles => [:teacher, :student])
 end
 
 # 学生
@@ -32,12 +31,12 @@ end
     x = "#{i + 1}"
   end
   User.create(:student_number => "2015200#{x}", :name => "学生#{i + 1}", :nickname => "student#{i+1}", #:faculty => "学部#{(i + 1) % 3 + 1}", :department => "学科#{(i + 1) % 2 + 1}", :grade => ((i + 1) % 4),
-              :email => "student#{i + 1}@user.com", :password => "testtest", :roles => [:student])
+              :email => "student#{i + 1}@user.com", :email_confirmation => "student#{i + 1}@user.com", :password => "testtest", :roles => [:student])
 end
 
 # クラス
 # すべての問題を含む，全員が参加するクラス
-Lesson.create(:name => "All probrems", :description => "このクラスはすべての問題を含むクラスです。", :lesson_code => "0000000000")
+Lesson.create(:name => "パブリック問題", :description => "このクラスはすべての問題を含むクラスです。", :lesson_code => "0000000000")
 # 授業コード 1010101, 1010102
 2.times do |i|
   Lesson.create(:name => "講義#{i + 1}", :description => "説明#{i + 1}", :lesson_code => "101010#{i+1}")

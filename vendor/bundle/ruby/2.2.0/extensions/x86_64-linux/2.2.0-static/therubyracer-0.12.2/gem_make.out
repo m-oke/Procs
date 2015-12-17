@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20150527-20895-c08a6j.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20151217-3265-cs3gkd.rb extconf.rb
 checking for main() in -lpthread... yes
 creating Makefile
 
@@ -36,4 +36,4 @@ compiling message.cc
 linking shared-object v8/init.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 init.so ./.gem.20150527-20895-yq3f9q/v8
+/usr/bin/install -c -m 0755 init.so ./.gem.20151217-3265-1ryleok/v8

@@ -10,6 +10,9 @@
       <%= link_to "Procs", root_path,  class: 'navbar-brand logo' %>
       <% if user_signed_in? %>
         <%= link_to '問題', questions_path, class: 'navbar-brand logo' %>
+        <% if current_user.has_role?(:root) || current_user.has_role?(:admin) %>
+          <%= link_to '管理画面', '/admin', class: 'navbar-brand logo' %>
+        <% end %>
       <% end %>
     </div>
     <div class="collapse navbar-collapse" id="navbar">

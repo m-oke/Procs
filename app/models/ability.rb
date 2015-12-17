@@ -5,9 +5,9 @@ class Ability
   def initialize(user)
     user ||= User.new
 
-    # アクセス権のデバッグ用
-    can :access, :rails_admin
-    can :dashboard
+    #
+    cannot :access, :rails_admin
+    cannot :dashboard
 
 
     if user && (user.has_role? :root)
@@ -19,11 +19,9 @@ class Ability
       can :dashboard
       can :manage, :all
       cannot :destroy, User
+      cannot :update, User, :id => 1
     elsif user && (user.has_role? :teacher)
-      can :manage, :all
     elsif user && (user.has_role? :student)
-      can :read, :all
-      can :manage, User, :id => user.id
     end
 
     # Define abilities for the passed in user here. For example:

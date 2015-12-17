@@ -128,10 +128,10 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] id Questionのid
   # @param [Fixnum] lesson_question_id
   def show
-    session[:lesson_question_id] = params[:lesson_question_id] .present? ? params[:lesson_question_id] : session[:lesson_question_id]
+    session[:lesson_question_id] = params[:lesson_question_id].present? ? params[:lesson_question_id] : session[:lesson_question_id]
     session[:question_id] = params[:question_id]
     lesson_question_id = session[:lesson_question_id]
-    question_id = session[:question_id]
+    question_id = session[:question_id] || LessonQuestion.find_by(:id => session[:lesson_question_id]).question_id
     lesson_id = session[:lesson_id] || 1
     unless check_lesson_question(:lesson_id => lesson_id,
                                  :question_id => question_id,
@@ -139,7 +139,7 @@ class QuestionsController < ApplicationController
       return
     end
 
-    @question = Question.find_by(:id => params[:question_id])
+    @question = Question.find_by(:id => question_id)
     @lesson = Lesson.find_by(:id => lesson_id)
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                           :question_id => question_id,
