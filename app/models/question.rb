@@ -17,7 +17,6 @@ class Question < ActiveRecord::Base
 
   validates :title, :presence => true
   validates :content, :presence => true
-  validates :question_keywords, :presence => true
   validates :run_time_limit, :presence => true
   validates :memory_usage_limit, :presence => true
   validates :author, :presence => true
@@ -36,10 +35,6 @@ class Question < ActiveRecord::Base
       end
       field :input_description
       field :output_description
-      field :question_keywords do
-        required true
-        help "インターネット剽窃チェックを行う際に利用するキーワード, #{help}"
-      end
       field :run_time_limit do
         required true
         help "単位はms, #{help}"
@@ -55,9 +50,6 @@ class Question < ActiveRecord::Base
         end
       end
 
-      field :samples do
-        inverse_of :question
-      end
       field :lessons
       field :version do
         required true
@@ -78,10 +70,6 @@ class Question < ActiveRecord::Base
       end
       field :input_description
       field :output_description
-      field :question_keywords do
-        required true
-        help "インターネット剽窃チェックを行う際に利用するキーワード, #{help}"
-      end
       field :run_time_limit do
         required true
         help "単位はms, #{help}"
@@ -92,9 +80,6 @@ class Question < ActiveRecord::Base
       end
       field :author do
         required true
-      end
-      field :samples do
-        inverse_of :question
       end
       field :lessons
       field :version do

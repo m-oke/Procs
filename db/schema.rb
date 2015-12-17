@@ -21,7 +21,6 @@ ActiveRecord::Schema.define(version: 20151214073219) do
     t.string   "language",                    limit: 255,               null: false
     t.float    "run_time",                    limit: 24,  default: 0.0
     t.integer  "memory_usage",                limit: 4,   default: 0
-    t.integer  "cpu_usage",                   limit: 4,   default: 0
     t.float    "local_plagiarism_percentage", limit: 24,  default: 0.0
     t.datetime "created_at",                                            null: false
     t.datetime "updated_at",                                            null: false

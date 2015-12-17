@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 class Lesson < ActiveRecord::Base
-  validates :name, :presence => true,
-  :format => {:with => /\A[!-~]{1,255}\z/, :message => 'は適切なフォーマットではありません' }
+  validates :name, :presence => true
 
   validates :lesson_code, :presence => true, :uniqueness => true,
   :format => {:with => /\A[!-~]{1,255}\z/, :message => 'は適切なフォーマットではありません' }

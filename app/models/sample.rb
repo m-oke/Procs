@@ -24,7 +24,7 @@ class Sample < ActiveRecord::Base
     edit do
       field :question do
         required true
-        help "関連を付ける問題, 問題作成時は選択する必要はありません, #{help}"
+        help "関連を付ける問題, #{help}"
       end
       field :input do
         required true
