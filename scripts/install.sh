@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 set -eu
 LOGFILE=/tmp/procs_install.log
 
@@ -10,7 +10,7 @@ install_essentials() {
     echo "Install packages"
     $sh_c "add-apt-repository ppa:chris-lea/redis-server"
     $sh_c "apt-get update"
-    $sh_c "apt-get install git build-essential libssl-dev nodejs libreadline-dev"
+    $sh_c "apt-get install -y -q git build-essential libssl-dev nodejs libreadline-dev"
 }
 
 install_db(){
@@ -18,16 +18,21 @@ install_db(){
     #     mysql_version="$(mysql --version | sed "s/,.*$//" | sed "s/^.*Distrib //")"
     # fi
     echo "Install database packages"
-    $sh_c "apt-get install mysql-server-5.6 redis-server libmysqld-dev"
+    $sh_c "apt-get -y -q install mysql-server-5.6 redis-server libmysqld-dev"
 }
 
 install_ruby() {
     echo "Install ruby"
-    git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+    if [ ! -e "~/.rbenv" ]; then
+        git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+    fi
+
     echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
     echo 'eval "$(rbenv init -)"' >> ~/.bashrc
     source ~/.bashrc
-    git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+    if [ ! -e "~/.rbenv/plugins/ruby-build" ]; then
+        git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+    fi
     rbenv install 2.2.3
     rbenv rehash
     rbenv global 2.2.3
@@ -46,6 +51,7 @@ install_docker(){
 
 install_procs(){
     cp $dir/config/database.yml.sample $dir/config/database.yml
+    bundle install
 
 #    git checkout master
 
@@ -96,6 +102,15 @@ install_procs(){
         esac
     done
 
+
+    echo "Create Database for Procs."
+    if ["$root_p" = "true"]; then
+        echo -n "MySQL root password : "
+        mysql -u root -p -e "CREATE DATABASE Procs_production;"
+    else
+        mysql -u root -e "CREATE DATABASE Procs_production;"
+    fi
+
     echo "Setting MySQL user for Procs..."
     if [ "$create" = "false" ] && [ "$root_p" = "true" ]; then
         mysql -u root -p -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_pass}';"
@@ -110,7 +125,8 @@ install_procs(){
     echo "If you want edit, please use mysql console."
 
     echo "Creating DB..."
-    bundle exec rake db:create:all 1> /dev/null
+
+    bundle exec rake db:migrate RAILS_ENV=production
     echo "Created!"
     bundle exec rake assets:precompile 1> /dev/null
 
@@ -124,11 +140,17 @@ install_procs(){
 
 setup_nginx(){
     echo "Setting up nginx."
-    $sh_c "apt-get install nginx"
+    $sh_c "apt-get install -y -q nginx"
 
     cat $dir/scripts/nginx/unicorn.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/unicorn.conf
     $sh_c "cp $dir/scripts/nginx/unicorn.conf /etc/nginx/conf.d/unicorn.conf"
     $sh_c "chown root:root /etc/nginx/conf.d/unicorn.conf"
+
+    ## TODO: 要検証
+    $sh_c 'cat /etc/nginx/sites-available/default | sed "s/^/#/" > /etc/nginx/sites-available/default '
+    echo "For Procs server, comment out default config of nginx (/etc/nginx/sites-available/default)."
+    echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/unicorn.conf."
+
     $sh_c "service nginx restart"
 }
 
@@ -138,14 +160,14 @@ create_root(){
     while read email; do
         case $email in
             '' ) echo "Not allow blank."
-                echo -n "Type email of root user in Procs: "
+                echo -n "Type email of root user in Procs : "
                 ;;
             * )
                 break ;;
         esac
     done
 
-    echo -n "Type nickname of root user in Procs  : "
+    echo -n "Type nickname of root user in Procs : "
     while read nickname; do
         case $nickname in
             '' ) echo "Not allow blank."
@@ -229,8 +251,8 @@ do_install(){
     install_ruby
     install_rails
     install_procs
-    setup_nginx
     create_root
+    setup_nginx
     start_unicorn
     exit 0
 }
