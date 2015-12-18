@@ -8,15 +8,14 @@
 /.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
+/log/*.log
 !/log/.keep
 /tmp
 /config/database.yml
 *~
 .idea
-.idea/*
+.idea/
 .env
-/uploads/*
+/uploads/
 ,/*
-/docker/*
-/docker
+/docker/

@@ -1,19 +1,30 @@
 # -*- coding: utf-8 -*-
 class QuestionsController < ApplicationController
+  before_action :authenticate_user!
   before_action :check_question, only: [:show]
   before_action :check_lesson, only: [:index, :new]
-  before_filter :authenticate_user!
 
-  # get '/questions' || get '/lessons/:lesson_id/questions'
+
+  # get '/lessons/:lesson_id/questions'
   # 問題一覧を表示
   # @param [Fixnum] lesson_id
-  # @param [Fixnum] id Questionのid
   def index
     lesson_id = params[:lesson_id] || session[:lessson_id] || 1
     session[:lesson_id] = lesson_id
     @lesson = Lesson.find_by(:id => lesson_id)
     @is_teacher = @lesson.user_lessons.find_by(:user_id => current_user.id).is_teacher
     @questions = @lesson.lesson_questions
+  end
+
+  # get '/questions'
+  # 問題一覧を表示
+  def public_questions
+    lesson_id = 1
+    session[:lesson_id] = lesson_id
+    session[:lesson_question_id] = 1
+    @lesson = Lesson.find_by(:id => lesson_id)
+    @questions = @lesson.lesson_questions
+    render 'index'
   end
 
   def new
@@ -118,10 +129,10 @@ class QuestionsController < ApplicationController
   # @param [Fixnum] id Questionのid
   # @param [Fixnum] lesson_question_id
   def show
-    session[:lesson_question_id] = params[:lesson_question_id] .present? ? params[:lesson_question_id] : session[:lesson_question_id]
+    session[:lesson_question_id] = params[:lesson_question_id].present? ? params[:lesson_question_id] : session[:lesson_question_id]
     session[:question_id] = params[:question_id]
     lesson_question_id = session[:lesson_question_id]
-    question_id = session[:question_id]
+    question_id = session[:question_id] || LessonQuestion.find_by(:id => session[:lesson_question_id]).question_id
     lesson_id = session[:lesson_id] || 1
     unless check_lesson_question(:lesson_id => lesson_id,
                                  :question_id => question_id,
@@ -129,7 +140,7 @@ class QuestionsController < ApplicationController
       return
     end
 
-    @question = Question.find_by(:id => params[:question_id])
+    @question = Question.find_by(:id => question_id)
     @lesson = Lesson.find_by(:id => lesson_id)
     @latest_answer = Answer.latest_answer(:student_id => current_user.id,
                                           :question_id => question_id,
@@ -138,25 +149,37 @@ class QuestionsController < ApplicationController
 
     @is_teacher = UserLesson.find_by(:user_id => current_user.id, :lesson_id => lesson_id).is_teacher
     if @is_teacher
-      @have_submit_answer = false #非公開と削除を区別する
-      @multi_check_enable = false #クラス全体剽窃チェック用
+      @plagiarism_have_keyword = 0
+      @multi_check_todo = 0     #0の場合、既に検索完了
+      @key_word_change = 0        # 1の場合、キーワードの変更があり、 再検索を行う
+      @have_accepted_answer = 0   #1の場合、全員チェックボタンを有効になる
+      @question_keyword =''
 
+      question_keywords = QuestionKeyword.where(:question_id => @question['id'])
+      question_keywords.each do |k|
+        @plagiarism_have_keyword = 1
+        @question_keyword = @question_keyword + " " + k['keyword']
+      end
       @students = User.where(:id => @lesson.user_lessons.where(:is_teacher => false).pluck(:user_id))
       @students.each do |s|
-        answer = Answer.latest_answer(:student_id => s.id,
-                                      :question_id => @question.id,
-                                      :lesson_id => @lesson.id,
-                                      :lesson_question_id => lesson_question_id)
-        if @have_submit_answer == false
-          have_answer = Answer.where(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id, :lesson_question_id => lesson_question_id)
-          if have_answer.count> 0
-            @have_submit_answer = true
+        answer = Answer.latest_answer(:student_id => s.id, :question_id => @question.id, :lesson_id => @lesson.id, :lesson_question_id => lesson_question_id)
+
+        if answer.present?
+          if answer['result'] == 'A'
+            @have_accepted_answer = 1
           end
-        end
-        if @multi_check_enable == false && answer.present?
           checked_result = InternetCheckResult.where(:answer_id =>answer.id)
           if checked_result.count == 0
-            @multi_check_enable = true
+            @multi_check_todo = 1
+          else
+            checked_result.each do |r|
+              if r['key_word']!= @question_keyword
+                @key_word_change = 1
+              end
+              if r['title']==nil && r['link']=='' && r['content']==''
+                @multi_check_todo = 1
+              end
+            end
           end
         end
         if @multi_check_enable == true && @have_submit_answer == true

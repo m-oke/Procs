@@ -1,39 +1,44 @@
 <h2>新規登録</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<% @user = User.new(flash[:resource]) %>
+<%= form_for(@user, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <div class="field">
     <%= f.label :student_number, "学籍番号" %><br />
-    <%= f.text_field :student_number %>
+    <%= f.text_field :student_number, autofocus: true  %>
   </div>
 
   <div class="field">
-    <%= f.label :name, "名前" %>(<span class="inputnote">＊</span>)<br />
+    <%= f.label :name, "名前" %><br />
     <%= f.text_field :name %>
   </div>
 
   <div class="field">
-    <%= f.label :nickname, "ニックネーム" %><br />
-    <%= f.text_field :nickname %>
+    <%= f.label :nickname, "ニックネーム" %>(<span class="inputnote">＊</span>)
+    <i class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" data-title="<%= @nickname_hint_title %>"
+       data-html="true" data-content="<%= @nickname_hint %>"></i><br />
+    <%= f.text_field :nickname, :pattern => '^[!-~]{1,255}$' %>
   </div>
 
   <div class="field">
     <%= f.label :email, "メールアドレス" %>(<span class="inputnote">＊</span>)<br />
-    <%= f.email_field :email, autofocus: true %>
+    <%= f.email_field :email %>
   </div>
 
-  <%= hidden_field_tag "user[roles][]", :student %>
+  <div class="field">
+    <%= f.label :email_confirmation, "メールアドレスの確認" %>(<span class="inputnote">＊</span>)<br />
+    <%= f.email_field :email_confirmation %>
+  </div>
 
   <div class="field">
     <%= f.label :password, "パスワード" %>(<span class="inputnote">＊</span>)
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
+    <i class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" data-title="<%= @password_hint_title %>"
+       data-html="true" data-content="<%= @password_hint %>"></i><br />
+    <%= f.password_field :password, autocomplete: "off", :pattern => '^[!-~]{8,255}$' %>
   </div>
 
   <div class="field">
     <%= f.label :password_confirmation, "パスワードの確認" %>(<span class="inputnote">＊</span>)<br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    <%= f.password_field :password_confirmation, autocomplete: "off", :pattern => '^[!-~]{1,255}$' %>
   </div>
 
   <div class="actions">

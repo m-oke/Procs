@@ -22,13 +22,14 @@ Rails.application.routes.draw do
 
   scope :ajax do
     get 'answers/select_version' => 'answers#select_version'
-    get 'lessons/tab_back_home' => 'lessons/tab_back_home'
+    get 'lessons/tab_back_home' => 'lessons#tab_back_home'
     post 'answers/diff_select' => 'answers#diff_select'
     post 'lessons/internet_check' =>'lessons#internet_check'
     post 'questions/get_exist_question' => 'questions#get_exist_question'
   end
 
-  resources :questions, only: [:index, :show], param: :question_id do
+  get '/public_questions' => 'questions#public_questions', :as => 'questions'
+  resources :questions, only: [:show], param: :question_id do
     member do
       get '/answers' => 'answers#index'
     end

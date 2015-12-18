@@ -1,3 +1,21 @@
+<ul>
+<% unless notice.nil? %>
+  <div class="alert alert-success">
+    <% notice_message = Array(notice) %>
+    <% notice_message.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </div>
+<% end %>
+<% unless alert.nil? %>
+  <% alert_message = Array(alert)%>
+  <div class="alert alert-danger">
+    <% alert_message.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </div>
+<% end %>
+</ul>
 
 <ul class="nav nav-tabs">
 <li class="active col-sm-3" id="header_tab1"><a href="#tab1" data-toggle="tab">ログイン</a></li>
@@ -14,3 +32,4 @@
 </div>
 
 <%= render "devise/shared/links" %>
+<%= javascript_include_tag "users/users.js" %>

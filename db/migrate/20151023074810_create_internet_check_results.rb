@@ -6,6 +6,7 @@ class CreateInternetCheckResults < ActiveRecord::Migration
       t.string :link
       t.text   :content
       t.integer :repeat
+      t.string :key_word
       t.timestamps null: false
     end
   end

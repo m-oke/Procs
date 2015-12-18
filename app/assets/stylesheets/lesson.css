@@ -62,7 +62,10 @@
     margin-right: auto;
     margin-left: auto;
 }
-
+.table-question-title-css {
+    word-wrap: break-word;
+    word-break: break-all;
+}
 .test_fancybox{
 
 }

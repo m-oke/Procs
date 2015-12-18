@@ -1,2 +1,2 @@
-//= require ../../../../../../../../../../assets/timepicker/jquery.timepicker.js
+//= require jquery
 //= require bootstrap-sprockets

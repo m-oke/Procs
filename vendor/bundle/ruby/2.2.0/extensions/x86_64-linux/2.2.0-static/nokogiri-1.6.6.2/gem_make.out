@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20150527-2116-1ogyzdj.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20151217-3265-udigd0.rb extconf.rb
 checking if the C compiler accepts ... yes
 Building nokogiri using packaged libraries.
 checking for gzdopen() in -lz... yes
@@ -131,7 +131,7 @@ In file included from /home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby.h:
                  from ./html_element_description.h:4,
                  from html_element_description.c:1:
 html_element_description.c: In function ‘get_description’:
-html_element_description.c:252:40: warning: cast discards ‘__attribute__((const))’ qualifier from pointer target type [-Wcast-qual]
+html_element_description.c:252:40: warning: cast discards ‘const’ qualifier from pointer target type [-Wcast-qual]
    return Data_Wrap_Struct(klass, 0, 0, (void *)description);
                                         ^
 /home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby/ruby.h:1028:35: note: in definition of macro ‘Data_Wrap_Struct’
@@ -148,25 +148,27 @@ compiling xml_dtd.c
 compiling xml_schema.c
 compiling xml_encoding_handler.c
 compiling xslt_stylesheet.c
-xslt_stylesheet.c: In function ‘initFunc’:
-xslt_stylesheet.c:217:5: warning: passing argument 1 of ‘rb_data_object_get’ makes integer from pointer without a cast [enabled by default]
-     Data_Get_Struct(ctxt->style->_private, nokogiriXsltStylesheetTuple,
-     ^
 In file included from /home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby.h:33:0,
                  from ./nokogiri.h:33,
                  from ./xslt_stylesheet.h:4,
                  from xslt_stylesheet.c:1:
+xslt_stylesheet.c: In function ‘initFunc’:
+xslt_stylesheet.c:217:21: warning: passing argument 1 of ‘rb_data_object_get’ makes integer from pointer without a cast
+     Data_Get_Struct(ctxt->style->_private, nokogiriXsltStylesheetTuple,
+                     ^
+/home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby/ruby.h:1044:41: note: in definition of macro ‘Data_Get_Struct’
+     ((sval) = (type*)rb_data_object_get(obj))
+                                         ^
 /home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby/ruby.h:1189:1: note: expected ‘VALUE’ but argument is of type ‘void *’
  rb_data_object_get(VALUE obj)
  ^
 xslt_stylesheet.c: In function ‘shutdownFunc’:
-xslt_stylesheet.c:230:5: warning: passing argument 1 of ‘rb_data_object_get’ makes integer from pointer without a cast [enabled by default]
+xslt_stylesheet.c:230:21: warning: passing argument 1 of ‘rb_data_object_get’ makes integer from pointer without a cast
      Data_Get_Struct(ctxt->style->_private, nokogiriXsltStylesheetTuple,
-     ^
-In file included from /home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby.h:33:0,
-                 from ./nokogiri.h:33,
-                 from ./xslt_stylesheet.h:4,
-                 from xslt_stylesheet.c:1:
+                     ^
+/home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby/ruby.h:1044:41: note: in definition of macro ‘Data_Get_Struct’
+     ((sval) = (type*)rb_data_object_get(obj))
+                                         ^
 /home/oke/.rbenv/versions/2.2.2/include/ruby-2.2.0/ruby/ruby.h:1189:1: note: expected ‘VALUE’ but argument is of type ‘void *’
  rb_data_object_get(VALUE obj)
  ^
@@ -176,11 +178,11 @@ compiling html_entity_lookup.c
 compiling xml_sax_parser_context.c
 compiling xml_document.c
 xml_document.c: In function ‘set_encoding’:
-xml_document.c:182:12: warning: cast discards ‘__attribute__((const))’ qualifier from pointer target type [-Wcast-qual]
+xml_document.c:182:12: warning: cast discards ‘const’ qualifier from pointer target type [-Wcast-qual]
        free((char *) doc->encoding); /* this may produce a gcc cast warning */
             ^
 xml_document.c: In function ‘canonicalize’:
-xml_document.c:537:15: warning: cast discards ‘__attribute__((const))’ qualifier from pointer target type [-Wcast-qual]
+xml_document.c:537:15: warning: cast discards ‘const’ qualifier from pointer target type [-Wcast-qual]
        ns[i] = (xmlChar*) ptr;
                ^
 compiling xml_element_content.c
@@ -259,10 +261,10 @@ xml_node.c:165:5: warning: enumeration value ‘XML_XINCLUDE_END’ not handled 
 xml_node.c:165:5: warning: enumeration value ‘XML_DOCB_DOCUMENT_NODE’ not handled in switch [-Wswitch]
 compiling xml_node_set.c
 xml_node_set.c: In function ‘dealloc_namespace’:
-xml_node_set.c:9:13: warning: cast discards ‘__attribute__((const))’ qualifier from pointer target type [-Wcast-qual]
+xml_node_set.c:9:13: warning: cast discards ‘const’ qualifier from pointer target type [-Wcast-qual]
      xmlFree((xmlChar *)ns->href);
              ^
-xml_node_set.c:11:13: warning: cast discards ‘__attribute__((const))’ qualifier from pointer target type [-Wcast-qual]
+xml_node_set.c:11:13: warning: cast discards ‘const’ qualifier from pointer target type [-Wcast-qual]
      xmlFree((xmlChar *)ns->prefix);
              ^
 compiling xml_libxml2_hacks.c
@@ -274,4 +276,4 @@ rmdir -p /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/nokogiri-1.6.6.2/ex
 rm -rf /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/nokogiri-1.6.6.2/ports
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 nokogiri.so ./.gem.20150527-2116-1wpx3u6/nokogiri
+/usr/bin/install -c -m 0755 nokogiri.so ./.gem.20151217-3265-156vj0w/nokogiri

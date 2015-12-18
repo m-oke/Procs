@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20150714-6038-1k4qlg1.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20151217-3265-13v3wgb.rb extconf.rb
 checking for clock_gettime() in -lrt... yes
 creating Makefile
 
@@ -14,4 +14,4 @@ compiling hitimes_stats.c
 linking shared-object hitimes/2.2/hitimes.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 hitimes.so ./.gem.20150714-6038-14qxtgz/hitimes/2.2
+/usr/bin/install -c -m 0755 hitimes.so ./.gem.20151217-3265-j8m32h/hitimes/2.2

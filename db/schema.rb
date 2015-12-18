@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204074642) do
+ActiveRecord::Schema.define(version: 20151214073219) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "student_id",                  limit: 4,                 null: false
@@ -21,7 +21,6 @@ ActiveRecord::Schema.define(version: 20151204074642) do
     t.string   "language",                    limit: 255,               null: false
     t.float    "run_time",                    limit: 24,  default: 0.0
     t.integer  "memory_usage",                limit: 4,   default: 0
-    t.integer  "cpu_usage",                   limit: 4,   default: 0
     t.float    "local_plagiarism_percentage", limit: 24,  default: 0.0
     t.datetime "created_at",                                            null: false
     t.datetime "updated_at",                                            null: false
@@ -38,6 +37,7 @@ ActiveRecord::Schema.define(version: 20151204074642) do
     t.string   "link",       limit: 255
     t.text     "content",    limit: 65535
     t.integer  "repeat",     limit: 4
+    t.string   "key_word",   limit: 255
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
@@ -55,9 +55,6 @@ ActiveRecord::Schema.define(version: 20151204074642) do
   create_table "lessons", force: :cascade do |t|
     t.string   "name",        limit: 255,   null: false
     t.text     "description", limit: 65535
-    t.string   "term",        limit: 255
-    t.integer  "date",        limit: 4
-    t.string   "period",      limit: 255
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
     t.string   "lesson_code", limit: 255,   null: false
@@ -94,19 +91,19 @@ ActiveRecord::Schema.define(version: 20151204074642) do
     t.integer  "memory_usage_limit", limit: 4,     default: 512
     t.datetime "created_at",                                       null: false
     t.datetime "updated_at",                                       null: false
-    t.integer  "version",            limit: 4
+    t.integer  "version",            limit: 4,     default: 1
     t.integer  "author",             limit: 4,                     null: false
     t.boolean  "is_public",          limit: 1,                     null: false
     t.boolean  "is_deleted",         limit: 1,     default: false, null: false
   end
 
   create_table "samples", force: :cascade do |t|
-    t.integer  "question_id", limit: 4,                   null: false
-    t.string   "input",       limit: 255,                 null: false
-    t.string   "output",      limit: 255,                 null: false
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
-    t.boolean  "is_deleted",  limit: 1,   default: false, null: false
+    t.integer  "question_id", limit: 4,                     null: false
+    t.text     "input",       limit: 65535,                 null: false
+    t.text     "output",      limit: 65535,                 null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.boolean  "is_deleted",  limit: 1,     default: false, null: false
   end
 
   create_table "test_data", force: :cascade do |t|
@@ -145,7 +142,7 @@ ActiveRecord::Schema.define(version: 20151204074642) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.string   "nickname",               limit: 255,              null: false
-    t.integer  "roles_mask",             limit: 4
+    t.integer  "roles_mask",             limit: 4,   default: 8
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

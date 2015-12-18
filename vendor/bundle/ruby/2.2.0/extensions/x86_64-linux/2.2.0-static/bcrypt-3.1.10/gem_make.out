@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20150527-2116-1wpjheh.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20151217-3265-1ufhmju.rb extconf.rb
 creating Makefile
 
 make "DESTDIR=" clean
@@ -12,4 +12,4 @@ compiling crypt.c
 linking shared-object bcrypt_ext.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 bcrypt_ext.so ./.gem.20150527-2116-114wg0c
+/usr/bin/install -c -m 0755 bcrypt_ext.so ./.gem.20151217-3265-2kdkhv

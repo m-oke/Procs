@@ -32,7 +32,14 @@
             <p>元のファイル：<%= answer.file_name %></p>
             <p>学生名：<%= student.name %></p>
             <p>ニックネーム：<%= student.nickname %></p>
+            <p>授業名：<%= answer.lesson.name %></p>
             <p>問題：<%= question.title %></p>
+            <% if answer.lesson_question.start_time.present? %>
+              <p>問題の開始時間：<%= answer.lesson_question.start_time.to_s %></p>
+            <% end %>
+            <% if answer.lesson_question.end_time.present? %>
+                <p>問題の終了時間：<%= answer.lesson_question.end_time.to_s %></p>
+            <% end %>
             <p>ソースコード：</p>
             <div class="hero-unit3">
               <table class="local-check">
@@ -40,10 +47,10 @@
               <% col = nil %>
               <% @target_code.each_with_index do |line, i| %>
                     <tr>
-                      <% if tar_starts.include?(i) %>
-                        <% col = color[tar_starts.index(i) % 5] %>
+                      <% if tar_starts.include?(i + 1) %>
+                        <% col = color[tar_starts.index(i + 1) % 5] %>
                       <% end %>
-                      <% if tar_ends.include?(i - 1) %>
+                      <% if tar_ends.include?(i) %>
                         <% col = nil %>
                       <% end %>
 
@@ -59,17 +66,24 @@
             <p>検出した類似ファイル：<%= local_check_result.compare_name %></p>
             <p>学生名：<%= compare_user.name %></p>
             <p>ニックネーム：<%= compare_user.nickname %></p>
+            <p>授業名：<%= compare_lesson_question.lesson.name %></p>
             <p>問題：<%= compare_question.title %></p>
+            <% if compare_lesson_question.start_time.present? %>
+                <p>問題の開始時間：<%= compare_lesson_question.start_time.to_s %></p>
+            <% end %>
+            <% if compare_lesson_question.end_time.present? %>
+                <p>問題の終了時間：<%= compare_lesson_question.end_time.to_s %></p>
+            <% end %>
             <p>ソースコード：</p>
             <div class="hero-unit3">
               <table class="local-check">
                 <% col = nil %>
                 <% @compare_code.each_with_index do |line, i| %>
                     <tr>
-                      <% if com_starts.include?(i) %>
-                          <% col = color[com_starts.index(i) % 5] %>
+                      <% if com_starts.include?(i + 1) %>
+                          <% col = color[com_starts.index(i + 1) % 5] %>
                       <% end %>
-                      <% if com_ends.include?(i - 1) %>
+                      <% if com_ends.include?(i) %>
                           <% col = nil %>
                       <% end %>
 

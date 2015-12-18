@@ -43,7 +43,6 @@
         <th>正解数</th>
         <% if @is_teacher %>
           <th>学生類似度</th>
-          <th>WEB類似度</th>
         <% end %>
       </tr>
 
@@ -74,8 +73,7 @@
             <td><%= @dead_date_question.end_time%></td>
             <td><%= "#{m.test_passed} / #{m.test_count}" %></td>
             <% if @is_teacher %>
-              <td><%= m.local_plagiarism_percentage %></td>
-              <td><%=  %></td>
+                <td><%= m.local_plagiarism_percentage %></td>
             <% end %>
           </tr>
       <% end %>

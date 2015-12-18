@@ -3,24 +3,27 @@ class PlagiarismInternetCheck
   # bing  ch
   # APIKEY = "b03khzsJqXejAfMS3U1ik0lC2Ryd5lnhKu/wZEXaOAc"
   #bing jp
-  APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
+  # APIKEY = "i5VYh/f3nJeCmCdii54uu1WoNj7UevHEoby6feROsNY"
+  APIKEY = ENV['BING_APIKEY']
 
-  def initialize(question_id,lesson_id,student_id,result)
+  def initialize(question_id,lesson_id,student_id,lesson_question_id,result)
 
     @question_id = question_id
     @lesson_id = lesson_id
     @student_id = student_id
     @result = result
+    @lesson_question_id = lesson_question_id
   end
 
   def check
     search_limit = 5
+    http_error = 0
     question_keyword = ""
-    question_keywords = QuestionKeyword.where(:question_id => @question_id )
+    question_keywords = QuestionKeyword.where(:question_id => @question_id)
     question_keywords.each do |k|
       question_keyword = question_keyword + " " + k['keyword']
     end
-    answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id).last
+    answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id, :lesson_question_id => @lesson_question_id).last
 
     fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + answer.file_name
     csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
@@ -50,23 +53,44 @@ class PlagiarismInternetCheck
     end
 
     num = 0
-    web_total_zero = 0
+    web_total_zero = 0       #検索の結果でデータがない場合を集計する　５回データがない場合、検索結果は、
+    pre_search_total = 1     #前回の検索の結果でデータがある場合、１を与える；前回の検索の結果がなかった場合、０を与える
     temp_keyword_csv = []
     old_keyword = ''
     while search_limit > 0 do
       search_keyword = keywordContent[num]
+
+      # 前回検索結果がない場合、検索用キーワードの設定
+      # question_keyword sourcecode1 sourcecode2 => question_keyword sourcecode1 sourcecode3
+      if pre_search_total == 0 && old_keyword.present?
+        if old_keyword.include?('bing_search')
+          old_keyword = old_keyword[0..(old_keyword.rindex('bing_search')-1)]
+        else
+          old_keyword = ''
+        end
+        pre_search_total = 1
+      end
+
       if old_keyword != ''
         search_keyword = old_keyword + 'bing_search' +  search_keyword
       end
       old_keyword = search_keyword
+
       search_keyword = bing_keyword_processing(question_keyword, search_keyword , 'bing_search')
+
+
       # bing = Bing.new(APIKEY, 10, 'Web',{:Market => 'ja-JP'})
-      bing = Bing.new(APIKEY, 10, 'Web')
+      # bing = Bing.new(APIKEY, 10, 'Web')
       # pp search_keyword
-      b_results = bing.search(search_keyword)
-      pp b_results
       # binding.pry
-      unless b_results.empty?
+      # b_results = bing.search(search_keyword)
+
+      b_results = internet_search_json(search_keyword)
+      # pp b_results
+      # binding.pry
+
+      # unless b_results.empty?
+      unless b_results.nil?
         if b_results[0][:WebTotal].to_i != 0
 
           b_results[0][:Web].each do |page|
@@ -80,7 +104,7 @@ class PlagiarismInternetCheck
 
             nSize = @result.size
             if nSize == 0
-              @result.push([title,link,1,content])
+              @result.push([title,link,1,content,question_keyword])
             else
               nMark = -1
               for n in 0..nSize-1
@@ -91,26 +115,37 @@ class PlagiarismInternetCheck
               if nMark != -1
                 @result[nMark][2] = @result[nMark][2] + 1
               else
-                @result.push([title,link,1,content])
+                @result.push([title,link,1,content,question_keyword])
               end
             end
           end
         else
+          pre_search_total = 0
           web_total_zero += 1
         end
       else
         pp 'internet check by bing is failed '
+        http_error = 1
         break
       end
       search_limit = search_limit - 1
       num = num + 1
     end
 
-    pre_store_result = InternetCheckResult.where(:answer_id => answer.id, :title => nil)
+    pre_store_result = InternetCheckResult.where(:answer_id => answer.id, :title => nil, :link => nil, :content => nil)
     if pre_store_result.present?
       pre_store_result.each do |item|
         item.destroy
       end
+    end
+
+    #通信エラー
+    #:title => nil , :link => '', :content => ''
+    if http_error == 1
+      http_error_result = InternetCheckResult.new(:answer_id => answer.id, :title => nil , :link => '', :content => '', :repeat => 1, :key_word => question_keyword )
+      http_error_result.save
+      @result.push(['http_error','http_error',1,'http_error','http_error'])
+      return
     end
     # sort @result by item[2]
     store_num = 1
@@ -127,16 +162,16 @@ class PlagiarismInternetCheck
           if store_num >5
             break
           end
-          internet_check_result = InternetCheckResult.new(:answer_id => answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3])
+          internet_check_result = InternetCheckResult.new(:answer_id => answer.id, :title => r[0], :link => r[1], :repeat => r[2], :content => r[3], :key_word => r[4])
           internet_check_result.save
           store_num+=1
         end
       else
-        no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1 )
+        no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1, :key_word => question_keyword)
         no_good_result.save
       end
     else
-      no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1 )
+      no_good_result = InternetCheckResult.new(:answer_id => answer.id, :title => '' , :link => nil, :content => nil, :repeat => 1, :key_word => question_keyword )
       no_good_result.save
     end
   end
@@ -188,17 +223,30 @@ class PlagiarismInternetCheck
           end
           # delete line which start with for
           if line[0,3] == 'for' && line.include?('for')
-            line = ''
+            tmp = line.sub(/\s+/,' ')
+            if tmp.include?('for(') || tmp.include?('for (')
+              line = ''
+            end
           end
           # delete lines which only contain break or continue
           if line == 'break' || line == 'continue'
             line = ''
           end
-          # delete { and } which like { a = cycle_length(n/2, ++i); return a; }
-        end
+          # delete printf scanf and cin cout
+          if line[0,6] == 'printf'  || line[0,5] == 'scanf' || line[0,3] == 'cin' || line[0,4] == 'cout'
+            tmp = line.sub(/\s+/,' ')
+            if (tmp.include?('printf(') || tmp.include?('printf (')) ||
+                (tmp.include?('scanf(') || tmp.include?('scanf (')) ||
+                (tmp.include?('cin>>') || tmp.include?('cin >>')) ||
+                (tmp.include?('cout<<') || tmp.include?('cout <<'))
+              line = ''
+            end
+          end
 
-        if line.size>0
-          a.push(line)
+          # delete { and } which like { a = cycle_length(n/2, ++i); return a; }
+          if line.size>0
+            a.push(line)
+          end
         end
       end
     end
@@ -259,12 +307,15 @@ class PlagiarismInternetCheck
           # use squeeze
           if line[0,6] == 'print '
             tmp = line.sub(/\s+/,' ')
-            if (tmp.include?('-') && tmp.length-tmp.squeeze('-').length > 6) ||
-                (tmp.include?('+') && tmp.length-tmp.squeeze('+').length > 6) ||
-                (tmp.include?('=') && tmp.length-tmp.squeeze('=').length > 6) ||
-                (tmp.include?('*') && tmp.length-tmp.squeeze('*').length > 6) ||
-                (tmp.include?('/') && tmp.length-tmp.squeeze('/').length > 6)
-              line = ''
+            # if (tmp.include?('-') && tmp.length-tmp.squeeze('-').length > 6) ||
+            #     (tmp.include?('+') && tmp.length-tmp.squeeze('+').length > 6) ||
+            #     (tmp.include?('=') && tmp.length-tmp.squeeze('=').length > 6) ||
+            #     (tmp.include?('*') && tmp.length-tmp.squeeze('*').length > 6) ||
+            #     (tmp.include?('/') && tmp.length-tmp.squeeze('/').length > 6)
+            #   line = ''
+            # end
+            if tmp.include?('print(') || tmp.include?('print (')
+              line =''
             end
           end
           # delete try: except: finally:
@@ -332,17 +383,6 @@ class PlagiarismInternetCheck
           break
         end
       end
-      # comment_mark = "\"\"\""
-      # while content.index(comment_mark)!= nil do
-      #   len = content.size
-      #   first_num  = content.index(comment_mark)
-      #   second_num = content[first_num+3,len-1].index(comment_mark)
-      #   if first_num != nil && second_num != nil
-      #     content = content[0..first_num-1]  + content[first_num+second_num+6..len-1]
-      #   else
-      #     break
-      #   end
-      # end
     end
     File.write(pathname,content)
     file.close
@@ -363,53 +403,47 @@ class PlagiarismInternetCheck
     end
   end
 
-  # def internet_search_json(search_word, search_type)
-  #   user = ''
-  #   account_key = APIKEY
-  #   # ja-JP and en-US
-  #   market = 'en-US'
-  #   num_results= 10.to_s
-  #   web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
-  #   sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
-  #   query_string = '&$format=json&Query='
-  #   query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
-  #   query_market_string = '&Market='
-  #   query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
-  #   params = "&$top=#{num_results}&$skip=#{0}"
-  #
-  #   full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
-  #   pp full_address
-  #
-  #   uri = URI(full_address)
-  #   req = Net::HTTP::Get.new(uri.request_uri)
-  #   if search_type == 'bing search'
-  #     req.basic_auth user, account_key
-  #   end
-  #   begin
-  #     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|
-  #       http.open_timeout = 3
-  #       http.read_timeout = 6
-  #       http.request(req)
-  #     }
-  #     case res
-  #       when Net::HTTPSuccess
-  #         if search_type == 'bing search'
-  #           body = JSON.parse(res.body, :symbolize_names => true)
-  #           result_set = body[:d][:results]
-  #         else
-  #           g_results = JSON.parse(res.body)
-  #
-  #         end
-  #       else
-  #         puts [uri.to_s, res.value].join(" : ")
-  #         result_set = 'HTTPError'
-  #     end
-  #   rescue => e
-  #     puts [uri.to_s, e.class, e].join(" : ")
-  #     result_set = 'HTTPError'
-  #   end
-  #
-  # end
+  def internet_search_json(search_word)
+    result_set = ''
+    user = ''
+    account_key = APIKEY
+    # ja-JP and en-US
+    market = 'en-US'
+    num_results= 10.to_s
+    web_search_url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Sources="
+    sources_portion = URI.encode_www_form_component('\'' + 'Web' + '\'')
+    query_string = '&$format=json&Query='
+    query_portion = URI.encode_www_form_component('\'' + search_word + '\'')
+    query_market_string = '&Market='
+    query_market_portion = URI.encode_www_form_component('\'' + market + '\'')
+    params = "&$top=#{num_results}&$skip=#{0}"
+
+    full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
+    pp full_address
+
+    uri = URI(full_address)
+    req = Net::HTTP::Get.new(uri.request_uri)
+    req.basic_auth user, account_key
+    begin
+      res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|
+        http.open_timeout = 3
+        http.read_timeout = 6
+        http.request(req)
+      }
+      case res
+        when Net::HTTPSuccess
+          body = JSON.parse(res.body, :symbolize_names => true)
+          result_set = body[:d][:results]
+        else
+          puts [uri.to_s, res.value].join(" : ")
+          result_set = nil
+      end
+    rescue => e
+      puts [uri.to_s, e.class, e].join(" : ")
+      result_set = nil
+    end
+    return result_set
+  end
 
   def write_search_results_log(full_path,results,keywords)
     # File.delete(full_path)

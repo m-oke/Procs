@@ -10,15 +10,38 @@
       <%= link_to "Procs", root_path,  class: 'navbar-brand logo' %>
       <% if user_signed_in? %>
         <%= link_to '問題', questions_path, class: 'navbar-brand logo' %>
+        <% if current_user.has_role?(:root) || current_user.has_role?(:admin) %>
+          <%= link_to '管理画面', '/admin', class: 'navbar-brand logo' %>
+        <% end %>
       <% end %>
     </div>
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="nav navbar-nav navbar-right">
         <% if user_signed_in? %>
-          <li><%= link_to 'Logged in as ' + current_user.nickname, '' %></li>
+          <li><%= link_to current_user.nickname+"さん", '' %></li>
+            <% if current_user.has_role?(:root) %>
+                <li><%= link_to "権限：システム管理者", '' %></li>
+            <% elsif current_user.has_role?(:admin) %>
+                <li><%= link_to "権限：管理者", '' %></li>
+            <% elsif current_user.has_role?(:teacher)  %>
+                <% if session[:lesson_id] ==nil  %>
+                    <li><%= link_to "権限：教員", '' %></li>
+                <% else %>
+                    <% userlesson = UserLesson.find_by(:user_id => current_user.id, :lesson_id => session[:lesson_id] )%>
+                    <% unless userlesson.nil? %>
+                        <%if userlesson.is_teacher == false && session[:lesson_id] != 1 %>
+                            <li><%= link_to "権限：学生", '' %></li>
+                        <% else %>
+                            <li><%= link_to "権限：教員", '' %></li>
+                        <% end %>
+                    <% end %>
+                <% end %>
+            <% elsif current_user.has_role?(:student) %>
+                <li><%= link_to "権限：学生", '' %></li>
+            <% end %>
           <li><%= link_to 'ログアウト', destroy_user_session_path, method: :delete %></li>
         <% else %>
-          <li><%= link_to 'Log in / Sign up', new_user_session_path %></li>
+          <li><%= link_to 'ログイン/新規登録', new_user_session_path %></li>
         <% end %>
       </ul>
     </div>

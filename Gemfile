@@ -59,13 +59,25 @@ end
 
 gem 'yard'
 gem 'rb-readline'
+
+# user management
 gem 'devise'
+
+# privilege management
 gem 'cancan'
+
+# data management
 gem 'rails_admin'
+
 gem 'dotenv-rails'
 gem 'luhn-ruby'
+
+# sidekiq for queue
 gem 'sidekiq'
 gem 'sinatra', require: false
+
+# email vaidate gem
+gem 'validates_email_format_of'
 
 group :development, :test do
   gem 'rails-footnotes'
