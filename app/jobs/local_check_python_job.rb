@@ -50,7 +50,7 @@ class LocalCheckPythonJob < ActiveJob::Base
               end
             end
             # 生成したファイルを削除
-            # File.delete(@target_dir + "/" + user_id.to_s + "_" + s.id.to_s + "_local_py.txt")
+            File.delete(UPLOADS_ANSWERS_PATH.to_s + "/" + user_id.to_s + "_" + s.id.to_s + "_local_py.txt")
 
             # 類似ファイルとの比較
             @python_check_code = local_check_python_code(@target_file, @compare_file , user_id.to_s, s.id.to_s)
@@ -119,7 +119,7 @@ class LocalCheckPythonJob < ActiveJob::Base
 
             end
             # チェック実行で生成したファイルを削除
-            # File.delete(@target_dir + "/" + user_id.to_s + "_" + s.id.to_s + "_local_py_code.txt")
+            File.delete(UPLOADS_ANSWERS_PATH.to_s + "/" + user_id.to_s + "_" + s.id.to_s + "_local_py_code.txt")
 
             # [比較ファイル名,目標類似行,比較類似行,類似度]の配列を作る
             if check_count == 0
