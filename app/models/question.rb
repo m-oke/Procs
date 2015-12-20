@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 class Question < ActiveRecord::Base
-  has_many :lesson_questions, :foreign_key => :question_id
+  has_many :lesson_questions, :foreign_key => :question_id, :inverse_of => :question
   has_many :lessons, :through => :lesson_questions
 
-  has_many :samples, :foreign_key => :question_id
-  has_many :test_data, :foreign_key => :question_id
+  has_many :samples, :foreign_key => :question_id, :inverse_of => :question
+  has_many :test_data, :foreign_key => :question_id, :inverse_of => :question
   has_many :answers, :foreign_key => :question_id
-  has_many :question_keywords, :foreign_key => :question_id
+  has_many :question_keywords, :foreign_key => :question_id, :inverse_of => :question
 
   belongs_to :user, :foreign_key => :author
 
