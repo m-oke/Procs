@@ -96,8 +96,10 @@ class QuestionsController < ApplicationController
       params[:question][:lesson_questions_attributes]['100101010'] = {'lesson_id' => "1"}
     end
 
+    binding.pry
     @question = Question.new(question_params)
     @question.author = current_user.id
+
 
     if @question.save
       flash.now[:notice] ='問題を登録しました'
@@ -119,6 +121,7 @@ class QuestionsController < ApplicationController
       flash.now[:notice]  = '問題を登録しました'
 
     else
+      binding.pry
       flash.now[:notice] ='問題の登録に失敗しました'
     end
   end
