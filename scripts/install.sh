@@ -125,8 +125,7 @@ install_ruby() {
         cd $dir
     fi
 
-
-    if [ ! `rbenv versions | grep "$a"` ]; then
+    if [ ! "`rbenv versions | grep "$RUBY_VERSION"`" ]; then
         rbenv install 2.2.3
         rbenv rehash
     fi
@@ -229,7 +228,7 @@ install_procs(){
 
 
     echo "Create Database for Procs."
-    if ["$root_p" = "true"]; then
+    if [ "$root_p" = "true" ]; then
         echo -n "MySQL root password : "
         mysql -u root -p -e "CREATE DATABASE Procs_production;"
     else
@@ -237,6 +236,7 @@ install_procs(){
     fi
 
     echo "Setting MySQL user for Procs..."
+    echo -n "MySQL root password : "
     if [ "$create" = "false" ] && [ "$root_p" = "true" ]; then
         mysql -u root -p -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_pass}';"
     elif [ "$create" = "false" ] && [ "$root_p" = "false" ]; then
@@ -287,12 +287,8 @@ setup_nginx(){
                     echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
                     echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/procs.conf."
                     break ;;
-                'abort' )
-                    echo "Abort install."
-                    exit 1
-                    ;;
-                * ) echo "Please type Yes or skip or abort."
-                    echo -n "Upgrade? [Yes/skip/abort] : " ;;
+                * ) echo "Please type Yes or No."
+                    echo -n "Skip nginx configure? [Yes/No] : " ;;
             esac
         done
     else
@@ -342,6 +338,7 @@ create_root(){
         stty -echo
         echo -n "Type password of root user in Procs(8-255 characters) : "
         read password
+        echo ""
 
         echo -n "Retype password of root user in Procs(8-255 characters) :"
         read confirmation
@@ -363,8 +360,7 @@ create_root(){
     done
     stty echo
 
-    echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :password => '${password}', :roles => [:root, :admin, :teacher, :student])" | bundle exec rails console 2> /dev/null
-
+    echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :password => '${password}', :roles => [:root, :admin, :teacher, :student])" | bundle exec rails console -e production 2> /dev/null
 }
 
 start_unicorn(){
