@@ -169,6 +169,17 @@ install_docker(){
     echo "Install Docker"
     curl -sSL https://get.docker.com/ | sh
     $sh_c "usermod -aG docker $USER"
+
+
+    if [ ! -e $dir/docker ]; then
+        mkdir $dir/docker
+    fi
+
+    if [ ! -e $dir/docker/.git ]; then
+        git clone https://github.com/m-oke/TKB-procon_sandbox.git $dir/docker/
+    fi
+    docker build -t procs/python_sandbox $dir/docker/python_sandbox
+    docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
 }
 
 install_procs(){
@@ -368,7 +379,9 @@ start_unicorn(){
 }
 
 start_sidekiq(){
-    bundle exec sidekiq -C config/sidekiq.yml -d
+    echo "Starting redis server"
+    cd $dir
+    bundle exec sidekiq -C $dir/config/sidekiq.yml -e production -d
 }
 
 do_install(){
@@ -409,6 +422,7 @@ do_install(){
     install_rails
     install_procs
     create_root
+    install_docker
     setup_nginx
     start_unicorn
     start_sidekiq
