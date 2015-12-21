@@ -173,7 +173,7 @@ install_procs(){
     cp $dir/config/database.yml.sample $dir/config/database.yml
     bundle install
 
-#    git checkout master
+    #    git checkout master
 
     echo "==========Setup Procs settings =========="
     echo -n "Who MySQL user for Procs is ? (default: root) :"
@@ -268,39 +268,40 @@ setup_nginx(){
         echo "In this installation, set nginx config of Procs to default_server."
         echo "If you have nginx config for any applcations, you should configure it manually."
         echo -n "Skip nginx configure? [Yes/No] : "
-            conf=""
-            while read conf; do
-                case $conf in
-                    'Yes' )
-                        break ;;
-                    'No' )
-                        cat $dir/scripts/nginx/unicorn.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/unicorn.conf
-                        $sh_c "cp $dir/scripts/nginx/unicorn.conf /etc/nginx/conf.d/unicorn.conf"
-                        $sh_c "chown root:root /etc/nginx/conf.d/unicorn.conf"
+        conf=""
+        while read conf; do
+            case $conf in
+                'Yes' )
+                    echo "Config file of Procs is ($dir/scripts/nginx/procs.conf)"
+                    echo "Please configure mannually."
+                    break ;;
+                'No' )
+                    cat $dir/scripts/nginx/procs.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/procs.conf
+                    $sh_c "cp $dir/scripts/nginx/procs.conf /etc/nginx/conf.d/procs.conf"
+                    $sh_c "chown root:root /etc/nginx/conf.d/procs.conf"
 
-                        $sh_c "rm /etc/nginx/sites-enabled/default"
-                        echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
-                        echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/unicorn.conf."
-                        break ;;
-                    'abort' )
-                        echo "Abort install."
-                        exit 1
-                        ;;
-                    * ) echo "Please type Yes or skip or abort."
-                        echo -n "Upgrade? [Yes/skip/abort] : " ;;
-                esac
-            done
-        fi
+                    $sh_c "rm /etc/nginx/sites-enabled/default"
+                    echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
+                    echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/procs.conf."
+                    break ;;
+                'abort' )
+                    echo "Abort install."
+                    exit 1
+                    ;;
+                * ) echo "Please type Yes or skip or abort."
+                    echo -n "Upgrade? [Yes/skip/abort] : " ;;
+            esac
+        done
     else
         $sh_c "apt-get install -y -q nginx"
 
-        cat $dir/scripts/nginx/unicorn.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/unicorn.conf
-        $sh_c "cp $dir/scripts/nginx/unicorn.conf /etc/nginx/conf.d/unicorn.conf"
-        $sh_c "chown root:root /etc/nginx/conf.d/unicorn.conf"
+        cat $dir/scripts/nginx/procs.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/procs.conf
+        $sh_c "cp $dir/scripts/nginx/procs.conf /etc/nginx/conf.d/procs.conf"
+        $sh_c "chown root:root /etc/nginx/conf.d/procs.conf"
 
         $sh_c "rm /etc/nginx/sites-enabled/default"
         echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
-        echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/unicorn.conf."
+        echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/procs.conf."
     fi
 
     $sh_c "service nginx restart"
