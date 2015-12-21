@@ -111,7 +111,7 @@ class AnswersController < ApplicationController
                                           :lesson_id => lesson_id,
                                           :question_id => question_id,
                                           :lesson_question_id => lesson_question_id)
-        when 'c'
+        when 'c', 'cpp'
           EvaluateCJob.perform_later(:user_id => current_user.id,
                                      :lesson_id => lesson_id,
                                      :question_id => question_id,

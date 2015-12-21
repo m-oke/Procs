@@ -99,6 +99,7 @@ class QuestionsController < ApplicationController
     @question = Question.new(question_params)
     @question.author = current_user.id
 
+
     if @question.save
       flash.now[:notice] ='問題を登録しました'
 
