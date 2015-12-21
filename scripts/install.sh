@@ -2,8 +2,32 @@
 set -eu
 LOGFILE=/tmp/procs_install.log
 
+MYSQL_VERSION="5.6.27"
+RUBY_VERSION="2.2.3"
+RAILS_VERSION="4.2.1"
+DOCKER_VERSION="1.9.1"
+PYTHON_VERSION="3.4.3"
+REDIS_VERSION="3.0.6"
+
 command_exists() {
     command -v "$@" > /dev/null 2>&1
+}
+
+compareVersions ()
+{
+    typeset    IFS='.'
+    typeset -a v1=( $1 )
+    typeset -a v2=( $2 )
+    typeset    n diff
+
+    for (( n=0; n<4; n+=1 )); do
+        diff=$((v1[n]-v2[n]))
+        if [ $diff -ne 0 ] ; then
+            [ $diff -lt 0 ] && echo '-1' || echo '1'
+            return
+        fi
+    done
+    echo  '0'
 }
 
 install_essentials() {
@@ -14,33 +38,126 @@ install_essentials() {
 }
 
 install_db(){
-    # if command_exists mysql; then
-    #     mysql_version="$(mysql --version | sed "s/,.*$//" | sed "s/^.*Distrib //")"
-    # fi
-    echo "Install database packages"
-    $sh_c "apt-get -y -q install mysql-server-5.6 redis-server libmysqld-dev"
+    if command_exists mysql; then
+        mysql_version="$(mysql --version | sed "s/,.*$//" | sed "s/^.*Distrib //")"
+        diff=`compareVersions $MYSQL_VERSION $mysql_version`
+        if [ $diff -ne 1 ]; then
+            echo "We recommended MySQL verion is $MYSQL_VERSION or higher. Installed MySQL version is older than recomended version."
+            echo "If you want to upgrade MySQL, type [Yes]."
+            echo "Or if you want to keep MySQL version, type [skip] or [abort]."
+            echo "But if you skip MySQL upgrade, we don't support it."
+            echo -n "Upgrade? [Yes/skip/abort] : "
+            while read conf; do
+                case $conf in
+                    'Yes' )
+                        $sh_c "apt-get -y -q upgrade mysql-server-5.6 libmysqld-dev"
+                        break ;;
+                    'skip' )
+                        break ;;
+                    'abort' )
+                        echo "Abort install."
+                        exit 1
+                        ;;
+                    * ) echo "Please type Yes or skip or abort."
+                        echo -n "Upgrade? [Yes/skip/abort] : " ;;
+                esac
+            done
+        fi
+    else
+        echo "Install database packages"
+        $sh_c "apt-get -y -q install mysql-server-5.6 libmysqld-dev"
+    fi
+
+    if command_exists redis-server; then
+        redis_version="$(redis-server --version | sed "s/sha.*$//" | sed "s/^.*=//")"
+        diff=`compareVersions $REDIS_VERSION $redis_version`
+        if [ $diff -ne 1 ]; then
+            echo "We recommend Redis verion is $REDIS_VERSION or higher. Installed Redis version is older than recomended version."
+            echo "If you want to upgrade Redis, type [Yes]."
+            echo "Or if you want to keep Redis version, type [skip] or [abort]."
+            echo "But if you skip Redis upgrade, we don't support it."
+            echo -n "Upgrade? [Yes/skip/abort] : "
+            while read conf; do
+                case $conf in
+                    'Yes' )
+                        $sh_c "apt-get -y -q upgrade redis-server"
+                        break ;;
+                    'skip' )
+                        break ;;
+                    'abort' )
+                        echo "Abort install."
+                        exit 1
+                        ;;
+                    * ) echo "Please type Yes or skip or abort."
+                        echo -n "Upgrade? [Yes/skip/abort] : " ;;
+                esac
+            done
+        fi
+    else
+        $sh_c "apt-get install redis-server"
+    fi
 }
 
 install_ruby() {
     echo "Install ruby"
-    if [ ! -e "~/.rbenv" ]; then
-        git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+    if command_exists rbenv; then
+        rbenv_dir=$(which rbenv | sed "s#bin/rbenv\$##")
+        cd $rbenv_dir
+        git pull
+        cd $dir
+    else
+        if [ ! -e "~/.rbenv" ]; then
+            git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+            echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+            echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+            source ~/.bashrc
+        fi
     fi
 
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-    echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-    source ~/.bashrc
     if [ ! -e "~/.rbenv/plugins/ruby-build" ]; then
         git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+    else
+        cd $rbenv_dir
+        cd plugins/ruby-build
+        git pull
+        cd $dir
     fi
+
     rbenv install 2.2.3
     rbenv rehash
-    rbenv global 2.2.3
+    rbenv local 2.2.3
 }
 
 install_rails() {
     echo "Install Ruby on Rails"
-    gem install rails --version='4.2.1' --no-ri --no-rdoc
+    if command_exists rails; then
+        rails_version="$(rails --version | sed "s#Rails ##")"
+        diff=`compareVersions $RAILS_VERSION $rails_version`
+        if [ $diff -ne 1 ]; then
+            echo "We recommend Ruby on Rails verion is $RAILS_VERSION or higher. Installed Ruby on Rails version is older than recomended version."
+            echo "If you want to upgrade Ruby on Rails, type [Yes]."
+            echo "Or if you want to keep Ruby on Rails version, type [skip] or [abort]."
+            echo "But if you skip Ruby on Rails upgrade, we don't support it."
+            echo -n "Upgrade? [Yes/skip/abort] : "
+            while read conf; do
+                case $conf in
+                    'Yes' )
+                        gem install rails --version='4.2.1' --no-ri --no-rdoc
+                        break ;;
+                    'skip' )
+                        break ;;
+                    'abort' )
+                        echo "Abort install."
+                        exit 1
+                        ;;
+                    * ) echo "Please type Yes or skip or abort."
+                        echo -n "Upgrade? [Yes/skip/abort] : " ;;
+                esac
+            done
+        fi
+    else
+        gem install rails --version='4.2.1' --no-ri --no-rdoc
+    fi
 }
 
 install_docker(){
