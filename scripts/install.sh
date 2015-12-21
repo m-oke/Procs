@@ -182,6 +182,10 @@ install_docker(){
     docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
 }
 
+install_sim(){
+    $sh_c "apt-get install apt-get install similarity-tester"
+}
+
 install_procs(){
     cp $dir/config/database.yml.sample $dir/config/database.yml
     bundle install
@@ -421,6 +425,7 @@ do_install(){
     install_ruby
     install_rails
     install_procs
+    install_sim
     create_root
     install_docker
     setup_nginx

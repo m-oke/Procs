@@ -80,20 +80,4 @@ Rails.application.configure do
 
  #  config.assets.compress = true
 
-  config.after_initialize do
-    FileUtils.mkdir_p(DOCKER_PATH) unless FileTest.exist?(DOCKER_PATH)
-    puts "Downloading Procs images."
-    if FileTest.exist?("#{DOCKER_PATH}/.git")
-      puts "Downloading Procs images."
-      Dir.chdir(DOCKER_PATH)
-      `git pull`
-    else
-      `git clone https://github.com/m-oke/TKB-procon_sandbox.git #{DOCKER_PATH}`
-    end
-    puts "Download ended."
-    puts "Building Procs images."
-    `docker build -t procs/python_sandbox #{DOCKER_PATH}/python_sandbox & docker build -t procs/cpp_sandbox #{DOCKER_PATH}/cpp_sandbox`
-    puts "Build ended."
-  end
-
 end
