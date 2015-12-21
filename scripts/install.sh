@@ -125,8 +125,11 @@ install_ruby() {
         cd $dir
     fi
 
-    rbenv install 2.2.3
-    rbenv rehash
+
+    if [ ! `rbenv versions | grep "$a"` ]; then
+        rbenv install 2.2.3
+        rbenv rehash
+    fi
     rbenv local 2.2.3
 }
 
