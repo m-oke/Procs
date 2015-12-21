@@ -41,12 +41,13 @@ install_db(){
     if command_exists mysql; then
         mysql_version="$(mysql --version | sed "s/,.*$//" | sed "s/^.*Distrib //")"
         diff=`compareVersions $MYSQL_VERSION $mysql_version`
-        if [ $diff -ne 1 ]; then
+        if [ $diff -eq 1 ]; then
             echo "We recommended MySQL verion is $MYSQL_VERSION or higher. Installed MySQL version is older than recomended version."
             echo "If you want to upgrade MySQL, type [Yes]."
             echo "Or if you want to keep MySQL version, type [skip] or [abort]."
             echo "But if you skip MySQL upgrade, we don't support it."
             echo -n "Upgrade? [Yes/skip/abort] : "
+            conf=""
             while read conf; do
                 case $conf in
                     'Yes' )
@@ -71,12 +72,13 @@ install_db(){
     if command_exists redis-server; then
         redis_version="$(redis-server --version | sed "s/sha.*$//" | sed "s/^.*=//")"
         diff=`compareVersions $REDIS_VERSION $redis_version`
-        if [ $diff -ne 1 ]; then
+        if [ $diff -eq 1 ]; then
             echo "We recommend Redis verion is $REDIS_VERSION or higher. Installed Redis version is older than recomended version."
             echo "If you want to upgrade Redis, type [Yes]."
             echo "Or if you want to keep Redis version, type [skip] or [abort]."
             echo "But if you skip Redis upgrade, we don't support it."
             echo -n "Upgrade? [Yes/skip/abort] : "
+            conf=""
             while read conf; do
                 case $conf in
                     'Yes' )
@@ -106,7 +108,7 @@ install_ruby() {
         git pull
         cd $dir
     else
-        if [ ! -e "~/.rbenv" ]; then
+        if [ ! -e ~/.rbenv ]; then
             git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
             echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
             echo 'eval "$(rbenv init -)"' >> ~/.bashrc
@@ -114,7 +116,7 @@ install_ruby() {
         fi
     fi
 
-    if [ ! -e "~/.rbenv/plugins/ruby-build" ]; then
+    if [ ! -e ~/.rbenv/plugins/ruby-build ]; then
         git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
     else
         cd $rbenv_dir
@@ -133,12 +135,13 @@ install_rails() {
     if command_exists rails; then
         rails_version="$(rails --version | sed "s#Rails ##")"
         diff=`compareVersions $RAILS_VERSION $rails_version`
-        if [ $diff -ne 1 ]; then
+        if [ $diff -eq 1 ]; then
             echo "We recommend Ruby on Rails verion is $RAILS_VERSION or higher. Installed Ruby on Rails version is older than recomended version."
             echo "If you want to upgrade Ruby on Rails, type [Yes]."
             echo "Or if you want to keep Ruby on Rails version, type [skip] or [abort]."
             echo "But if you skip Ruby on Rails upgrade, we don't support it."
             echo -n "Upgrade? [Yes/skip/abort] : "
+            conf=""
             while read conf; do
                 case $conf in
                     'Yes' )
@@ -194,6 +197,7 @@ install_procs(){
 
     # mysqlを設定する
     echo -n "Is ${mysql_user} existed in MySQL? [y/n] : "
+    conf=""
     create=""
     while read conf; do
         case $conf in
@@ -208,6 +212,7 @@ install_procs(){
 
     echo -n "Does root user in MySQL has password? [y/n] : "
     root_p=""
+    conf=""
     while read conf; do
         case $conf in
             'y' ) root_p="true"
@@ -249,6 +254,7 @@ install_procs(){
 
     echo "Procs has plagiarism detection using Web."
     echo "If you want use this, you have to get Bing Search API Key."
+    echo "https://datamarket.azure.com/dataset/bing/search"
     echo -n "If you have Key, type here (optional) : "
     read apikey
     echo "BING_API_KEY='${apikey}'" >> $dir/.env
@@ -257,16 +263,45 @@ install_procs(){
 
 setup_nginx(){
     echo "Setting up nginx."
-    $sh_c "apt-get install -y -q nginx"
+    if command_exists nginx; then
+        echo "Nginx is already installed."
+        echo "In this installation, set nginx config of Procs to default_server."
+        echo "If you have nginx config for any applcations, you should configure it manually."
+        echo -n "Skip nginx configure? [Yes/No] : "
+            conf=""
+            while read conf; do
+                case $conf in
+                    'Yes' )
+                        break ;;
+                    'No' )
+                        cat $dir/scripts/nginx/unicorn.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/unicorn.conf
+                        $sh_c "cp $dir/scripts/nginx/unicorn.conf /etc/nginx/conf.d/unicorn.conf"
+                        $sh_c "chown root:root /etc/nginx/conf.d/unicorn.conf"
 
-    cat $dir/scripts/nginx/unicorn.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/unicorn.conf
-    $sh_c "cp $dir/scripts/nginx/unicorn.conf /etc/nginx/conf.d/unicorn.conf"
-    $sh_c "chown root:root /etc/nginx/conf.d/unicorn.conf"
+                        $sh_c "rm /etc/nginx/sites-enabled/default"
+                        echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
+                        echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/unicorn.conf."
+                        break ;;
+                    'abort' )
+                        echo "Abort install."
+                        exit 1
+                        ;;
+                    * ) echo "Please type Yes or skip or abort."
+                        echo -n "Upgrade? [Yes/skip/abort] : " ;;
+                esac
+            done
+        fi
+    else
+        $sh_c "apt-get install -y -q nginx"
 
-    ## TODO: 要検証
-    $sh_c 'cat /etc/nginx/sites-available/default | sed "s/^/#/" > /etc/nginx/sites-available/default '
-    echo "For Procs server, comment out default config of nginx (/etc/nginx/sites-available/default)."
-    echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/unicorn.conf."
+        cat $dir/scripts/nginx/unicorn.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/unicorn.conf
+        $sh_c "cp $dir/scripts/nginx/unicorn.conf /etc/nginx/conf.d/unicorn.conf"
+        $sh_c "chown root:root /etc/nginx/conf.d/unicorn.conf"
+
+        $sh_c "rm /etc/nginx/sites-enabled/default"
+        echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
+        echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/unicorn.conf."
+    fi
 
     $sh_c "service nginx restart"
 }
@@ -364,6 +399,7 @@ do_install(){
 
 
     # ディレクトリの設定
+    # XXX/Procs/scripts/ を想定
     dir=$(cd $(dirname $0); pwd)
     dir=$(cd ../; pwd)
 
@@ -380,4 +416,4 @@ do_install(){
 }
 
 do_install 2>&1 | tee "$LOGFILE"
-echo "Logfile is here > ${LOGFILE}"
+echo "Logfile is here >> ${LOGFILE}"
