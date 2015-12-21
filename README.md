@@ -93,6 +93,11 @@
 [The software and text similarity tester SIM](http://dickgrune.com/Programs/similarity_tester/)
 * `sudo apt-get install similarity-tester`
 
+### Clonediggerのインストール
+[Clone Digger](http://clonedigger.sourceforge.net/)
+1. `sudo apt-get install python-setuptools`でPython Setup Toolsをインストール
+2. `sudo easy_install clonedigger`でClone Diggerをインストール
+
 ### リポジトリのクローン
 1. `git clone https://github.com/m-oke/TKB-procon_rails.git`
 2. デフォルトは`develop`ブランチ
