@@ -18,7 +18,7 @@ class Answer < ActiveRecord::Base
   validates :test_count, :presence => true
   validates :test_passed, :presence => true
   validates :result, :presence => true
-  validates :plagiarism_percentage, :presence => true
+  validates :local_plagiarism_percentage, :presence => true
 
 
   has_many :internet_check_results, :foreign_key => :answer_id
