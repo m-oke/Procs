@@ -332,6 +332,10 @@ start_unicorn(){
     bundle exec rake unicorn:start
 }
 
+start_sidekiq(){
+    bundle exec sidekiq -C config/sidekiq.yml -d
+}
+
 do_install(){
     case "$(uname -m)" in
         *64)
@@ -371,6 +375,7 @@ do_install(){
     create_root
     setup_nginx
     start_unicorn
+    start_sidekiq
     exit 0
 }
 
