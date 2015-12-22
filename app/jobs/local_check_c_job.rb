@@ -29,7 +29,7 @@ class LocalCheckCJob < ActiveJob::Base
                                                 :question_id => question_id,
                                                 :lesson_id => lesson_question.lesson_id,
                                                 :lesson_question_id => lesson_question.id)
-          if compare_answer.present? && compare_answer.file_name.include?(".c")
+          if compare_answer.present? && (compare_answer.language == "c" || compare_answer.language == "cpp")
 
             @compare_file = UPLOADS_ANSWERS_PATH.join(s.id.to_s, lesson_question.id.to_s, compare_answer.file_name)
             @compare_name = compare_answer.file_name
