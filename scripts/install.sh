@@ -186,6 +186,11 @@ install_sim(){
     $sh_c "apt-get install apt-get install similarity-tester"
 }
 
+install_clonedigger(){
+    $sh_c "apt-get install python-setuptools"
+    $sh_c "easy_install clonedigger"
+}
+
 install_procs(){
     cp $dir/config/database.yml.sample $dir/config/database.yml
     bundle install
@@ -426,6 +431,7 @@ do_install(){
     install_rails
     install_procs
     install_sim
+    install_clonedigger
     create_root
     install_docker
     setup_nginx
