@@ -96,7 +96,7 @@ install_db(){
             done
         fi
     else
-        $sh_c "apt-get install redis-server"
+        $sh_c "apt-get install -q -y redis-server"
     fi
 }
 
@@ -134,35 +134,8 @@ install_ruby() {
 
 install_rails() {
     echo "Install Ruby on Rails"
-    if command_exists rails; then
-        rails_version="$(rails --version | sed "s#Rails ##")"
-        diff=`compareVersions $RAILS_VERSION $rails_version`
-        if [ $diff -eq 1 ]; then
-            echo "We recommend Ruby on Rails verion is $RAILS_VERSION or higher. Installed Ruby on Rails version is older than recomended version."
-            echo "If you want to upgrade Ruby on Rails, type [Yes]."
-            echo "Or if you want to keep Ruby on Rails version, type [skip] or [abort]."
-            echo "But if you skip Ruby on Rails upgrade, we don't support it."
-            echo -n "Upgrade? [Yes/skip/abort] : "
-            conf=""
-            while read conf; do
-                case $conf in
-                    'Yes' )
-                        gem install rails --version='4.2.1' --no-ri --no-rdoc
-                        break ;;
-                    'skip' )
-                        break ;;
-                    'abort' )
-                        echo "Abort install."
-                        exit 1
-                        ;;
-                    * ) echo "Please type Yes or skip or abort."
-                        echo -n "Upgrade? [Yes/skip/abort] : " ;;
-                esac
-            done
-        fi
-    else
-        gem install rails --version='4.2.1' --no-ri --no-rdoc
-    fi
+    gem install bundler --no-ri --no-rdoc
+    bundle install --path $dir/vendor/bundle
 }
 
 install_docker(){
@@ -183,11 +156,11 @@ install_docker(){
 }
 
 install_sim(){
-    $sh_c "apt-get install apt-get install similarity-tester"
+    $sh_c "apt-get install -q -y similarity-tester"
 }
 
 install_clonedigger(){
-    $sh_c "apt-get install python-setuptools"
+    $sh_c "apt-get install -q -y python-setuptools"
     $sh_c "easy_install clonedigger"
 }
 
@@ -208,10 +181,11 @@ install_procs(){
     read mysql_pass
     stty echo
 
+    echo ""
     echo "Setting user and password..."
-    echo "PROCS_DATABASE_USER='${mysql_user}'" >> $dir/.env
+    echo "PROCS_DATABASE_USER='${mysql_user}'" > $dir/.env
     echo "PROCS_DATABASE_PASSWORD='${mysql_pass}'" >> $dir/.env
-    echo "SECRET_KEY_BASE='$(rake secret)'" >> $dir/.env
+    echo "SECRET_KEY_BASE='$(bundle exec rake secret)'" >> $dir/.env
     echo "Set user and password to ${dir}/.env"
     echo "If you have any misstakes, please edit ${dir}/.env file."
     echo "Warning: Don't edit/delete SECRET_KEY_BASE Strings."
@@ -303,7 +277,9 @@ setup_nginx(){
                     $sh_c "cp $dir/scripts/nginx/procs.conf /etc/nginx/conf.d/procs.conf"
                     $sh_c "chown root:root /etc/nginx/conf.d/procs.conf"
 
-                    $sh_c "rm /etc/nginx/sites-enabled/default"
+                    if [ -e /etc/nginx/sites-enabled/default ]; then
+                        $sh_c "rm /etc/nginx/sites-enabled/default"
+                    fi
                     echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
                     echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/procs.conf."
                     break ;;
@@ -318,7 +294,9 @@ setup_nginx(){
         $sh_c "cp $dir/scripts/nginx/procs.conf /etc/nginx/conf.d/procs.conf"
         $sh_c "chown root:root /etc/nginx/conf.d/procs.conf"
 
-        $sh_c "rm /etc/nginx/sites-enabled/default"
+        if [ -e /etc/nginx/sites-enabled/default ]; then
+            $sh_c "rm /etc/nginx/sites-enabled/default"
+        fi
         echo "For Procs server, delete enable file of default config (/etc/nginx/sites-enabled/default)."
         echo "If you configure nginx config of Procs, edit /etc/nginx/conf.d/procs.conf."
     fi
@@ -384,6 +362,7 @@ create_root(){
 }
 
 start_unicorn(){
+    bundle exec rake unicorn:stop
     bundle exec rake unicorn:start
 }
 
