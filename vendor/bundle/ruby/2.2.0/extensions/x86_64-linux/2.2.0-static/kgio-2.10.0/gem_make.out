@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151216-20534-yb36eh.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151223-16769-1cp586h.rb extconf.rb
 checking for CLOCK_MONOTONIC in time.h... yes
 checking for clockid_t in time.h... yes
 checking for clock_gettime() in -lrt... yes
@@ -51,4 +51,4 @@ compiling writev.c
 linking shared-object kgio_ext.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 kgio_ext.so ./.gem.20151216-20534-atugd2
+/usr/bin/install -c -m 0755 kgio_ext.so ./.gem.20151223-16769-cucebu

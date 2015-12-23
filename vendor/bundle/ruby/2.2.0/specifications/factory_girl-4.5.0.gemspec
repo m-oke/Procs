@@ -14,10 +14,10 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/thoughtbot/factory_girl"
   s.licenses = ["MIT"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "factory_girl provides a framework and DSL for defining and using model instance factories."
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 
   if s.respond_to? :specification_version then
     s.specification_version = 4

@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.rdoc_options = ["--charset=UTF-8", "--main", "README.md"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.3")
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "Library that implements weak, soft, and strong references in Ruby."
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 end

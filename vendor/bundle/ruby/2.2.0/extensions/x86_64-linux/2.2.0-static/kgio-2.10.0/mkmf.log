@@ -103,7 +103,7 @@ conftest.c: In function ‘t’:
 conftest.c:13:1: warning: implicit declaration of function ‘t_open’ [-Wimplicit-function-declaration]
  int t(void) { t_open(); return 0; }
  ^
-/tmp/ccR8V2ti.o: 関数 `t' 内:
+/tmp/ccgMMJrL.o: 関数 `t' 内:
 /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/kgio-2.10.0/ext/kgio/conftest.c:13: `t_open' に対する定義されていない参照です
 collect2: error: ld returned 1 exit status
 checked program was:
@@ -765,7 +765,7 @@ conftest.c: In function ‘t’:
 conftest.c:13:1: warning: implicit declaration of function ‘rb_thread_blocking_region’ [-Wimplicit-function-declaration]
  int t(void) { rb_thread_blocking_region(); return 0; }
  ^
-/tmp/ccCD9lxG.o: 関数 `t' 内:
+/tmp/ccWDjC0l.o: 関数 `t' 内:
 /home/oke/rails/Procs/vendor/bundle/ruby/2.2.0/gems/kgio-2.10.0/ext/kgio/conftest.c:13: `rb_thread_blocking_region' に対する定義されていない参照です
 collect2: error: ld returned 1 exit status
 checked program was:

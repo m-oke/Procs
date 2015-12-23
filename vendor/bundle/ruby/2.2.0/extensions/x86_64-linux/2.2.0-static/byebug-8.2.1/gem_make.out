@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151216-21147-3wny4i.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151223-16769-kg5xyb.rb extconf.rb
 creating Makefile
 
 make "DESTDIR=" clean
@@ -12,4 +12,4 @@ compiling locker.c
 linking shared-object byebug/byebug.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 byebug.so ./.gem.20151216-21147-3zgtbg/byebug
+/usr/bin/install -c -m 0755 byebug.so ./.gem.20151223-16769-1egeqwq/byebug

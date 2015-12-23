@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20151217-3265-1ur5wzp.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151223-16769-1kiuj7o.rb extconf.rb
 
 make "DESTDIR=" clean
 make: *** ターゲット `clean' を make するルールがありません.  中止.

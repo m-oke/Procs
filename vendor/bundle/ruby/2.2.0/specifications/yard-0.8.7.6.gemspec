@@ -16,8 +16,8 @@ Gem::Specification.new do |s|
   s.homepage = "http://yardoc.org"
   s.licenses = ["MIT"]
   s.rubyforge_project = "yard"
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "Documentation tool for consistent and usable documentation in Ruby."
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 end

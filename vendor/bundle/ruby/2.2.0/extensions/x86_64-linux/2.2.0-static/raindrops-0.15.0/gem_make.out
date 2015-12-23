@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151216-20534-ss757a.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151223-16769-1s8jdku.rb extconf.rb
 checking for mmap() in sys/mman.h... yes
 checking for munmap() in sys/mman.h... yes
 checking for mremap() in sys/mman.h... yes
@@ -18,4 +18,4 @@ compiling raindrops.c
 linking shared-object raindrops_ext.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 raindrops_ext.so ./.gem.20151216-20534-1phblks
+/usr/bin/install -c -m 0755 raindrops_ext.so ./.gem.20151223-16769-1onw6bu

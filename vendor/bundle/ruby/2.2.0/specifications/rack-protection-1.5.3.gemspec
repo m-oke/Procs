@@ -13,10 +13,10 @@ Gem::Specification.new do |s|
   s.email = ["konstantin.mailinglists@googlemail.com", "p0deje@gmail.com", "jstaten07@gmail.com", "patrick@soundcloud.com", "jeff.welling@gmail.com", "bugant@gmail.com", "daydream.trippers@gmail.com", "florian.gilcher@asquera.de", "developer@fojasaur.us", "ujifgc@gmail.com", "mael@clerambault.fr", "martin.mauch@gmail.com", "rennex@iki.fi", "kaz.july.7@gmail.com", "s.savulchik@gmail.com", "steve.agalloco@gmail.com", "toby.net.info.mail+git@gmail.com", "dev+narwen+rkh@rkh.im", "vipulnsward@gmail.com", "akzhan.abdulin@gmail.com", "brooke@digitalocean.com", "bjoerge@bengler.no", "cheald@gmail.com", "self@hecticjeff.net", "coreyward@me.com", "dario@uxtemple.com", "dek-oss@gravitext.com", "homakov@gmail.com"]
   s.homepage = "http://github.com/rkh/rack-protection"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "You should use protection!"
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 
   if s.respond_to? :specification_version then
     s.specification_version = 4

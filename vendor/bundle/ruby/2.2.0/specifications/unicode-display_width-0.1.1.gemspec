@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.files = ["LICENSE.txt", "README.rdoc"]
   s.homepage = "http://github.com/janlelis/unicode-display_width"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "Support for east_asian_width string widths."
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 end
