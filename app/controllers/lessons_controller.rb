@@ -117,8 +117,6 @@ class LessonsController < ApplicationController
 
   # get '/lessons/:id/students'
   def students
-    session[:lesson_question_id] = params[:lesson_question_id].present? ? params[:lesson_question_id] : session[:lesson_question_id]
-    session[:lesson_id] = params[:id] || session[:lesson_id]
     @students = get_students
     @lesson_questions_count = @lesson.lesson_questions.count
   end
@@ -135,7 +133,6 @@ class LessonsController < ApplicationController
   def internet_check
     @result = Array.new(0,Array.new(5,0))
     @multi_check = 0
-    @have_bing_key = true
     #get data from ajax
     @question_id = params[:question_id]
     @student_id = params[:student_id]

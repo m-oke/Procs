@@ -75,19 +75,11 @@ class PlagiarismInternetCheck
         search_keyword = old_keyword + 'bing_search' +  search_keyword
       end
       old_keyword = search_keyword
-
       search_keyword = bing_keyword_processing(question_keyword, search_keyword , 'bing_search')
-
-
       # bing = Bing.new(APIKEY, 10, 'Web',{:Market => 'ja-JP'})
       # bing = Bing.new(APIKEY, 10, 'Web')
-      # pp search_keyword
-      # binding.pry
       # b_results = bing.search(search_keyword)
-
       b_results = internet_search_json(search_keyword)
-      # pp b_results
-      # binding.pry
 
       # unless b_results.empty?
       unless b_results.nil?
@@ -139,7 +131,7 @@ class PlagiarismInternetCheck
       end
     end
 
-    
+
     #通信エラー
     #:title => nil , :link => '', :content => ''
     if http_error == 1
@@ -151,9 +143,11 @@ class PlagiarismInternetCheck
     # sort @result by item[2]
     store_num = 1
     unless @result.empty?
+      pp @result
       @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
+      pp @result
       # write_search_results_log(csv_file_full_path2,@result,temp_keyword_csv)
       first_elem = @result.first
       # search_limit = 5
