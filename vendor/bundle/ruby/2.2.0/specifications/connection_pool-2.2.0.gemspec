@@ -13,10 +13,10 @@ Gem::Specification.new do |s|
   s.email = ["mperham@gmail.com", "damian@educabilia.com"]
   s.homepage = "https://github.com/mperham/connection_pool"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "Generic connection pool for Ruby"
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 
   if s.respond_to? :specification_version then
     s.specification_version = 4

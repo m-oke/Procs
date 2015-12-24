@@ -19,3 +19,5 @@
 /uploads/
 ,/*
 /docker/
+/docker
+/public/assets/

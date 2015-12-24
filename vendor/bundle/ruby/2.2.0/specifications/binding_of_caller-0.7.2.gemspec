@@ -15,10 +15,10 @@ Gem::Specification.new do |s|
   s.extensions = ["ext/binding_of_caller/extconf.rb"]
   s.files = ["ext/binding_of_caller/extconf.rb"]
   s.homepage = "http://github.com/banister/binding_of_caller"
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "Retrieve the binding of a method's caller. Can also retrieve bindings even further up the stack."
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 
   if s.respond_to? :specification_version then
     s.specification_version = 4

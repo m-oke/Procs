@@ -1,6 +1,6 @@
 :concurrenccy: 10
 :pidfile: ./tmp/pids/sidekiq.pid
-#:logfile: ./log/sidekiq.log
+:logfile: ./log/sidekiq.log
 :queues:
   - [evaluate, 7]
   - [plagiarism, 3]

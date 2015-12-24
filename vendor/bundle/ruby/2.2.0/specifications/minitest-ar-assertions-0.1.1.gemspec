@@ -15,10 +15,10 @@ Gem::Specification.new do |s|
   s.files = ["LICENSE.txt", "README.rdoc"]
   s.homepage = "http://github.com/steventux/minitest-ar-assertions"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "A collection of assertions for use with minitest and activerecord."
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

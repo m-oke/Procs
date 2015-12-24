@@ -13,10 +13,10 @@ Gem::Specification.new do |s|
   s.email = ["miaout17 at gmail dot com"]
   s.homepage = ""
   s.rubyforge_project = "hirb-unicode"
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "Unicode support for hirb"
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

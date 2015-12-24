@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   s.email = []
   s.homepage = "https://github.com/rolfb/luhn-ruby"
   s.licenses = ["MIT"]
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.5.1"
   s.summary = "Very simple library to calculate and validate Luhn numbers"
 
-  s.installed_by_version = "2.4.5" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.4.5.1" if s.respond_to? :installed_by_version
 end

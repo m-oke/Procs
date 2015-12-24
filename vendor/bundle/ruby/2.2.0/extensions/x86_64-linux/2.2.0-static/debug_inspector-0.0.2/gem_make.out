@@ -1,4 +1,4 @@
-/home/oke/.rbenv/versions/2.2.2/bin/ruby -r ./siteconf20151217-3265-1qp9g3v.rb extconf.rb
+/home/oke/.rbenv/versions/2.2.3/bin/ruby -r ./siteconf20151223-16769-74tyex.rb extconf.rb
 creating Makefile
 
 make "DESTDIR=" clean
@@ -8,4 +8,4 @@ compiling debug_inspector.c
 linking shared-object debug_inspector.so
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 debug_inspector.so ./.gem.20151217-3265-s727ek
+/usr/bin/install -c -m 0755 debug_inspector.so ./.gem.20151223-16769-txa51t
