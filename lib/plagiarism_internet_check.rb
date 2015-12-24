@@ -139,6 +139,7 @@ class PlagiarismInternetCheck
       end
     end
 
+    
     #通信エラー
     #:title => nil , :link => '', :content => ''
     if http_error == 1
