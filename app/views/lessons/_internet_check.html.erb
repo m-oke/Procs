@@ -1,6 +1,5 @@
 <div>
-<% if @have_bing_key == true %>
-  <p>学生：<%= @student.name %></p>
+  <p>ニックネーム：<%= @student.nickname %></p>
   <p>問題：<%= @question.title %></p>
   <% max_time = 0 %>
   <% http_error_result = 0 %>
@@ -22,6 +21,9 @@
     <% if max_time > 1 && http_error_result == 0 %>
       <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
       <% index=1 %>
+      <% @result = @result.sort do |item1,item2| %>
+        <% item2[2]<=> item1[2] %>
+      <% end %>
       <%@result.each do |item| %>
           <% if index >5 %>
               <% break %>
@@ -66,7 +68,4 @@
     <% end %>
 
   <% end %>
-<% else %>
-  <p>BingSearchのAPIKeyの設定を確認してください。</p>
-<% end %>
 </div>

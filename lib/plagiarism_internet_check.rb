@@ -24,13 +24,13 @@ class PlagiarismInternetCheck
       question_keyword = question_keyword + " " + k['keyword']
     end
     answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id, :lesson_question_id => @lesson_question_id).last
-
-    fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + answer.file_name
-    csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log.csv'
-    csv_file_full_path2 = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_id.to_s, @question_id.to_s).to_s + '/' + 'search_result_log2.csv'
-    CSV.open(csv_file_full_path,'w') do |out|
-      out << ["keyword","title","link","times"]
-    end
+    extend_name = "solution"
+    fullPathName = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_question_id.to_s).to_s + '/' + answer.file_name
+    # csv_file_full_path = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_question_id.to_s).to_s + '/' + "search_keyword_#{question_keyword}_#{extend_name}.csv"
+    # csv_file_full_path2 = UPLOADS_ANSWERS_PATH.join(@student_id.to_s, @lesson_question_id.to_s).to_s + '/' + "search_result_#{question_keyword}_#{extend_name}.csv"
+    # CSV.open(csv_file_full_path,'wb') do |out|
+    #   out << ["keyword","title","link","times"]
+    # end
 
     nlen = answer.file_name.size
     if answer.file_name[nlen-2,nlen-1]=='.c' || answer.file_name[nlen-4,nlen-1]=='.cpp'
@@ -75,19 +75,11 @@ class PlagiarismInternetCheck
         search_keyword = old_keyword + 'bing_search' +  search_keyword
       end
       old_keyword = search_keyword
-
       search_keyword = bing_keyword_processing(question_keyword, search_keyword , 'bing_search')
-
-
       # bing = Bing.new(APIKEY, 10, 'Web',{:Market => 'ja-JP'})
       # bing = Bing.new(APIKEY, 10, 'Web')
-      # pp search_keyword
-      # binding.pry
       # b_results = bing.search(search_keyword)
-
       b_results = internet_search_json(search_keyword)
-      # pp b_results
-      # binding.pry
 
       # unless b_results.empty?
       unless b_results.nil?
@@ -98,9 +90,9 @@ class PlagiarismInternetCheck
             link = page[:Url]
             content = page[:Description]
 
-            CSV.open(csv_file_full_path,'a') do |out|
-              out << [search_keyword,title,link,1]
-            end
+            # CSV.open(csv_file_full_path,'a') do |out|
+            #   out << [search_keyword,title,link,1]
+            # end
 
             nSize = @result.size
             if nSize == 0
@@ -139,6 +131,7 @@ class PlagiarismInternetCheck
       end
     end
 
+
     #通信エラー
     #:title => nil , :link => '', :content => ''
     if http_error == 1
@@ -150,10 +143,12 @@ class PlagiarismInternetCheck
     # sort @result by item[2]
     store_num = 1
     unless @result.empty?
+      pp @result
       @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
-      write_search_results_log(csv_file_full_path2,@result,temp_keyword_csv)
+      pp @result
+      # write_search_results_log(csv_file_full_path2,@result,temp_keyword_csv)
       first_elem = @result.first
       # search_limit = 5
       # 5回の検索、毎回の検索結果はありません=>else ;　各LINK一回だけの場合　titleに’’を与える =>else
