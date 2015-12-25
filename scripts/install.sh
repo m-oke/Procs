@@ -151,8 +151,8 @@ install_docker(){
     if [ ! -e $dir/docker/.git ]; then
         git clone https://github.com/m-oke/TKB-procon_sandbox.git $dir/docker/
     fi
-    docker build -t procs/python_sandbox $dir/docker/python_sandbox
-    docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
+    $sh_c docker build -t procs/python_sandbox $dir/docker/python_sandbox
+    $sh_c docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
 }
 
 install_sim(){
@@ -399,7 +399,7 @@ do_install(){
             echo 'We are unable to find either "sudo" or "su" available to make this happen.'
             exit 1
         fi
-    fi
+    fip
 
 
     # ディレクトリの設定
@@ -419,8 +419,11 @@ do_install(){
     setup_nginx
     start_unicorn
     start_sidekiq
+    echo "Install completed!"
+    echo "Please relogin, or restart server for using docker."
     exit 0
 }
 
 do_install 2>&1 | tee "$LOGFILE"
 echo "Logfile is here >> ${LOGFILE}"
+echo "If install is aborted or failed, please drop database Procs_database, and drop mysql user ${mysql_user}."
