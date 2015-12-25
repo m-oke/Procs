@@ -97,7 +97,7 @@
 </div>
 <% if @is_teacher %>
     <% if @question.question_keywords.count >0 %>
-        <h3>剽窃チェック用のキーワード</h3>
+        <h3>WEB剽窃チェック用のキーワード</h3>
         <div>
           <% @question.question_keywords.each.with_index(1) do |word,i| %>
               <p>キーワード<%= i %></p>

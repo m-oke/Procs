@@ -23,14 +23,14 @@ ja:
         one: 授業と問題の関連
         other: 授業と問題の関連
       internet_check_result:
-        one: インターネット剽窃チェック
-        other: インターネット剽窃チェック
+        one: WEB剽窃チェック
+        other: WEB剽窃チェック
       user_lesson:
         one: 授業の参加
         other: 授業の参加
       question_keyword:
-        one: 剽窃チェック用キーワード
-        other: 剽窃チェック用キーワード
+        one: WEB剽窃チェック用キーワード
+        other: WEB剽窃チェック用キーワード
 
     attributes:
       user:
@@ -58,7 +58,7 @@ ja:
         content: 内容
         input_description: 入力の説明
         output_description: 出力の説明
-        question_keywords: 剽窃チェック用キーワード
+        question_keywords: WEB剽窃チェック用キーワード
         run_time_limit: 実行時間制限
         memory_usage_limit: メモリ制限
         version: 問題の更新履歴
@@ -101,7 +101,7 @@ ja:
         question_version: 解答した問題のバージョン
         test_passed: パスしたテストケース数
         test_count: 実行したテストケース数
-        internet_check_results: インターネット剽窃チェック
+        internet_check_results: WEB剽窃チェック
         lesson_question_id: 関連する問題
       internet_check_result:
         id: ID
