@@ -234,13 +234,13 @@ install_procs(){
 
     echo "Setting MySQL user for Procs..."
     echo -n "MySQL root password : "
-    if [ "$create" = "false" ] && [ "$root_p" = "true" ]; then
+    if [ "$create" = "true" ] && [ "$root_p" = "true" ]; then
         mysql -u root -p -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_pass}';"
-    elif [ "$create" = "false" ] && [ "$root_p" = "false" ]; then
-        mysql -u root -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_pass}';"
-    elif [ "$create" = "true" ] && [ "$root_p" = "true" ]; then
-        mysql -u root -p -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost';"
     elif [ "$create" = "true" ] && [ "$root_p" = "false" ]; then
+        mysql -u root -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_pass}';"
+    elif [ "$create" = "false" ] && [ "$root_p" = "true" ]; then
+        mysql -u root -p -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost';"
+    elif [ "$create" = "false" ] && [ "$root_p" = "false" ]; then
         mysql -u root -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost';"
     fi
     echo "Set MySQL user for Procs."
