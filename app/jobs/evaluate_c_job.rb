@@ -19,7 +19,7 @@ class EvaluateCJob < ActiveJob::Base
                           :question_id => question_id,
                           :lesson_question_id => lesson_question_id).last
     ext = EXT[answer.language]
-    test_data = TestDatum.where(:question_id => question_id)
+    test_data = TestDatum.where(:question_id => question_id, :is_deleted => false)
     test_count = test_data.size
     test_data_dir = UPLOADS_QUESTIONS_PATH.join(question_id.to_s)
     # アップロードされたファイル
