@@ -417,8 +417,6 @@ do_install(){
     create_root
     install_docker
     setup_nginx
-    start_unicorn
-    start_sidekiq
     echo "Install completed!"
     echo "Please relogin, or restart server for using docker."
     echo "Then please run $dir/script/start.sh to start server."
