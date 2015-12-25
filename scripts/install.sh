@@ -361,7 +361,7 @@ create_root(){
     done
     stty echo
 
-    echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :email_confirmation => '#{email}', :password => '${password}', :password_confirmation => '${password_confirmation}', :roles => [:root, :admin, :teacher, :student])" | bundle exec rails console -e production 2> /dev/null
+    echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :email_confirmation => '${email}', :password => '${password}', :password_confirmation => '${password}', :roles => [:root, :admin, :teacher, :student])" | bundle exec rails console -e production 2> /dev/null
 }
 
 start_unicorn(){
@@ -425,4 +425,4 @@ do_install(){
 
 do_install 2>&1 | tee "$LOGFILE"
 echo "Logfile is here >> ${LOGFILE}"
-echo "If install is aborted or failed, please drop database Procs_database, and drop mysql user ${mysql_user}."
+echo "If install is aborted or failed, please drop database Procs_database, and drop mysql user."
