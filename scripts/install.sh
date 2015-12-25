@@ -42,6 +42,7 @@ install_db(){
         mysql_version="$(mysql --version | sed "s/,.*$//" | sed "s/^.*Distrib //")"
         diff=`compareVersions $MYSQL_VERSION $mysql_version`
         if [ $diff -eq 1 ]; then
+            echo ""
             echo "We recommended MySQL verion is $MYSQL_VERSION or higher. Installed MySQL version is older than recomended version."
             echo "If you want to upgrade MySQL, type [Yes]."
             echo "Or if you want to keep MySQL version, type [skip] or [abort]."
@@ -73,6 +74,7 @@ install_db(){
         redis_version="$(redis-server --version | sed "s/sha.*$//" | sed "s/^.*=//")"
         diff=`compareVersions $REDIS_VERSION $redis_version`
         if [ $diff -eq 1 ]; then
+            echo ""
             echo "We recommend Redis verion is $REDIS_VERSION or higher. Installed Redis version is older than recomended version."
             echo "If you want to upgrade Redis, type [Yes]."
             echo "Or if you want to keep Redis version, type [skip] or [abort]."
@@ -101,6 +103,7 @@ install_db(){
 }
 
 install_ruby() {
+    echo ""
     echo "Install ruby"
     if command_exists rbenv; then
         rbenv_dir=$(which rbenv | sed "s#bin/rbenv\$##")
@@ -133,12 +136,14 @@ install_ruby() {
 }
 
 install_rails() {
+    echo ""
     echo "Install Ruby on Rails"
     gem install bundler --no-ri --no-rdoc
     bundle install --path $dir/vendor/bundle
 }
 
 install_docker(){
+    echo ""
     echo "Install Docker"
     curl -sSL https://get.docker.com/ | sh
     $sh_c "usermod -aG docker $USER"
@@ -193,6 +198,8 @@ install_procs(){
     echo "If you have any misstakes, please edit ${dir}/.env file."
     echo "Warning: Don't edit/delete SECRET_KEY_BASE Strings."
 
+    echo ""
+    echo ""
 
     # mysqlを設定する
     echo -n "Is ${mysql_user} existed in MySQL? [y/n] : "
@@ -209,6 +216,7 @@ install_procs(){
         esac
     done
 
+    echo ""
     echo -n "Does root user in MySQL has password? [y/n] : "
     root_p=""
     conf=""
@@ -223,7 +231,7 @@ install_procs(){
         esac
     done
 
-
+    echo ""
     echo "Create Database for Procs."
     if [ "$root_p" = "true" ]; then
         echo -n "MySQL root password : "
@@ -232,6 +240,8 @@ install_procs(){
         mysql -u root -e "CREATE DATABASE Procs_production;"
     fi
 
+    echo ""
+    echo ""
     echo "Setting MySQL user for Procs..."
     echo -n "MySQL root password : "
     if [ "$create" = "true" ] && [ "$root_p" = "true" ]; then
@@ -246,12 +256,16 @@ install_procs(){
     echo "Set MySQL user for Procs."
     echo "If you want edit, please use mysql console."
 
+
+    echo ""
+    echo ""
     echo "Creating DB..."
 
     bundle exec rake db:migrate RAILS_ENV=production
     echo "Created!"
     bundle exec rake assets:precompile 1> /dev/null
 
+    echo ""
     echo "Procs has plagiarism detection using Web."
     echo "If you want use this, you have to get Bing Search API Key."
     echo "https://datamarket.azure.com/dataset/bing/search"
@@ -262,6 +276,7 @@ install_procs(){
 }
 
 setup_nginx(){
+    echo ""
     echo "Setting up nginx."
     if command_exists nginx; then
         echo "Nginx is already installed."
@@ -308,6 +323,7 @@ setup_nginx(){
 }
 
 create_root(){
+    echo ""
     echo "Setting root user in Procs."
     echo -n "Type email of root user in Procs : "
     while read email; do
@@ -361,6 +377,8 @@ create_root(){
     done
     stty echo
 
+    echo ""
+    echo ""
     echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :email_confirmation => '${email}', :password => '${password}', :password_confirmation => '${password}', :roles => [:root, :admin, :teacher, :student])" | bundle exec rails console -e production 2> /dev/null
 }
 
@@ -370,6 +388,7 @@ start_unicorn(){
 }
 
 start_sidekiq(){
+    echo ""
     echo "Starting redis server"
     cd $dir
     bundle exec sidekiq -C $dir/config/sidekiq.yml -e production -d
@@ -417,6 +436,8 @@ do_install(){
     create_root
     install_docker
     setup_nginx
+    echo ""
+    echo ""
     echo "Install completed!"
     echo "Please relogin, or restart server for using docker."
     echo "Then please run $dir/script/start.sh to start server."
