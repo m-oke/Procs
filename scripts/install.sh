@@ -156,8 +156,8 @@ install_docker(){
     if [ ! -e $dir/docker/.git ]; then
         git clone https://github.com/m-oke/TKB-procon_sandbox.git $dir/docker/
     fi
-    $sh_c docker build -t procs/python_sandbox $dir/docker/python_sandbox
-    $sh_c docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
+    sudo docker build -t procs/python_sandbox $dir/docker/python_sandbox
+    sudo docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
 }
 
 install_sim(){
