@@ -167,6 +167,9 @@ install_clonedigger(){
 install_procs(){
     cp $dir/config/database.yml.sample $dir/config/database.yml
     bundle install
+    cd $dir/vendor/bundle/ruby/2.2.0/gems/unicorn*/
+    ./GIT-VERSION-GEN
+    cd $dir
 
     #    git checkout master
 
