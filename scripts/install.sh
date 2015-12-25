@@ -399,7 +399,7 @@ do_install(){
             echo 'We are unable to find either "sudo" or "su" available to make this happen.'
             exit 1
         fi
-    fip
+    fi
 
 
     # ディレクトリの設定
@@ -421,7 +421,7 @@ do_install(){
     start_sidekiq
     echo "Install completed!"
     echo "Please relogin, or restart server for using docker."
-    echo "Then please run ${dir}/script/start.sh to start server."
+    echo "Then please run $dir/script/start.sh to start server."
     exit 0
 }
 
