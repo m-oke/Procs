@@ -151,14 +151,16 @@
                                 <span>
                               <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                                 :student_id => @student.id,
-                                                                                :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+                                                                                :question_id => lesson_question.question_id ),
+                                  {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default", :data => { :disable_with => "チェック中"} }%>
                                   <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
                             </span>
                             <% elsif checked_result.size > 0 && http_error_exist == 1%>
                             <span>
                               <%= button_to "チェック", lessons_internet_check_path(:lesson_id => @lesson_id,
                                                                                 :student_id => @student.id,
-                                                                                :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+                                                                                    :question_id => lesson_question.question_id ),
+                                  {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default", :data => { :disable_with => "チェック中"} }%>
                               <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
                             </span>
 
