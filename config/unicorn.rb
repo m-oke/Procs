@@ -8,8 +8,8 @@ timeout 15
 preload_app true
 
 # ソケットとpid
-listen "#{ENV['RAILS_ROOT']}/tmp/unicorn.sock"
-pid "#{ENV['RAILS_ROOT']}/tmp/unicorn.pid"
+listen "/tmp/unicorn.sock"
+pid "/tmp/unicorn.pid"
 
 before_fork do |server, worker|
   Signal.trap 'TERM' do
@@ -31,5 +31,5 @@ after_fork do |server, worker|
 end
 
 #ログ
-stderr_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
-stdout_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
+stderr_path File.expand_path('log/unicorn.log')
+stdout_path File.expand_path('log/unicorn.log')
