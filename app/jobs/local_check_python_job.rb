@@ -179,7 +179,7 @@ class LocalCheckPythonJob < ActiveJob::Base
     result_temp.save
 
     # アンサーの類似度を保存
-    answer.local_plagiarism_percentage = local_result[0][4]
+    answer.local_plagiarism_percentage = local_result[0][4].round(2)
     answer.save
 
   end
