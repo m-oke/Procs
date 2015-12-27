@@ -39,23 +39,24 @@ class LocalCheckPythonJob < ActiveJob::Base
             @target_line = ""
             @compare_line = ""
             @check_line = 0
+            @total_check_line = 0
             @plagiarism_percentage = 0.0
             @file_name1 = nil
             @file_name2 = nil
             @file_name_flag = nil
 
 
-            # 類似度検出
-            @python_check = local_check_python(@target_file, @compare_file , user_id.to_s, s.id.to_s)
-            @python_check.each_with_index do |line,i|
-              if line.include?(" lines are duplicates (")
-                percentage_left = line.rindex("(") + 1
-                percentage_right = line.rindex(")") - 2
-                @plagiarism_percentage = line[percentage_left..percentage_right].to_f
-              end
-            end
-            # 生成したファイルを削除
-            File.delete(UPLOADS_ANSWERS_PATH.to_s + "/" + user_id.to_s + "_" + s.id.to_s + "_local_py.txt")
+            # # 類似度検出
+            # @python_check = local_check_python(@target_file, @compare_file , user_id.to_s, s.id.to_s)
+            # @python_check.each_with_index do |line,i|
+            #   if line.include?(" lines are duplicates (")
+            #     percentage_left = line.rindex("(") + 1
+            #     percentage_right = line.rindex(")") - 2
+            #     @plagiarism_percentage = line[percentage_left..percentage_right].to_f
+            #   end
+            # end
+            # # 生成したファイルを削除
+            # File.delete(UPLOADS_ANSWERS_PATH.to_s + "/" + user_id.to_s + "_" + s.id.to_s + "_local_py.txt")
 
             # 類似ファイルとの比較
             @python_check_code = local_check_python_code(@target_file, @compare_file , user_id.to_s, s.id.to_s)
@@ -96,6 +97,7 @@ class LocalCheckPythonJob < ActiveJob::Base
                     set_target_line(line)
                     @target_line << @target_line_temp
                     @compare_line << @compare_line_temp
+                    @total_check_line += @check_line
                     check_count += 1
                   end
                 elsif line.include?(@compare_path)
@@ -112,9 +114,12 @@ class LocalCheckPythonJob < ActiveJob::Base
                     set_compare_line(line)
                     @target_line << @target_line_temp
                     @compare_line << @compare_line_temp
+                    @total_check_line += @check_line
                     check_count += 1
                   end
                 end
+
+
                 @check_line = 0
                 @file_name_flag = nil
                 @file_name1 = nil
@@ -132,6 +137,21 @@ class LocalCheckPythonJob < ActiveJob::Base
               answer.save
               return
             else
+
+              # 類似度の計算
+              line_count = 0
+              tar_file = File.open(@target_path, 'r:utf-8' )
+              tar_file.each do |l|
+                if l.strip.chars[0].present? && l.strip.chars[0] != "#" && l.strip[0..5] != "import"
+                  line_count += 1
+                end
+              end
+              if line_count != 0
+                pp "check line : #{@total_check_line}"
+                pp "total ling : #{line_count}"
+                @plagiarism_percentage = @total_check_line.to_f / line_count.to_f * 100
+              end
+
               local_result.push([@target_name,@compare_name,@target_line,@compare_line,@plagiarism_percentage,@compare_path,s.id,compare_answer.lesson_question_id])
               # SORT
               local_result = local_result.sort do |item1,item2|
@@ -220,14 +240,14 @@ class LocalCheckPythonJob < ActiveJob::Base
     @compare_line_temp = compare_line_first.to_s + "-" + (compare_line_first + com_check_line).to_s + ";"
   end
 
-  # チェック類似度の表示
-  def local_check_python(target_file, compare_file, target_id, compare_id)
-    Dir.chdir(UPLOADS_ANSWERS_PATH)
-    `clonedigger #{target_file} #{compare_file} --dont-print-time -o #{target_id}_#{compare_id}_local_py.txt`
-    sleep(1) until File.exist?(UPLOADS_ANSWERS_PATH.to_s + '/' + target_id + '_' + compare_id + '_local_py.txt')
-    check = File.open(UPLOADS_ANSWERS_PATH.to_s + '/' + target_id + '_' + compare_id + '_local_py.txt', 'r:utf-8')
-    return check
-  end
+  # # チェック類似度の表示
+  # def local_check_python(target_file, compare_file, target_id, compare_id)
+  #   Dir.chdir(UPLOADS_ANSWERS_PATH)
+  #   `clonedigger #{target_file} #{compare_file} --dont-print-time -o #{target_id}_#{compare_id}_local_py.txt`
+  #   sleep(1) until File.exist?(UPLOADS_ANSWERS_PATH.to_s + '/' + target_id + '_' + compare_id + '_local_py.txt')
+  #   check = File.open(UPLOADS_ANSWERS_PATH.to_s + '/' + target_id + '_' + compare_id + '_local_py.txt', 'r:utf-8')
+  #   return check
+  # end
   # チェックの実行とファイルの表示
   def local_check_python_code(target_file, compare_file, target_id, compare_id)
     Dir.chdir(UPLOADS_ANSWERS_PATH)

@@ -39,7 +39,6 @@ class LocalCheckCJob < ActiveJob::Base
             @check_token = 0
 
             @c_check = local_check_c(@target_file, @compare_file , user_id.to_s, s.id.to_s, @target_dir)
-            p @c_check
 
             @c_check.each_with_index do |line,i|
               if i == 0
