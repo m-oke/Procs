@@ -46,20 +46,8 @@ class LocalCheckPythonJob < ActiveJob::Base
             @file_name_flag = nil
 
 
-            # # 類似度検出
-            # @python_check = local_check_python(@target_file, @compare_file , user_id.to_s, s.id.to_s)
-            # @python_check.each_with_index do |line,i|
-            #   if line.include?(" lines are duplicates (")
-            #     percentage_left = line.rindex("(") + 1
-            #     percentage_right = line.rindex(")") - 2
-            #     @plagiarism_percentage = line[percentage_left..percentage_right].to_f
-            #   end
-            # end
-            # # 生成したファイルを削除
-            # File.delete(UPLOADS_ANSWERS_PATH.to_s + "/" + user_id.to_s + "_" + s.id.to_s + "_local_py.txt")
-
             # 類似ファイルとの比較
-            @python_check_code = local_check_python_code(@target_file, @compare_file , user_id.to_s, s.id.to_s)
+            @python_check_code = local_check_python(@target_file, @compare_file , user_id.to_s, s.id.to_s)
             @python_check_code.each_with_index do |line,i|
               if line.include?( "<duplication lines=" )
                 # Take the count of check line
@@ -147,8 +135,6 @@ class LocalCheckPythonJob < ActiveJob::Base
                 end
               end
               if line_count != 0
-                pp "check line : #{@total_check_line}"
-                pp "total ling : #{line_count}"
                 @plagiarism_percentage = @total_check_line.to_f / line_count.to_f * 100
               end
 
@@ -240,16 +226,8 @@ class LocalCheckPythonJob < ActiveJob::Base
     @compare_line_temp = compare_line_first.to_s + "-" + (compare_line_first + com_check_line).to_s + ";"
   end
 
-  # # チェック類似度の表示
-  # def local_check_python(target_file, compare_file, target_id, compare_id)
-  #   Dir.chdir(UPLOADS_ANSWERS_PATH)
-  #   `clonedigger #{target_file} #{compare_file} --dont-print-time -o #{target_id}_#{compare_id}_local_py.txt`
-  #   sleep(1) until File.exist?(UPLOADS_ANSWERS_PATH.to_s + '/' + target_id + '_' + compare_id + '_local_py.txt')
-  #   check = File.open(UPLOADS_ANSWERS_PATH.to_s + '/' + target_id + '_' + compare_id + '_local_py.txt', 'r:utf-8')
-  #   return check
-  # end
   # チェックの実行とファイルの表示
-  def local_check_python_code(target_file, compare_file, target_id, compare_id)
+  def local_check_python(target_file, compare_file, target_id, compare_id)
     Dir.chdir(UPLOADS_ANSWERS_PATH)
     `clonedigger #{target_file} #{compare_file} --dont-print-time --cpd-output -o #{target_id}_#{compare_id}_local_py_code.txt`
     sleep(1) until File.exist?(UPLOADS_ANSWERS_PATH.to_s + '/' + target_id + '_' + compare_id + '_local_py_code.txt')
