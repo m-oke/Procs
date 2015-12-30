@@ -39,7 +39,6 @@ class LocalCheckCJob < ActiveJob::Base
             @check_token = 0
 
             @c_check = local_check_c(@target_file, @compare_file , user_id.to_s, s.id.to_s, @target_dir)
-            p @c_check
 
             @c_check.each_with_index do |line,i|
               if i == 0
@@ -103,7 +102,8 @@ class LocalCheckCJob < ActiveJob::Base
     result_temp.save
 
     # アンサーの類似度を保存
-    answer.local_plagiarism_percentage = local_result[0][5].to_f/local_result[0][0].to_f*100
+    plagiarism_percentage = local_result[0][5].to_f/local_result[0][0].to_f*100
+    answer.local_plagiarism_percentage = plagiarism_percentage.round(2)
     answer.save
 
     # File.delete(UPLOADS_ANSWERS_PATH.to_s + "/test.txt")
