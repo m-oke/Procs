@@ -5,9 +5,9 @@ class UserLessonsController < ApplicationController
   def new
   end
 
-  # post '/lessons/join'
-  # 授業への参加
-  # ログインしているユーザが授業コードに該当する授業に参加する
+  #   post '/lessons/join'
+  #   授業への参加
+  #   ログインしているユーザが授業コードに該当する授業に参加する
   # @param [String] :lesson_code 授業コード
   def create
     lesson = Lesson.find_by(:lesson_code => params[:lesson_code])

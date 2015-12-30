@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 class Answer < ActiveRecord::Base
+  # user_id belong
   belongs_to :user, :foreign_key => :student_id
+
   belongs_to :question, :foreign_key => :question_id
   belongs_to :lesson, :foreign_key => :lesson_id
   belongs_to :lesson_question, :foreign_key => :lesson_question_id
 
+  # user_id validate
   validates :user, :presence => true
+
   validates :question, :presence => true
   validates :lesson, :presence => true
   validates :lesson_question, :presence => true
+
+  # file_name validate
   validates :file_name, :presence => true,
   :format => {:with => /\A[!-~]{1,255}\z/, :message => 'は適切なフォーマットではありません' }
   validates :language, :presence => true

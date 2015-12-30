@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: InternetCheckJob
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!InternetCheckJob.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index (I)</a> &raquo;
+    
+    
+    <span class="title">InternetCheckJob</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Class: InternetCheckJob
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">ActiveJob::Base</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">ActiveJob::Base</li>
+          
+            <li class="next">InternetCheckJob</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">app/jobs/internet_check_job.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#perform-instance_method" title="#perform (instance method)">- (Object) <strong>perform</strong>(question_id, lesson_id, lesson_question_id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="perform-instance_method">
+  
+    - (<tt>Object</tt>) <strong>perform</strong>(question_id, lesson_id, lesson_question_id) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/jobs/internet_check_job.rb', line 4</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_perform'>perform</span><span class='lparen'>(</span><span class='id identifier rubyid_question_id'>question_id</span><span class='comma'>,</span><span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span><span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='const'>Array</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='int'>0</span><span class='comma'>,</span><span class='const'>Array</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='int'>5</span><span class='comma'>,</span><span class='int'>0</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lesson'>lesson</span> <span class='op'>=</span> <span class='const'>Lesson</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_students'>students</span> <span class='op'>=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson'>lesson</span><span class='period'>.</span><span class='id identifier rubyid_user_lessons'>user_lessons</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='symbol'>:is_teacher</span> <span class='op'>=&gt;</span> <span class='kw'>false</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_pluck'>pluck</span><span class='lparen'>(</span><span class='symbol'>:user_id</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_students'>students</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span>
+    <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_answer'>answer</span> <span class='op'>=</span> <span class='const'>Answer</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span> <span class='symbol'>:student_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_s'>s</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span><span class='comma'>,</span> <span class='symbol'>:lesson_question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_answer'>answer</span> <span class='op'>==</span> <span class='kw'>nil</span>
+      <span class='kw'>next</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_pre_store_result'>pre_store_result</span> <span class='op'>=</span> <span class='const'>InternetCheckResult</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='symbol'>:answer_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_answer'>answer</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='symbol'>:title</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_pre_store_result_count'>pre_store_result_count</span> <span class='op'>=</span> <span class='id identifier rubyid_pre_store_result'>pre_store_result</span><span class='period'>.</span><span class='id identifier rubyid_count'>count</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_pre_store_result_count'>pre_store_result_count</span> <span class='op'>==</span> <span class='int'>1</span>
+      <span class='id identifier rubyid_plagiarism_check'>plagiarism_check</span> <span class='op'>=</span> <span class='const'>PlagiarismInternetCheck</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_question_id'>question_id</span><span class='comma'>,</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span> <span class='id identifier rubyid_s'>s</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='comma'>,</span> <span class='id identifier rubyid_result'>result</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_plagiarism_check'>plagiarism_check</span><span class='period'>.</span><span class='id identifier rubyid_check'>check</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Wed Dec 30 13:51:56 2015 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.3).
+</div>
+
+  </body>
+</html>

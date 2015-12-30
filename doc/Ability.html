@@ -225,9 +225,7 @@
 50
 51
 52
-53
-54
-55</pre>
+53</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/models/ability.rb', line 5</span>
@@ -235,9 +233,9 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_user'>user</span> <span class='op'>||=</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 
-  <span class='comment'># アクセス権のデバッグ用
-</span>  <span class='id identifier rubyid_can'>can</span> <span class='symbol'>:access</span><span class='comma'>,</span> <span class='symbol'>:rails_admin</span>
-  <span class='id identifier rubyid_can'>can</span> <span class='symbol'>:dashboard</span>
+  <span class='comment'>#
+</span>  <span class='id identifier rubyid_cannot'>cannot</span> <span class='symbol'>:access</span><span class='comma'>,</span> <span class='symbol'>:rails_admin</span>
+  <span class='id identifier rubyid_cannot'>cannot</span> <span class='symbol'>:dashboard</span>
 
 
   <span class='kw'>if</span> <span class='id identifier rubyid_user'>user</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_has_role?'>has_role?</span> <span class='symbol'>:root</span><span class='rparen'>)</span>
@@ -249,11 +247,9 @@
     <span class='id identifier rubyid_can'>can</span> <span class='symbol'>:dashboard</span>
     <span class='id identifier rubyid_can'>can</span> <span class='symbol'>:manage</span><span class='comma'>,</span> <span class='symbol'>:all</span>
     <span class='id identifier rubyid_cannot'>cannot</span> <span class='symbol'>:destroy</span><span class='comma'>,</span> <span class='const'>User</span>
+    <span class='id identifier rubyid_cannot'>cannot</span> <span class='symbol'>:update</span><span class='comma'>,</span> <span class='const'>User</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='int'>1</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_user'>user</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_has_role?'>has_role?</span> <span class='symbol'>:teacher</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_can'>can</span> <span class='symbol'>:manage</span><span class='comma'>,</span> <span class='symbol'>:all</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_user'>user</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_has_role?'>has_role?</span> <span class='symbol'>:student</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_can'>can</span> <span class='symbol'>:read</span><span class='comma'>,</span> <span class='symbol'>:all</span>
-    <span class='id identifier rubyid_can'>can</span> <span class='symbol'>:manage</span><span class='comma'>,</span> <span class='const'>User</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_user'>user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
   <span class='kw'>end</span>
 
   <span class='comment'># Define abilities for the passed in user here. For example:
@@ -294,9 +290,9 @@
 </div>
 
     <div id="footer">
-  Generated on Sat Jun 27 22:35:28 2015 by
+  Generated on Wed Dec 30 13:51:56 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.3).
 </div>
 
   </body>

@@ -233,7 +233,11 @@
 37
 38
 39
-40</pre>
+40
+41
+42
+43
+44</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'app/controllers/users/registrations_controller.rb', line 20</span>
@@ -241,22 +245,26 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
   <span class='id identifier rubyid_build_resource'>build_resource</span><span class='lparen'>(</span><span class='id identifier rubyid_sign_up_params'>sign_up_params</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_save'>save</span>
   <span class='kw'>yield</span> <span class='id identifier rubyid_resource'>resource</span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_persisted?'>persisted?</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_save'>save</span>
     <span class='kw'>if</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_active_for_authentication?'>active_for_authentication?</span>
+      <span class='const'>UserLesson</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='symbol'>:user_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='comma'>,</span> <span class='symbol'>:is_teacher</span> <span class='op'>=&gt;</span> <span class='kw'>false</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_set_flash_message'>set_flash_message</span> <span class='symbol'>:notice</span><span class='comma'>,</span> <span class='symbol'>:signed_up</span> <span class='kw'>if</span> <span class='id identifier rubyid_is_flashing_format?'>is_flashing_format?</span>
       <span class='id identifier rubyid_sign_up'>sign_up</span><span class='lparen'>(</span><span class='id identifier rubyid_resource_name'>resource_name</span><span class='comma'>,</span> <span class='id identifier rubyid_resource'>resource</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_respond_with'>respond_with</span> <span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='label'>location:</span> <span class='id identifier rubyid_after_sign_up_path_for'>after_sign_up_path_for</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='rparen'>)</span>
-    <span class='kw'>else</span>
+    <span class='comment'># activateが必要な場合
+</span>    <span class='kw'>else</span>
       <span class='id identifier rubyid_set_flash_message'>set_flash_message</span> <span class='symbol'>:notice</span><span class='comma'>,</span> <span class='symbol'>:signed_up_but_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_inactive_message'>inactive_message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_is_flashing_format?'>is_flashing_format?</span>
       <span class='id identifier rubyid_expire_data_after_sign_in!'>expire_data_after_sign_in!</span>
       <span class='id identifier rubyid_respond_with'>respond_with</span> <span class='id identifier rubyid_resource'>resource</span><span class='comma'>,</span> <span class='label'>location:</span> <span class='id identifier rubyid_after_inactive_sign_up_path_for'>after_inactive_sign_up_path_for</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>else</span>
-    <span class='id identifier rubyid_clean_up_passwords'>clean_up_passwords</span> <span class='id identifier rubyid_resource'>resource</span>
     <span class='id identifier rubyid_set_minimum_password_length'>set_minimum_password_length</span>
-    <span class='id identifier rubyid_respond_with'>respond_with</span> <span class='id identifier rubyid_resource'>resource</span>
+    <span class='id identifier rubyid_clean_up_passwords'>clean_up_passwords</span> <span class='id identifier rubyid_resource'>resource</span>
+    <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:resource</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_resource'>resource</span>
+    <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:alert</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_full_messages'>full_messages</span> <span class='op'>?</span> <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_errors'>errors</span><span class='period'>.</span><span class='id identifier rubyid_full_messages'>full_messages</span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>新規登録できませんでした．入力項目を確認してください．</span><span class='tstring_end'>&quot;</span></span>
+
+    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_new_user_session_path'>new_user_session_path</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>#tab2</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -329,9 +337,9 @@
 </div>
 
     <div id="footer">
-  Generated on Sat Jun 27 22:35:28 2015 by
+  Generated on Wed Dec 30 13:51:57 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.3).
 </div>
 
   </body>
