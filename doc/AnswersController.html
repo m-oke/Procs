@@ -142,6 +142,72 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#diff_select-instance_method" title="#diff_select (instance method)">- (Object) <strong>diff_select</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#index-instance_method" title="#index (instance method)">- (Object) <strong>index</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#select_version-instance_method" title="#select_version (instance method)">- (Object) <strong>select_version</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -152,6 +218,11 @@
   
   
   
+  
+  
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="ApplicationController.html" title="ApplicationController (class)">ApplicationController</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="ApplicationController.html#access_lesson_check-instance_method" title="ApplicationController#access_lesson_check (method)">#access_lesson_check</a></span>, <span class='object_link'><a href="ApplicationController.html#access_question_check-instance_method" title="ApplicationController#access_question_check (method)">#access_question_check</a></span></p>
+
   
 
   <div id="instance_method_details" class="method_details_list">
@@ -247,6 +318,262 @@
       <pre class="lines">
 
 
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/controllers/answers_controller.rb', line 47</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
+  <span class='id identifier rubyid_file'>file</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:upload_file</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span> <span class='op'>=</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:lesson_question_id</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_question_id'>question_id</span> <span class='op'>=</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:question_id</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_lesson_id'>lesson_id</span> <span class='op'>=</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_present?'>present?</span> <span class='op'>?</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='int'>1</span>
+
+  <span class='comment'># ajax用の変数
+</span>  <span class='ivar'>@lesson</span> <span class='op'>=</span> <span class='const'>Lesson</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='rparen'>)</span>
+  <span class='ivar'>@question</span> <span class='op'>=</span> <span class='const'>Question</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span><span class='rparen'>)</span>
+  <span class='ivar'>@is_teacher</span> <span class='op'>=</span> <span class='const'>Lesson</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_user_lessons'>user_lessons</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:user_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span><span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_is_teacher'>is_teacher</span>
+  <span class='ivar'>@languages</span> <span class='op'>=</span> <span class='const'>LANGUAGES</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_val'>val</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='id identifier rubyid_val'>val</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span>
+
+  <span class='comment'># ファイルが選択されている場合
+</span>  <span class='kw'>unless</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='id identifier rubyid_extention'>extention</span> <span class='op'>=</span> <span class='const'>EXT</span><span class='lbracket'>[</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:language</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_original_filename'>original_filename</span>
+
+    <span class='comment'># ファイルのチェック
+</span>    <span class='kw'>if</span> <span class='op'>!</span><span class='lparen'>(</span><span class='id identifier rubyid_extention'>extention</span> <span class='op'>==</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_extname'>extname</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_flash'>flash</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='lbracket'>[</span><span class='symbol'>:alert</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>使用言語とファイル拡張子が一致しません。</span><span class='tstring_end'>&#39;</span></span>
+    <span class='kw'>elsif</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>&gt;</span> <span class='int'>10</span><span class='period'>.</span><span class='id identifier rubyid_megabyte'>megabyte</span>
+      <span class='id identifier rubyid_flash'>flash</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='lbracket'>[</span><span class='symbol'>:alert</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ファイルサイズは10MBまでにしてください。</span><span class='tstring_end'>&#39;</span></span>
+    <span class='kw'>else</span>
+
+      <span class='comment'># 保存ディレクトリの作成
+</span>      <span class='id identifier rubyid_uploads_answers_path'>uploads_answers_path</span> <span class='op'>=</span> <span class='const'>UPLOADS_ANSWERS_PATH</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
+      <span class='const'>FileUtils</span><span class='period'>.</span><span class='id identifier rubyid_mkdir_p'>mkdir_p</span><span class='lparen'>(</span><span class='id identifier rubyid_uploads_answers_path'>uploads_answers_path</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='const'>FileTest</span><span class='period'>.</span><span class='id identifier rubyid_exist?'>exist?</span><span class='lparen'>(</span><span class='id identifier rubyid_uploads_answers_path'>uploads_answers_path</span><span class='rparen'>)</span>
+
+      <span class='comment'># 最後の解答のファイル名の取得
+</span>      <span class='id identifier rubyid_old_file'>old_file</span> <span class='op'>=</span> <span class='const'>Answer</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span>
+                              <span class='symbol'>:student_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
+                              <span class='symbol'>:lesson_question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='comma'>,</span>
+                              <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span>
+      <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\d+</span><span class='regexp_end'>/</span></span> <span class='op'>=~</span> <span class='id identifier rubyid_old_file'>old_file</span><span class='period'>.</span><span class='id identifier rubyid_file_name'>file_name</span> <span class='kw'>unless</span> <span class='id identifier rubyid_old_file'>old_file</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='backref'>$&amp;</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+      <span class='id identifier rubyid_next_version'>next_version</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_version'>version</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+      <span class='id identifier rubyid_next_name'>next_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>version</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_next_version'>next_version</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_extention'>extention</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+
+      <span class='comment'># ファイルの保存
+</span>      <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_open'>open</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_uploads_answers_path'>uploads_answers_path</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_next_name'>next_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wb</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_f'>f</span><span class='op'>|</span>
+        <span class='id identifier rubyid_f'>f</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='rparen'>)</span>
+      <span class='kw'>end</span>
+
+      <span class='comment'># Answerモデルの保存
+</span>      <span class='id identifier rubyid_answer'>answer</span> <span class='op'>=</span> <span class='const'>Answer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:language</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:language</span><span class='rbracket'>]</span><span class='comma'>,</span>
+                          <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span><span class='comma'>,</span>
+                          <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span>
+                          <span class='symbol'>:lesson_question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='comma'>,</span>
+                          <span class='symbol'>:file_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_next_name'>next_name</span><span class='comma'>,</span>
+                          <span class='symbol'>:result</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>P</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+                          <span class='symbol'>:student_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
+                          <span class='symbol'>:run_time</span> <span class='op'>=&gt;</span> <span class='int'>0</span><span class='comma'>,</span>
+                          <span class='symbol'>:memory_usage</span> <span class='op'>=&gt;</span> <span class='int'>0</span><span class='comma'>,</span>
+                          <span class='symbol'>:question_version</span> <span class='op'>=&gt;</span><span class='ivar'>@question</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span><span class='rparen'>)</span>
+      <span class='kw'>unless</span> <span class='id identifier rubyid_answer'>answer</span><span class='period'>.</span><span class='id identifier rubyid_save'>save</span>
+        <span class='id identifier rubyid_flash'>flash</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='lbracket'>[</span><span class='symbol'>:notice</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>解答の保存に失敗しました．</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>and</span> <span class='kw'>return</span>
+      <span class='kw'>end</span>
+      <span class='ivar'>@latest_answer</span> <span class='op'>=</span> <span class='id identifier rubyid_answer'>answer</span>
+      <span class='id identifier rubyid_flash'>flash</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='lbracket'>[</span><span class='symbol'>:notice</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>解答を投稿しました。</span><span class='tstring_end'>&#39;</span></span>
+
+      <span class='comment'># 評価スクリプトをメッセージキューに入れる
+</span>      <span class='kw'>case</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:language</span><span class='rbracket'>]</span>
+      <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>python</span><span class='tstring_end'>&#39;</span></span>
+        <span class='const'>EvaluatePythonJob</span><span class='period'>.</span><span class='id identifier rubyid_perform_later'>perform_later</span><span class='lparen'>(</span><span class='symbol'>:user_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
+                                        <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span>
+                                        <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span><span class='comma'>,</span>
+                                        <span class='symbol'>:lesson_question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='rparen'>)</span>
+      <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>c</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cpp</span><span class='tstring_end'>&#39;</span></span>
+        <span class='const'>EvaluateCJob</span><span class='period'>.</span><span class='id identifier rubyid_perform_later'>perform_later</span><span class='lparen'>(</span><span class='symbol'>:user_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
+                                   <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span>
+                                   <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span><span class='comma'>,</span>
+                                   <span class='symbol'>:lesson_question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='rparen'>)</span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+
+    <span class='comment'># ファイルが選択されていなかった場合
+</span>  <span class='kw'>else</span>
+    <span class='ivar'>@latest_answer</span> <span class='op'>=</span> <span class='const'>Answer</span><span class='period'>.</span><span class='id identifier rubyid_latest_answer'>latest_answer</span><span class='lparen'>(</span><span class='symbol'>:student_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
+                                          <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span><span class='comma'>,</span>
+                                          <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_id'>lesson_id</span><span class='comma'>,</span>
+                                          <span class='symbol'>:lesson_question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='kw'>nil</span>
+    <span class='id identifier rubyid_flash'>flash</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='lbracket'>[</span><span class='symbol'>:alert</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ファイルが選択されていません。</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='comment'># パブリック授業の場合
+</span>  <span class='kw'>if</span> <span class='ivar'>@lesson</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>==</span> <span class='int'>1</span>
+    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='symbol'>:controller</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>questions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='symbol'>:action</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>show</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>  <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_question_id'>question_id</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="diff_select-instance_method">
+  
+    - (<tt>Object</tt>) <strong>diff_select</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/controllers/answers_controller.rb', line 144</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_diff_select'>diff_select</span>
+  <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span>
+  <span class='ivar'>@select_diff_file</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:diff_selected_file</span><span class='rbracket'>]</span>
+  <span class='ivar'>@select_raw_file</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:raw_selected_file</span><span class='rbracket'>]</span>
+
+  <span class='ivar'>@select_raw_name</span> <span class='op'>=</span> <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>+</span> <span class='ivar'>@select_raw_file</span>
+  <span class='kw'>if</span> <span class='ivar'>@select_diff_file</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>なし</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>return</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_select_diff_name'>select_diff_name</span> <span class='op'>=</span> <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>+</span> <span class='ivar'>@select_diff_file</span>
+  <span class='ivar'>@diff</span> <span class='op'>=</span> <span class='id identifier rubyid_show_diff'>show_diff</span><span class='lparen'>(</span><span class='ivar'>@select_raw_name</span><span class='comma'>,</span> <span class='id identifier rubyid_select_diff_name'>select_diff_name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="index-instance_method">
+  
+    - (<tt>Object</tt>) <strong>index</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+5
+6
+7
+8
 9
 10
 11
@@ -278,56 +605,82 @@
 37
 38
 39
-40
-41
-42
-43
-44
-45
-46
-47</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/controllers/answers_controller.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'app/controllers/answers_controller.rb', line 5</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
-  <span class='id identifier rubyid_file'>file</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:upload_file</span><span class='rbracket'>]</span>
-  <span class='kw'>unless</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='id identifier rubyid_extention'>extention</span> <span class='op'>=</span> <span class='const'>Answer</span><span class='op'>::</span><span class='const'>EXT</span><span class='lbracket'>[</span><span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:language</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_original_filename'>original_filename</span>
-
-    <span class='kw'>if</span> <span class='op'>!</span><span class='lparen'>(</span><span class='id identifier rubyid_extention'>extention</span> <span class='op'>==</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_extname'>extname</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:alert</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>使用言語とファイル拡張子が一致しません。</span><span class='tstring_end'>&#39;</span></span>
-    <span class='kw'>elsif</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>&gt;</span> <span class='int'>10</span><span class='period'>.</span><span class='id identifier rubyid_megabyte'>megabyte</span>
-      <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:alert</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ファイルサイズは10MBまでにしてください。</span><span class='tstring_end'>&#39;</span></span>
-    <span class='kw'>else</span>
-      <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>uploads</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
-      <span class='const'>FileUtils</span><span class='period'>.</span><span class='id identifier rubyid_mkdir_p'>mkdir_p</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='const'>FileTest</span><span class='period'>.</span><span class='id identifier rubyid_exist?'>exist?</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
-
-      <span class='id identifier rubyid_old_file'>old_file</span> <span class='op'>=</span> <span class='const'>Answer</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span><span class='comma'>,</span>
-                             <span class='symbol'>:student_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
-                             <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span>
-      <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\d+</span><span class='regexp_end'>/</span></span> <span class='op'>=~</span> <span class='id identifier rubyid_old_file'>old_file</span><span class='period'>.</span><span class='id identifier rubyid_file_name'>file_name</span> <span class='kw'>unless</span> <span class='id identifier rubyid_old_file'>old_file</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-      <span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='backref'>$&amp;</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
-      <span class='id identifier rubyid_next_version'>next_version</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_version'>version</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
-      <span class='id identifier rubyid_next_name'>next_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>version</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_next_version'>next_version</span> <span class='op'>+</span> <span class='id identifier rubyid_extention'>extention</span>
-
-      <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_open'>open</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_next_name'>next_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wb</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_f'>f</span><span class='op'>|</span>
-        <span class='id identifier rubyid_f'>f</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='rparen'>)</span>
-      <span class='kw'>end</span>
-      <span class='id identifier rubyid_answer'>answer</span> <span class='op'>=</span> <span class='const'>Answer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:language</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:language</span><span class='rbracket'>]</span><span class='comma'>,</span>
-                          <span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='comma'>,</span>
-                          <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span><span class='comma'>,</span>
-                          <span class='symbol'>:file_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_next_name'>next_name</span><span class='comma'>,</span>
-                          <span class='symbol'>:result</span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='comma'>,</span>
-                          <span class='symbol'>:student_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_answer'>answer</span><span class='period'>.</span><span class='id identifier rubyid_save'>save</span>
-      <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:notice</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>回答を投稿しました。</span><span class='tstring_end'>&#39;</span></span>
-    <span class='kw'>end</span>
-  <span class='kw'>else</span>
-    <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:alert</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ファイルが選択されていません。</span><span class='tstring_end'>&#39;</span></span>
+<span class='kw'>def</span> <span class='id identifier rubyid_index'>index</span>
+  <span class='ivar'>@student_id</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:student_id</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
+  <span class='ivar'>@lesson_id</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='int'>1</span>
+  <span class='ivar'>@question_id</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:question_id</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:question_id</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:lesson_question_id</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_session'>session</span><span class='lbracket'>[</span><span class='symbol'>:lesson_question_id</span><span class='rbracket'>]</span>
+  <span class='ivar'>@question</span> <span class='op'>=</span> <span class='const'>Question</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='ivar'>@question_id</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='const'>Lesson</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='ivar'>@lesson_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='const'>Question</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='ivar'>@question_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='const'>User</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='ivar'>@student_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_root_path'>root_path</span><span class='comma'>,</span> <span class='symbol'>:alert</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>該当する解答は存在しません</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>and</span> <span class='kw'>return</span>
   <span class='kw'>end</span>
-  <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='symbol'>:controller</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>questions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='symbol'>:action</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>show</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:lesson_id</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:student_id</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='ivar'>@is_teacher</span> <span class='op'>=</span> <span class='const'>Lesson</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='ivar'>@lesson_id</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_user_lessons'>user_lessons</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:user_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_current_user'>current_user</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='symbol'>:lesson_id</span> <span class='op'>=&gt;</span> <span class='ivar'>@lesson_id</span><span class='rparen'>)</span>
+
+    <span class='comment'># 該当授業の教師かどうかを取得
+</span>    <span class='kw'>if</span> <span class='ivar'>@is_teacher</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_root_path'>root_path</span><span class='comma'>,</span> <span class='symbol'>:alert</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>該当する授業に参加していません</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>and</span> <span class='kw'>return</span>
+    <span class='kw'>end</span>
+    <span class='ivar'>@is_teacher</span> <span class='op'>=</span> <span class='ivar'>@is_teacher</span><span class='period'>.</span><span class='id identifier rubyid_is_teacher'>is_teacher</span>
+    <span class='kw'>unless</span> <span class='ivar'>@is_teacher</span>
+      <span class='id identifier rubyid_redirect_to'>redirect_to</span> <span class='id identifier rubyid_root_path'>root_path</span><span class='comma'>,</span> <span class='symbol'>:alert</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>該当する解答は存在しません</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>and</span> <span class='kw'>return</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='ivar'>@answer_all_version</span><span class='op'>=</span> <span class='const'>Answer</span><span class='period'>.</span><span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='symbol'>:question_id</span> <span class='op'>=&gt;</span> <span class='ivar'>@question_id</span><span class='comma'>,</span>
+                                    <span class='symbol'>:lesson_id</span><span class='op'>=&gt;</span> <span class='ivar'>@lesson_id</span><span class='comma'>,</span>
+                                    <span class='symbol'>:lesson_question_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='comma'>,</span>
+                                    <span class='symbol'>:student_id</span><span class='op'>=&gt;</span> <span class='ivar'>@student_id</span> <span class='rparen'>)</span>
+
+  <span class='ivar'>@dead_date_question</span> <span class='op'>=</span> <span class='const'>LessonQuestion</span><span class='period'>.</span><span class='id identifier rubyid_find_by'>find_by</span><span class='lparen'>(</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@raw_display_file</span>  <span class='op'>=</span> <span class='ivar'>@answer_all_version</span><span class='period'>.</span><span class='id identifier rubyid_last'>last</span><span class='period'>.</span><span class='id identifier rubyid_file_name'>file_name</span>
+
+  <span class='ivar'>@path_directory</span> <span class='op'>=</span> <span class='const'>UPLOADS_ANSWERS_PATH</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='ivar'>@student_id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_lesson_question_id'>lesson_question_id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span><span class='op'>=</span> <span class='ivar'>@path_directory</span>
+
+  <span class='ivar'>@new_raw_path</span> <span class='op'>=</span> <span class='ivar'>@path_directory</span> <span class='op'>+</span> <span class='ivar'>@raw_display_file</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="select_version-instance_method">
+  
+    - (<tt>Object</tt>) <strong>select_version</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+137
+138
+139
+140
+141
+142</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'app/controllers/answers_controller.rb', line 137</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_select_version'>select_version</span>
+  <span class='ivar'>@select_item</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='symbol'>:selected_file</span><span class='rbracket'>]</span>
+  <span class='ivar'>@select_path</span> <span class='op'>=</span> <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span>
+  <span class='ivar'>@new_raw_path</span> <span class='op'>=</span> <span class='ivar'>@select_path</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>+</span> <span class='ivar'>@select_item</span>
+  <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_flash'>flash</span><span class='lbracket'>[</span><span class='symbol'>:directory</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -339,9 +692,9 @@
 </div>
 
     <div id="footer">
-  Generated on Sat Jun 27 22:35:28 2015 by
+  Generated on Wed Dec 30 13:51:57 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.2.3).
 </div>
 
   </body>

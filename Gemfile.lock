@@ -270,6 +270,8 @@ GEM
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
     yard (0.8.7.6)
+    yard-activerecord (0.0.15)
+      yard (>= 0.8.3)
 
 PLATFORMS
   ruby
@@ -324,6 +326,7 @@ DEPENDENCIES
   validates_email_format_of
   web-console (~> 2.0)
   yard
+  yard-activerecord
 
 BUNDLED WITH
    1.11.2

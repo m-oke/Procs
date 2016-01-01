@@ -80,6 +80,7 @@ gem 'sinatra', require: false
 gem 'validates_email_format_of'
 
 group :development, :test do
+  gem 'yard-activerecord'
   gem 'rails-footnotes'
   gem 'pry'
   gem 'pry-rails'
