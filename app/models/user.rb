@@ -9,11 +9,8 @@ class User < ActiveRecord::Base
   :presence => true,
   :email_format => { :message => 'の形式が正しくありません' },
   :confirmation => true,
+  if: Proc.new {|obj| obj.new_record? || obj.email_changed? },
   :uniqueness => true
-
-  validates :email_confirmation,
-  :presence => true,
-  if: Proc.new {|obj| obj.new_record? || !obj.email_confirmation.blank?}
 
   validates :name, :length => {:maximum => 255}
 
@@ -27,8 +24,12 @@ class User < ActiveRecord::Base
   :presence => true,
   :length => {:minimum => 1, :maximum => 255},
   :format => {:with => /\A[!-~]{8,255}\z/, :message => 'は適切なフォーマットではありません' },
-  if: Proc.new {|obj| obj.new_record? || !obj.email_confirmation.blank?}
+  :confirmation => true,
+  if: Proc.new {|obj| obj.new_record? }
 
+  validates :password_confirmation,
+  :presence => true,
+  if: Proc.new {|obj| obj.new_record? || !obj.password.blank? }
 
   has_many :user_lessons, :foreign_key => :user_id
   has_many :lessons, :through => :user_lessons
@@ -141,13 +142,13 @@ class User < ActiveRecord::Base
         visible do
           bindings[:view]._current_user.has_role?(:root)
         end
-        required true
       end
 
       field :password do
         visible do
           bindings[:view]._current_user.has_role?(:root)
         end
+        required false
 
       end
       field :password_confirmation do
