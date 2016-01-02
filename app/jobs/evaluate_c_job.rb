@@ -126,7 +126,7 @@ class EvaluateCJob < ActiveJob::Base
               spec[i][:result] = "RE"
               next
             elsif signal.include?("9")
-              if time.ceil >= run_time_limit
+              if time.ceil >= (run_time_limit * 1000)
                 puts "Time Limit Exceeded"
                 spec[i][:result] = "TLE"
                 next

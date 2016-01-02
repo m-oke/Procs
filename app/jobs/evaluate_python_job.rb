@@ -106,14 +106,13 @@ class EvaluatePythonJob < ActiveJob::Base
           spec[i][:memory] = memory
           spec[i][:time] = time
 
-
           unless signal.nil?
             if signal.include?("11")
               puts "Runtime Error"
               spec[i][:result] = "RE"
               next
             elsif signal.include?("9")
-              if time.ceil >= run_time_limit
+              if time.ceil >= (run_time_limit * 1000)
                 puts "Time Limit Exceeded"
                 spec[i][:result] = "TLE"
                 next
