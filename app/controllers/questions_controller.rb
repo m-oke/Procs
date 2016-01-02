@@ -226,9 +226,11 @@ class QuestionsController < ApplicationController
       end
     end
 
-    params[:question][:question_keywords_attributes].each do |key, val|
-      if val[:_destroy] != 'false'
-        val[:is_deleted] = true
+    if params[:question][:question_keywords_attributes]
+      params[:question][:question_keywords_attributes].each do |key, val|
+        if val[:_destroy] != 'false'
+          val[:is_deleted] = true
+        end
       end
     end
 
