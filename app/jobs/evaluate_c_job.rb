@@ -110,12 +110,16 @@ class EvaluateCJob < ActiveJob::Base
           signal = nil
           # 実行時間とメモリ使用量を記録
           File.open("spec#{i}", "r") do |f|
-              first = f.gets
-            if first.include?("signal")
-              signal = first
+              line = f.gets
+            if line.include?("signal")
+              signal = line
               memory = f.gets.to_i
             else
-              memory = first.to_i
+              while !line.match(/[a-z]*/).to_s.empty?
+                f.gets
+                line = f.gets
+              end
+              memory = line.to_i
             end
             utime = f.gets.to_f
             stime = f.gets.to_f
