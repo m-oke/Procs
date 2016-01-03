@@ -96,8 +96,7 @@ class EvaluatePythonJob < ActiveJob::Base
               signal = line
               memory = f.gets.to_i
             else
-              while !line.match(/[a-z]*/).to_s.empty?
-                f.gets
+              while !line.match(/[A-z]*/).to_s.empty?
                 line = f.gets
               end
               memory = line.to_i
