@@ -40,7 +40,12 @@ class EvaluateCJob < ActiveJob::Base
     spec = Hash.new { |h,k| h[k] = {} }
     containers = []
 
-    compile_cmd = "g++ #{src_file} -o #{dir_name}/#{exe_file} -w"
+    if answer.language == "cpp"
+      compile_cmd = "g++ #{src_file} -o #{dir_name}/#{exe_file} -w"
+    else
+      compile_cmd = "gcc #{src_file} -o #{dir_name}/#{exe_file} -w"
+    end
+
     # コンパイル
     @compile = IO.popen(compile_cmd, :err => [:child, :out])
 
