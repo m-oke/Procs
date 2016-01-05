@@ -31,6 +31,9 @@ ja:
       question_keyword:
         one: WEB剽窃チェック用キーワード
         other: WEB剽窃チェック用キーワード
+      local_check_result:
+        one: ローカル剽窃チェック
+        other: ローカル剽窃チェック
 
     attributes:
       user:
@@ -96,7 +99,7 @@ ja:
         language: プログラム言語
         run_time: 実行時間
         memory_usage: メモリ使用量
-        plagiarism_percentage: 類似度
+        local_plagiarism_percentage: ローカル剽窃チェック結果
         lesson: 解答授業
         question_version: 解答した問題のバージョン
         test_passed: パスしたテストケース数
@@ -120,3 +123,13 @@ ja:
         question: 関連する問題
         keyword: 検索用キーワード
         is_deleted: 削除設定
+      local_check_result:
+        answer_id: 解答
+        check_result: ローカル剽窃チェック結果
+        target_name: ローカル剽窃チェック対象ファイル
+        compare_name: 比較したファイル
+        target_line: 対象ファイルの検出行
+        compare_line: 比較したファイルの検出行
+        compare_path: 比較したファイルのパス
+        compare_user_id: 比較したユーザ
+        compare_lesson_question_id: 比較した問題

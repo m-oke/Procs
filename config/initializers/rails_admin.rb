@@ -18,14 +18,14 @@ RailsAdmin.config do |config|
   ### More at https://github.com/sferik/rails_admin/wiki/Base-configuration
 
   config.main_app_name = ["Procs", "Admin page"]
-  config.included_models = ["User", "Lesson", "Question", "Answer", "Sample", "TestDatum", "InternetCheckResult", "LessonQuestion", "UserLesson", "QuestionKeyword"]
+  config.included_models = ["User", "Lesson", "Question", "Answer", "Sample", "TestDatum", "InternetCheckResult", "LessonQuestion", "UserLesson", "QuestionKeyword", "LocalCheckResult"]
 
   # TODO: 各モデルの必要事項を追加
   config.actions do
     dashboard                     # mandatory
     index                         # mandatory
     new do
-      except ["Answer", "TestDatum", "InternetCheckResult"]
+      except ["Answer", "TestDatum", "InternetCheckResult", "LocalCheckResult"]
     end
     export
     show
