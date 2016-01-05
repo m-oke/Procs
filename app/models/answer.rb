@@ -182,7 +182,7 @@ class Answer < ActiveRecord::Base
           RESULT.collect {|k,v| ["#{v}", k]}
         end
       end
-      field :plagiarism_percentage do
+      field :local_plagiarism_percentage do
         help "学生間のソースコードの類似度, #{help}"
       end
       field :internet_check_results do
@@ -213,7 +213,7 @@ class Answer < ActiveRecord::Base
       field :question_version
       field :test_countn
       field :test_passed
-      field :plagiarism_percentage
+      field :local_plagiarism_percentage
       field :internet_check_results
       field :created_at
       field :updated_at
@@ -242,7 +242,7 @@ class Answer < ActiveRecord::Base
       field :question_version
       field :test_count
       field :test_passed
-      field :plagiarism_percentage
+      field :local_plagiarism_percentage
       field :internet_check_results
       field :created_at
       field :updated_at
