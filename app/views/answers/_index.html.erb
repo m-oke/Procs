@@ -20,7 +20,7 @@
 <div>
   <h2>解答詳細</h2>
   <% if @is_teacher %>
-    <h4>名前 : <%= User.find_by(:id => @student_id).name %></h4>
+    <h4>ニックネーム: <%= User.find_by(:id => @student_id).nickname %></h4>
   <% end %>
   <div class="questions_list">
     <div>

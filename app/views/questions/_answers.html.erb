@@ -52,7 +52,7 @@
   <table class="table table-bordered table-striped">
     <tr>
       <th>学籍番号</th>
-      <th>氏名</th>
+      <th>ニックネーム</th>
       <th>提出時間</th>
       <th>結果</th>
       <th>実行時間(ms)</th>
@@ -82,7 +82,15 @@
               <% end %>
           <% end %>
         </td>
-        <td><%= student.name %></td>
+        <td>
+          <% unless answer.new_record? %>
+            <%= link_to(student.nickname, lesson_student_answers_path(:lesson_id => @lesson.id,
+                                                                           :question_id => @question.id,
+                                                                           :student_id => student.id), :remote => ( @lesson.id != 1)) %>
+          <% else %>
+            <%= student.nickname %>
+          <% end %>
+        </td>
         <td><%= answer.created_at %> </td>
         <% if @question.version == answer.question_version %>
           <td><%= RESULT[answer.result] %></td>
