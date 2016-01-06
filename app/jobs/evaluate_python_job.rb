@@ -67,7 +67,7 @@ class EvaluatePythonJob < ActiveJob::Base
           test_inputname = test.input_storename
           test_outputname = test.output_storename
           num = format("%05d", SecureRandom.random_number(10**5))
-          exec_cmd = "docker run --rm -u #{num}:exec_user --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e EXE=#{exe_file} -v #{dir_name}:/home/exec_user/work --ulimit nproc=5 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --memory-swap -1 --net=none procs/python_sandbox"
+          exec_cmd = "docker run --rm -u #{num}:exec_user --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e EXE=#{exe_file} -v #{dir_name}:/home/exec_user/work --ulimit nproc=5 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --memory-swap #{MEMORY_LIMIT}m --net=none procs/python_sandbox"
 
           begin
             # 実行時間制限
