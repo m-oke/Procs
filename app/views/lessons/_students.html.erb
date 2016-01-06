@@ -3,14 +3,18 @@
   <table class="table table-bordered table-striped">
     <tr>
       <th>学籍番号</th>
-      <th>氏名</th>
+      <th>ニックネーム</th>
       <th>成績</th>
     </tr>
     <% @students.each do |student| %>
       <tr>
         <td><%= link_to student.student_number , student_lessons_path( :lesson_id => params[:lesson_id] , :student_id => student.id),
-                :remote => true  %></td>
-        <td><%= student.name %></td>
+                :remote => true  %>
+        </td>
+        <td>
+              <%= link_to student.nickname, student_lessons_path( :lesson_id => params[:lesson_id] , :student_id => student.id),
+                 :remote => true %>
+        </td>
         <td>
           <% accept_count = Answer.records(:student_id => student.id, :lesson_id => params[:lesson_id], :lesson_questions => @lesson.lesson_questions) %>
           <%= "#{accept_count}/#{@lesson_questions_count}"  %>
