@@ -105,8 +105,6 @@ class EvaluateCJob < ActiveJob::Base
             next
           end
 
-          # 結果と出力用ファイルのdiff
-          diff = `diff #{test_outputname} result#{i}`
 
           signal = nil
           # 実行時間とメモリ使用量を記録
@@ -116,7 +114,7 @@ class EvaluateCJob < ActiveJob::Base
               signal = line
               memory = f.gets.to_i
             else
-              while !line.match(/[A-z].*/).to_s.empty?
+              while line.match(/^(\d|\.)+/).to_s.empty?
                 line = f.gets
               end
               memory = line.to_i
@@ -134,18 +132,21 @@ class EvaluateCJob < ActiveJob::Base
               puts "Runtime Error"
               spec[i][:result] = "RE"
               next
-            elsif signal.include?("9")
-              if (memory / 1024) >= memory_usage_limit
-                puts "Memory Limit Exceeded"
-                spec[i][:result] = "MLE"
-                next
-              elsif time.ceil >= (run_time_limit * 1000)
-                puts "Time Limit Exceeded"
-                spec[i][:result] = "TLE"
-                next
-              end
             end
           end
+
+          if (memory / 1024) >= memory_usage_limit
+            puts "Memory Limit Exceeded"
+            spec[i][:result] = "MLE"
+            next
+          elsif time.ceil >= (run_time_limit * 1000)
+            puts "Time Limit Exceeded"
+            spec[i][:result] = "TLE"
+            next
+          end
+
+          # 結果と出力用ファイルのdiff
+          diff = `diff #{test_outputname} result#{i}`
 
           # diff結果が異なればそこでテスト失敗
           unless diff.empty?
@@ -200,7 +201,7 @@ class EvaluateCJob < ActiveJob::Base
 
     # 作業ディレクトリの削除
     Dir.chdir("..")
-    `rm -fr #{dir_name}`
+#    `rm -fr #{dir_name}`
     if res == "A"
       # C言語ローカル剽窃チェックスクリプトをメッセージキューに入れる
       LocalCheckCJob.perform_later(:user_id => user_id,
