@@ -60,14 +60,12 @@ class EvaluatePythonJob < ActiveJob::Base
           container_name = Digest::MD5.hexdigest(DateTime.now.to_s + rand.to_s)
           containers.push(container_name)
           # dockerコンテナでプログラムを実行
-          # 最大プロセス数: 500
-          # 最大実行メモリ(RSS): 256 MB
           # 最大ファイルサイズ: 40 MB
-          rss = MEMORY_LIMIT * 1024 * 1000
+          rss = memory_usage_limit * 1024 * 1000
           test_inputname = test.input_storename
           test_outputname = test.output_storename
           num = format("%05d", SecureRandom.random_number(10**5))
-          exec_cmd = "docker run --rm -u #{num}:exec_user --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e EXE=#{exe_file} -v #{dir_name}:/home/exec_user/work --ulimit nproc=5 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{MEMORY_LIMIT}m --memory-swap #{MEMORY_LIMIT}m --net=none procs/python_sandbox"
+          exec_cmd = "docker run --rm -u #{num}:exec_user --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e EXE=#{exe_file} -v #{dir_name}:/home/exec_user/work --ulimit nproc=5 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{memory_usage_limit}m --memory-swap #{memory_usage_limit}m --net=none procs/python_sandbox"
 
           begin
             # 実行時間制限
@@ -181,7 +179,7 @@ class EvaluatePythonJob < ActiveJob::Base
 
     # 作業ディレクトリの削除
     Dir.chdir("..")
-#    `rm -fr #{dir_name}`
+    `rm -fr #{dir_name}`
 
     if res == "A"
       # Python言語ローカル剽窃チェックスクリプトをメッセージキューに入れる
