@@ -1,0 +1,71 @@
+<% http_error_exist = 0 %>
+<% key_word_change = 0 %>
+<% question_keyword = '' %>
+
+<% question_keywords = QuestionKeyword.where(:question_id => question.id) %>
+<% question_keywords.each do |k| %>
+    <% question_keyword = question_keyword + " " + k.keyword %>
+<% end %>
+<% checked_result = InternetCheckResult.where(:answer_id =>answer.id)%>
+<% if checked_result.present?%>
+    <% checked_result.each do |r|%>
+        <% if r.key_word != question_keyword %>
+            <% key_word_change = 1%>
+            <% break %>
+        <% end %>
+    <% end %>
+<% end %>
+<% http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )%>
+<% if http_error.present? %>
+    <% http_error.each do |r| %>
+        <% if r.answer_id == answer.id %>
+            <% http_error_exist = 1 %>
+            <% break %>
+        <% end %>
+    <% end %>
+<% end %>
+<% if question_keyword !='' %>
+    <% if key_word_change == 0 %>
+        <% if checked_result.size > 0 && http_error_exist == 0 %>
+            <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
+        <% elsif checked_result.size == 0 && answer.result== 'A' %>
+            <%# elsif checked_result.size == 0 %>
+            <span>
+              <%= button_to "チェック", lessons_internet_check_path(:lesson_id => lesson_id,
+                                                                :student_id => student.id,
+                                                                :question_id => lesson_question.question_id ),
+                            {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default", :data => { :disable_with => "チェック中"} }%>
+              <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
+            </span>
+        <% elsif checked_result.size > 0 && http_error_exist == 1%>
+            <span>
+              <%= button_to "チェック", lessons_internet_check_path(:lesson_id => lesson_id,
+                                                                :student_id => student.id,
+                                                                :question_id => lesson_question.question_id ),
+                            {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default", :data => { :disable_with => "チェック中"} }%>
+              <a class="btn btn-default draw_fancybox" href="#internet_results_checked_<%=lesson_question.question_id %>" >表示</a>
+            </span>
+
+        <% else %>
+            <span>
+              <%= button_to "チェック", lessons_internet_check_path(:lesson_id => lesson_id,
+                                                                :student_id => student.id,
+                                                                :question_id => lesson_question.question_id ), :remote => true , :disabled => "true", :id => "ajax_link_#{lesson_question.question_id}", :method => "post", :class=>"btn btn-default" %>
+            </span>
+        <% end %>
+    <% else %>
+        <span>
+          <%= button_to "チェック", lessons_internet_check_path(:lesson_id => lesson_id,
+                                                            :student_id => student.id,
+                                                            :question_id => lesson_question.question_id ), {:remote => true , :method => "post", :id => "ajax_link_#{lesson_question.question_id}",:class=>"btn btn-default" }%>
+          <a id="display_<%=lesson_question.question_id%>" class="btn btn-default draw_fancybox draw_fancybox_hidden" href="#internet_check_results_<%=lesson_question.question_id %>" >表示</a>
+        </span>
+    <% end %>
+<% end %>
+
+<div id="internet_results_checked_<%=lesson_question.question_id %>" class="internet-check-results-css" >
+  <%= render :partial => "lessons/student_internet_check_result_show", :locals => {:student => student,
+                                                                                   :question => question,
+                                                                                   :http_error_exist => http_error_exist,
+                                                                                   :checked_result => checked_result } %>
+</div>
