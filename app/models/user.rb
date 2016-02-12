@@ -9,8 +9,7 @@ class User < ActiveRecord::Base
   :presence => true,
   :email_format => { :message => 'の形式が正しくありません' },
   :confirmation => true,
-  if: Proc.new {|obj| obj.new_record? || obj.email_changed? },
-  :uniqueness => true
+  if: Proc.new {|obj| obj.new_record? || obj.email_changed? }
 
   validates :name, :length => {:maximum => 255}
 
