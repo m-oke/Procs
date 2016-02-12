@@ -137,7 +137,7 @@ class LessonsController < ApplicationController
     @question_id = params[:question_id]
     @student_id = params[:student_id]
     @lesson_id = params[:lesson_id]
-    lesson_question_id = session[:lesson_question_id]
+    lesson_question_id = LessonQuestion.where(:lesson_id=>@lesson_id, :question_id => @question_id).last.id
 
     @question = Question.find_by(:id => @question_id)
     @lesson = Lesson.find_by(:id => @lesson_id)
@@ -148,13 +148,8 @@ class LessonsController < ApplicationController
       question_keyword = question_keyword + " " + k['keyword']
     end
 
-
     if @student_id.to_i != 0
       @student = User.find_by(:id => @student_id)
-      unless session[:lesson_question_id].present?
-        session[:lesson_question_id] = LessonQuestion.where(:lesson_id=>@lesson_id, :question_id => @question_id).last.id
-        lesson_question_id = session[:lesson_question_id]
-      end
       answer = Answer.where(:lesson_id => @lesson_id, :student_id => @student_id, :question_id => @question_id, :lesson_question_id => lesson_question_id).last
       #「Http error , Api 使用できない」原因で保存した　臨時データを削除
       http_error = InternetCheckResult.where(:answer_id =>answer.id, :title => nil, :link => '', :content => '' )

@@ -116,7 +116,7 @@ class PlagiarismInternetCheck
           web_total_zero += 1
         end
       else
-        pp 'internet check by bing is failed '
+        #pp 'internet check by bing is failed '
         http_error = 1
         break
       end
@@ -143,11 +143,11 @@ class PlagiarismInternetCheck
     # sort @result by item[2]
     store_num = 1
     unless @result.empty?
-      pp @result
+
       @result = @result.sort do |item1,item2|
         item2[2]<=> item1[2]
       end
-      pp @result
+
       # write_search_results_log(csv_file_full_path2,@result,temp_keyword_csv)
       first_elem = @result.first
       # search_limit = 5
@@ -414,7 +414,6 @@ class PlagiarismInternetCheck
     params = "&$top=#{num_results}&$skip=#{0}"
 
     full_address = web_search_url + sources_portion + query_string + query_portion + query_market_string + query_market_portion + params
-    pp full_address
 
     uri = URI(full_address)
     req = Net::HTTP::Get.new(uri.request_uri)

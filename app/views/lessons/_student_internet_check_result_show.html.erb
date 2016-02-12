@@ -1,0 +1,31 @@
+<p>ニックネーム：<%= student.nickname %></p>
+<% if question.present? %>
+    <p>問題：<%= question.title %></p>
+<% end %>
+<% max_time = 0 %>
+<% if checked_result.present?%>
+    <% checked_result.each do |r|%>
+        <% if r.repeat.to_i > 1 %>
+            <% max_time=r.repeat.to_i %>
+            <% break %>
+        <% end %>
+    <% end %>
+    <% if max_time > 1 %>
+        <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出しました</p>
+        <% checked_result.each do |result| %>
+            <div class="hero-unit2">
+              <p>関連タイトル：<%= result.title %></p>
+              <p>関連リンク：<%= link_to result.link,"#{result.link}", :target => ["'_blank'"] %></p>
+              <p>回数：<%= result.repeat %></p>
+              <p>内容：<%= result.content %></p>
+            </div>
+        <% end %>
+    <% elsif http_error_exist == 1 %>
+        <p>剽窃チェックができませんでした。以下の問題が考えられます。</p>
+        <p>(1)インターネットの接続に問題がありませんか。</p>
+        <p>(2)検索回数の上限を超えてませんか。</p>
+        <p>設定を確認したら、再チェックを行なってください。</p>
+    <%else %>
+        <p>WEB剽窃チェックの結果：解答に関連があるWEBページを検出できませんでした</p>
+    <%end %>
+<% end %>
