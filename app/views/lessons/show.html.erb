@@ -1,13 +1,12 @@
-
 <div id ="proftab">
   <ul class="nav nav-tabs">
     <li role="presentation" class="active" id = "home_tab"><a>ホーム</a></li>
 
     <li role="presentation" id = "questions_tab" ><%= link_to  "問題",  lesson_questions_path(:lesson_id =>@lesson.id ),
-                                         :remote => true , :data => { :toggle=>"tab"} %></li>
+                                                               :remote => true , :data => { :toggle=>"tab"} %></li>
     <% if @is_teacher %>
         <li role="presentation" id = "students_tab"><%= link_to  "学生",  students_lessons_path(:lesson_id =>@lesson.id ),
-                                             :remote => true , :data => { :toggle=>"tab"} %></li>
+                                                                 :remote => true , :data => { :toggle=>"tab"} %></li>
     <% end %>
   </ul>
 </div>
@@ -31,5 +30,9 @@
                 lesson_id:"<%=@lesson.id %>"
             }
         });
+    });
+    history.pushState(null, null, null);
+    window.addEventListener("popstate", function() {
+        history.pushState(null, null, null);
     });
 </script>

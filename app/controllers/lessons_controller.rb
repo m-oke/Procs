@@ -32,27 +32,28 @@ class LessonsController < ApplicationController
     #誤り検出のアルゴリズムLuhnを使って授業コードを生成する
     lesson_code = Array.new(10) { rand(10) }.join
     lesson_code + Luhn.checksum(lesson_code).to_s
-
     @lesson.lesson_code = lesson_code
 
-    if @lesson.name != ''
+    if @lesson.name !=''
       if @lesson.save
-
         #Teacherの情報をuser_lessonに記入する
         @user_lesson.lesson_id = @lesson.id
         @user_lesson.is_teacher = true
         @user_lesson.save
 
-        flash.notice = 'クラスを作成しました！'
-        redirect_to root_path
-          # redirect_to :action => "/lessons"
+        flash.notice  = 'クラスを作成しました！'
+        redirect_to  :action =>'show', :id=> @lesson.id
+
       else
+        flash.notice  = 'クラスの作成に失敗しました！'
         render action: 'new'
       end
     else
       render action: 'new'
       flash.notice = 'クラス名を入力してください！'
     end
+
+
   end
 
   def edit
