@@ -2,12 +2,12 @@
 set -eu
 LOGFILE=/tmp/procs_install.log
 
-MYSQL_VERSION="5.6.27"
+MYSQL_VERSION="5.6.28"
 RUBY_VERSION="2.2.3"
 RAILS_VERSION="4.2.1"
-DOCKER_VERSION="1.9.1"
+DOCKER_VERSION="1.10.1"
 PYTHON_VERSION="3.4.3"
-REDIS_VERSION="3.0.6"
+REDIS_VERSION="3.0.7"
 
 command_exists() {
     command -v "$@" > /dev/null 2>&1
@@ -173,13 +173,12 @@ install_procs(){
     cp $dir/config/database.yml.sample $dir/config/database.yml
     bundle install
     cd $dir/vendor/bundle/ruby/2.2.0/gems/unicorn*/
-    ./GIT-VERSION-GEN
+    ./GIT-VERSION-GEN # activate unicorn
     cd $dir
 
-    #    git checkout master
-
+    `bundle exec rake db:drop RAILS_ENV=production`
     echo "==========Setup Procs settings =========="
-    echo -n "Who MySQL user for Procs is ? (default: root) :"
+    echo -n "Who MySQL user for Procs is ? (default: root) : "
     read mysql_user
     mysql_user=${mysql_user:-root}
     echo
@@ -199,79 +198,22 @@ install_procs(){
     echo "Warning: Don't edit/delete SECRET_KEY_BASE Strings."
 
     echo ""
-    echo ""
-
-    # mysqlを設定する
-    echo -n "Is ${mysql_user} existed in MySQL? [y/n] : "
-    conf=""
-    create=""
-    while read conf; do
-        case $conf in
-            'y' ) create="false"
-                break ;;
-            'n' ) create="true"
-                break ;;
-            * ) echo "Please type y or n."
-                echo -n "${mysql_user} is existed in MySQL? [y/n] : " ;;
-        esac
-    done
-
-    echo ""
-    echo -n "Does root user in MySQL has password? [y/n] : "
-    root_p=""
-    conf=""
-    while read conf; do
-        case $conf in
-            'y' ) root_p="true"
-                break ;;
-            'n' ) root_p="false"
-                break ;;
-            * ) echo "Please type y or n."
-                echo -n "Does root user in MySQL has password? [y/n] : " ;;
-        esac
-    done
-
-    echo ""
     echo "Create Database for Procs."
-    if [ "$root_p" = "true" ]; then
-        echo -n "MySQL root password : "
-        mysql -u root -p -e "CREATE DATABASE Procs_production;"
-    else
-        mysql -u root -e "CREATE DATABASE Procs_production;"
-    fi
-
-    echo ""
-    echo ""
-    echo "Setting MySQL user for Procs..."
-    echo -n "MySQL root password : "
-    if [ "$create" = "true" ] && [ "$root_p" = "true" ]; then
-        mysql -u root -p -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_pass}';"
-    elif [ "$create" = "true" ] && [ "$root_p" = "false" ]; then
-        mysql -u root -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost' IDENTIFIED BY '${mysql_pass}';"
-    elif [ "$create" = "false" ] && [ "$root_p" = "true" ]; then
-        mysql -u root -p -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost';"
-    elif [ "$create" = "false" ] && [ "$root_p" = "false" ]; then
-        mysql -u root -e "GRANT ALL ON Procs_production.* TO '${mysql_user}'@'localhost';"
-    fi
-    echo "Set MySQL user for Procs."
+    `bundle exec rake db:create RAILS_ENV=production`
     echo "If you want edit, please use mysql console."
-
-
-    echo ""
-    echo ""
-    echo "Creating DB..."
 
     bundle exec rake db:migrate RAILS_ENV=production
     echo "Created!"
+
     bundle exec rake assets:precompile 1> /dev/null
 
     echo ""
     echo "Procs has plagiarism detection using Web."
     echo "If you want use this, you have to get Bing Search API Key."
-    echo "https://datamarket.azure.com/dataset/bing/search"
+    echo "    Detail: https://datamarket.azure.com/dataset/bing/search"
     echo -n "If you have Key, type here (optional) : "
     read apikey
-    echo "BING_API_KEY='${apikey}'" >> $dir/.env
+    echo "BING_APIKEY='${apikey}'" >> $dir/.env
     echo "If you want to set apikey later, please edit ${dir}/.env ."
 }
 
@@ -420,6 +362,8 @@ do_install(){
         fi
     fi
 
+    echo -n "This is installer of Procs. This will install softwares for system. If any softwares conflict others, type Ctrl-C for abort."
+    conf=""
 
     # ディレクトリの設定
     # XXX/Procs/scripts/ を想定
