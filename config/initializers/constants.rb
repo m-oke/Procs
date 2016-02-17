@@ -11,3 +11,5 @@ TIMEOUT_LIMIT = 60 # プログラム評価時のWall-Clock時間によるタイ�
 MEMORY_LIMIT = 256 # プログラム評価時の最大メモリ(問題作成より余分に確保)
 PROCESS_LIMIT = 300 # プログラム評価時の最大プロセス数
 FILESIZE_LIMIT = 10240000 # プログラム評価時の最大ファイルサイズ(OSのブロックサイズに比例) 1block = 4Kbyteならば 40MB
+UID_MIN = 20000
+UID_MAX = 40000
