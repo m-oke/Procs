@@ -64,7 +64,10 @@ class EvaluatePythonJob < ActiveJob::Base
           rss = memory_usage_limit * 1024 * 1000
           test_inputname = test.input_storename
           test_outputname = test.output_storename
-          num = format("%05d", SecureRandom.random_number(10**5))
+          num = rand(UID_MIN..UID_MAX).to_s
+          while `ps -u #{num} h` != ""
+            num = rand(UID_MIN..UID_MAX).to_s
+          end
           exec_cmd = "docker run --rm -u #{num}:exec_user --name #{container_name} -e NUM=#{i} -e INPUT=#{test_inputname} -e EXE=#{exe_file} -v #{dir_name}:/home/exec_user/work --ulimit nproc=5 --ulimit rss=#{rss} --ulimit cpu=#{run_time_limit + 1} --ulimit fsize=10240000 -m #{memory_usage_limit}m --memory-swap #{memory_usage_limit}m --net=none procs/python_sandbox"
 
           begin
