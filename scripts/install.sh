@@ -322,6 +322,9 @@ create_root(){
     echo ""
     echo ""
     echo "User.create(:name => '${name}', :nickname => '${nickname}', :email => '${email}', :email_confirmation => '${email}', :password => '${password}', :password_confirmation => '${password}', :roles => [:root, :admin, :teacher, :student])" | bundle exec rails console -e production 2> /dev/null
+    echo "Lesson.create(:name => 'パブリック問題', :description => 'このクラスはすべての問題を含むクラスです。', :lesson_code => '0000000000')" | bundle exec rails console -e production 2> /dev/null
+    echo "UserLesson.create(:user_id => 1, :lesson_id => 1, :is_teacher => true)"  | bundle exec rails console -e production 2> /dev/null
+
 }
 
 start_unicorn(){
