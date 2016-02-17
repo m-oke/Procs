@@ -156,6 +156,12 @@ install_docker(){
     if [ ! -e $dir/docker/.git ]; then
         git clone https://github.com/m-oke/TKB-procon_sandbox.git $dir/docker/
     fi
+
+    # swap memory setup
+    sudo cp /etc/default/grub /etc/default/grub.old
+    sudo cat /etc/default/grub  | sed 's#GRUB_CMDLINE_LINUX=".*"#GRUB_CMDLINE_LINUX="cgroups_enable=memory swapaccount=1"#' > /etc/default/grub
+    sudo update-grub
+
     sudo docker build -t procs/python_sandbox $dir/docker/python_sandbox
     sudo docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
 }
@@ -176,7 +182,7 @@ install_procs(){
     ./GIT-VERSION-GEN # activate unicorn
     cd $dir
 
-    `bundle exec rake db:drop RAILS_ENV=production`
+    bundle exec rake db:drop RAILS_ENV=production
     echo "==========Setup Procs settings =========="
     echo -n "Who MySQL user for Procs is ? (default: root) : "
     read mysql_user
@@ -199,7 +205,7 @@ install_procs(){
 
     echo ""
     echo "Create Database for Procs."
-    `bundle exec rake db:create RAILS_ENV=production`
+    bundle exec rake db:create RAILS_ENV=production
     echo "If you want edit, please use mysql console."
 
     bundle exec rake db:migrate RAILS_ENV=production
@@ -230,7 +236,7 @@ setup_nginx(){
             case $conf in
                 'Yes' )
                     echo "Config file of Procs is ($dir/scripts/nginx/procs.conf)"
-                    echo "Please configure mannually."
+                    echo "Please configure it mannually."
                     break ;;
                 'No' )
                     cat $dir/scripts/nginx/procs.conf.sample | sed "s#root#root ${dir}/public;#" > $dir/scripts/nginx/procs.conf
