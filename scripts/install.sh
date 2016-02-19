@@ -158,12 +158,12 @@ install_docker(){
     fi
 
     # swap memory setup
-    sudo cp /etc/default/grub /etc/default/grub.old
-    sudo cat /etc/default/grub  | sed 's#GRUB_CMDLINE_LINUX=".*"#GRUB_CMDLINE_LINUX="cgroups_enable=memory swapaccount=1"#' > /etc/default/grub
-    sudo update-grub
+    $sh_c cp /etc/default/grub /etc/default/grub.old
+    $sh_c cat /etc/default/grub  | sed 's#GRUB_CMDLINE_LINUX=".*"#GRUB_CMDLINE_LINUX="cgroups_enable=memory swapaccount=1"#' > /etc/default/grub
+    $sh_c update-grub
 
-    sudo docker build -t procs/python_sandbox $dir/docker/python_sandbox
-    sudo docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
+    $sh_c docker build -t procs/python_sandbox $dir/docker/python_sandbox
+    $sh_c docker build -t procs/cpp_sandbox $dir/docker/cpp_sandbox
 }
 
 install_sim(){
