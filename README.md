@@ -1,4 +1,4 @@
-# TKB-procon_rails
+# Procs
 筑波大学 高度IT学生プロジェクト
 
 # 環境構築
