@@ -47,6 +47,8 @@ Rails.application.routes.draw do
     get 'users/teacher/new', :to => 'users/registrations#new_teacher'
   end
 
+  get 'help' =>  'help#index'
+
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
