@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="row-fluid">
+    <div class="col-xs-3">
+      <div class="well sidebar-nav">
+        <ul class="nav nav-list">
+          <ul>
+            <% cat_old = nil %>
+            <% controller.action_methods.each do |a| %>
+              <% unless a == "access_lesson_check" || a == "access_question_check" %>
+                <% category = a.match(/(student|teacher|admin).*/) %>
+                <% if !category.nil? && category[1] != cat_old %>
+                  <% unless cat_old.nil? %>
+          </ul>
+          <% end %>
+                  <% cat_old = category[1] %>
+                  <li><%= category[1].capitalize %></li>
+                  <ul>
+                <% end %>
+<% if category.nil?%>
+  <li><%= link_to t("help.#{a}"), "/help/#{a}" %></li>
+<% else %>
+  <li><%= link_to t("help.#{category[1]}.#{a}"), "/help/#{a}" %></li>
+<% end %>
+            <% end %>
+          <% end %>
+            </ul>
+        </ul>
+      </div>
+    </div>
+    <div class="col-xs-9">
+      <%= yield %>
+    </div>
+  </div>
+</div>
