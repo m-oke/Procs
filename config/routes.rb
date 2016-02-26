@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 Rails.application.routes.draw do
   root :to => 'lessons#index'
 
@@ -43,11 +44,31 @@ Rails.application.routes.draw do
   }
 
 
-  devise_scope :user do
-    get 'users/teacher/new', :to => 'users/registrations#new_teacher'
-  end
+  # teacher作成デバッグ用
+  # devise_scope :user do
+  #   get 'users/teacher/new', :to => 'users/registrations#new_teacher'
+  # end
 
-  get 'help' =>  'help#index'
+  scope :help, :as => :help do
+    get '/' => 'help#index'
+    get '/index' => 'help#index'
+    get '/user_create' => 'help#user_create'
+
+    get '/student_attend_lesson' => 'help#student_attend_lesson'
+    get '/student_view_question' => 'help#student_view_question'
+    get '/student_answer' => 'help#student_answer'
+    get '/student_result' => 'help#student_result'
+
+    get 'teacher_lesson_create' => 'help#teacher_lesson_create'
+    get 'teacher_question_create' => 'help#teacher_question_create'
+    get 'teacher_view_answer' => 'help#teacher_view_answer'
+    get 'teacher_view_result' => 'help#teacher_view_result'
+    get 'teacher_web_plagirarism' => 'help#teacher_web_plagirarism'
+    get 'teacher_local_plagiarism' => 'help#teacher_local_plagiarism'
+
+    get 'admin_admin_page' => 'help#admin_admin_page'
+    get 'admin_user_roles' => 'help#admin_user_roles'
+  end
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
