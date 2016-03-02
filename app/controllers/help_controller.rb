@@ -36,7 +36,7 @@ class HelpController < ApplicationController
   def teacher_view_answer
   end
 
-  # 教員/成績閲覧
+  # 教員/解答状況閲覧
   def teacher_view_result
   end
 
