@@ -1,29 +1,29 @@
 # Procs
-筑波大学 高度IT学生プロジェクト
+ProcsはWebインターフェースのプログラミング教育向け学習支援システムです．
+プログラミングチャレンジの問題を利用して教育を行う大学等の教育機関を対象としています．
+**授業管理**，**問題管理**，**サンドボックス環境**および**剽窃チェック機能**といった特徴があります．
 
-# 環境構築
 ## バージョン履歴
 日付|Procsバージョン
 -----|----------
 2015/08/06|version-0.1
 2015/10/07|version-0.4
 
-
 ## 検証環境
 ### OS
-* Ubuntu 14.04.3
+* Ubuntu 14.04
 
 ### Ruby
-* 2.2.3
+* 2.2
 
 ### Ruby on Rails
 * 4.2.1
 
 ### MySQL
-* 5.6.27
+* 5.6
 
 ### Redis
-* 3.0.6
+* 3.0
 
 ### Python
 * 3.4.3
@@ -32,10 +32,15 @@
 * 4.8.4
 
 ### Docker
-* 1.9.1
+* 1.10
 
-## 手順
-* Ubuntu14.04.2がインストールされていることを前提
+## インストール手順
+1. Procsのclone
+    `git clone https://github.com/m-oke/Procs.git`
+2. test
+
+
+* Ubuntu14.04がインストールされていることを前提
 
 ### 必要なソフトウェアのインストール
 * `sudo apt-get install git build-essential libssl-dev libmysqld-dev libreadline-dev nodejs`
