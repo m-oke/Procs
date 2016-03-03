@@ -123,7 +123,6 @@ class LocalCheckPythonJob < ActiveJob::Base
             if check_count == 0
               answer.local_plagiarism_percentage = 0.0
               answer.save
-              return
             else
 
               # 類似度の計算
@@ -139,10 +138,6 @@ class LocalCheckPythonJob < ActiveJob::Base
               end
 
               local_result.push([@target_name,@compare_name,@target_line,@compare_line,@plagiarism_percentage,@compare_path,s.id,compare_answer.lesson_question_id])
-              # SORT
-              local_result = local_result.sort do |item1,item2|
-                item2[4]<=> item1[4]
-              end
             end
           end
         end
@@ -152,6 +147,10 @@ class LocalCheckPythonJob < ActiveJob::Base
       answer.local_plagiarism_percentage = 0.0
       answer.save
       return
+    end
+    # SORT
+    local_result = local_result.sort do |item1,item2|
+      item2[4]<=> item1[4]
     end
     result_temp = LocalCheckResult.new(:answer_id => answer.id,
                                        :check_result => local_result[0][4],

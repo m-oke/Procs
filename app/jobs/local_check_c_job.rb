@@ -73,13 +73,8 @@ class LocalCheckCJob < ActiveJob::Base
             if check_count == 0
               answer.local_plagiarism_percentage = 0.0
               answer.save
-              return
             else
               local_result.push([@target_token,@target_name,@compare_name,@target_line,@compare_line,@check_token,@compare_path,s.id,compare_answer.lesson_question_id])
-              # SORT
-              local_result = local_result.sort do |item1,item2|
-                item2[5]<=> item1[5]
-              end
             end
           end
         end
@@ -89,6 +84,10 @@ class LocalCheckCJob < ActiveJob::Base
       answer.local_plagiarism_percentage = 0.0
       answer.save
       return
+    end
+    # SORT
+    local_result = local_result.sort! do |item1,item2|
+      item2[5]<=> item1[5]
     end
     result_temp = LocalCheckResult.new(:answer_id => answer.id,
                                        :check_result => (local_result[0][5].to_f/local_result[0][0].to_f*100) ,
