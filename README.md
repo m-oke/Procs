@@ -88,3 +88,6 @@ ProcsはWebインターフェースのプログラミング教育向け学習支
 
 #### Webサーバの設定を変更したい
 * `/etc/nginx/conf.d/unicorn.conf`を適宜変更してください．
+
+#### プログラム実行環境等について
+* githubの[wiki](https://github.com/m-oke/Procs/wiki)を参照してください．
