@@ -1,6 +1,19 @@
 ja:
   help:
     index: Procsについて
-    user_new: ユーザ作成
+    user_create: ユーザ作成
     student:
       student_answer: 解答
+      student_attend_lesson: 授業参加
+      student_view_question: 問題閲覧
+      student_result: 解答結果
+    teacher:
+      teacher_lesson_create: 授業作成
+      teacher_question_create: 問題作成
+      teacher_view_answer: 解答閲覧
+      teacher_view_result: 解答状況閲覧
+      teacher_web_plagiarism: WEB剽窃チェック
+      teacher_local_plagiarism: ローカル剽窃チェック
+    admin:
+      admin_admin_page: 管理画面
+      admin_user_roles: ユーザの権限について

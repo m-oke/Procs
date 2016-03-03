@@ -256,3 +256,6 @@ ja:
       too_long: "は%{count}文字以下に設定して下さい。"
       invalid: "は有効でありません。"
       confirmation: "が内容とあっていません。"
+  Student: 学生
+  Teacher: 教員
+  Admin: 管理者

@@ -6,14 +6,28 @@
           <ul>
             <% cat_old = nil %>
             <% controller.action_methods.each do |a| %>
-              <% unless a == "access_lesson_check" || a == "access_question_check" %>
+              <% unless a == "access_lesson_check" || a == "access_question_check" || a == "index" %>
                 <% category = a.match(/(student|teacher|admin).*/) %>
+
+                <% if !category.nil? && category[1].to_s == "admin" %>
+                  <% if current_user.nil? || !current_user.has_role?(:admin) %>
+                    <% next %>
+                  <% end %>
+                <% end %>
+
+                <% if !category.nil? && category[1].to_s == "teacher" %>
+                  <% if current_user.nil? || !current_user.has_role?(:teacher) %>
+                    <% next %>
+                  <% end %>
+                <% end %>
+
+
                 <% if !category.nil? && category[1] != cat_old %>
                   <% unless cat_old.nil? %>
           </ul>
           <% end %>
                   <% cat_old = category[1] %>
-                  <li><%= category[1].capitalize %></li>
+                  <li><%= t(category[1].capitalize) %></li>
                   <ul>
                 <% end %>
 <% if category.nil?%>
