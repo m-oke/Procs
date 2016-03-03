@@ -40,8 +40,8 @@
     <%= f.label :password_confirmation, "パスワードの確認" %>(<span class="inputnote">＊</span>)<br />
     <%= f.password_field :password_confirmation, autocomplete: "off", :pattern => '^[!-~]{1,255}$' %>
   </div>
-
+  <br>
   <div class="actions">
-    <%= f.submit "新規登録" %>
+    <%= f.submit "新規登録", :class => "btn btn-primary"%>
   </div>
 <% end %>
