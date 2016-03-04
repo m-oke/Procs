@@ -63,7 +63,7 @@ Rails.application.routes.draw do
     get 'teacher_question_create' => 'help#teacher_question_create'
     get 'teacher_view_answer' => 'help#teacher_view_answer'
     get 'teacher_view_result' => 'help#teacher_view_result'
-    get 'teacher_web_plagirarism' => 'help#teacher_web_plagirarism'
+    get 'teacher_web_plagiarism' => 'help#teacher_web_plagiarism'
     get 'teacher_local_plagiarism' => 'help#teacher_local_plagiarism'
 
     get 'admin_admin_page' => 'help#admin_admin_page'
