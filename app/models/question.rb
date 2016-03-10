@@ -18,7 +18,9 @@ class Question < ActiveRecord::Base
   validates :title, :presence => true
   validates :content, :presence => true
   validates :run_time_limit, :presence => true
+  validates_numericality_of :run_time_limit, less_than: CPU_TIME_LIMIT
   validates :memory_usage_limit, :presence => true
+  validates_numericality_of :memory_usage_limit, less_than: MEMORY_LIMIT
   validates :author, :presence => true
 
 

@@ -83,11 +83,13 @@
 
     <div>
       <%= f.label :run_time_limit , '時間制限:'%>（単位：ms）
-      <%= f.number_field :run_time_limit, min: 1, step: 1 , size: 40 %><br/>
+      <%= f.number_field :run_time_limit, min: 1, step: 1 , size: 40 %> (最大: <%= CPU_TIME_LIMIT.to_i - 1%>)
+      <br/>
     </div>
     <div>
       <%= f.label :memory_usage_limit , 'メモリ制限:'%>（単位：MB）
-      <%= f.number_field :memory_usage_limit,  min: 1, step: 1 ,size: 40  %><br/>
+      <%= f.number_field :memory_usage_limit,  min: 1, step: 1 ,size: 40  %> (最大: <%= MEMORY_LIMIT.to_i - 1%>)
+      <br/>
     </div>
     <br>
     <div>
