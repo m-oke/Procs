@@ -154,7 +154,7 @@ install_docker(){
     fi
 
     if [ ! -e $dir/docker/.git ]; then
-        git clone https://github.com/m-oke/TKB-procon_sandbox.git $dir/docker/
+        git clone https://github.com/m-oke/procs_sandbox.git $dir/docker/
     fi
 
     # swap memory setup
